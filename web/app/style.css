@@ -298,6 +298,7 @@ h1, h2, h3, .file-title, .dossier-title, .btn, .stamp, .chip, .name { font-famil
   .btn { padding: 10px 12px; min-height: 44px; }
   .btn.primary { padding: 10px 14px; }
   .stage { padding: 12px 10px 0; }
+  .cards { align-items: flex-start; }
   .orient .note { display: none; }
   .rules { padding: 10px 10px 18px; }
 }
