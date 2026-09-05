@@ -2,6 +2,7 @@
   "id": "case-002",
   "size": 5,
   "difficulty": "easy",
+  "mode": "classic",
   "blockedCells": [],
   "roomMap": [
     2,
@@ -397,8 +398,8 @@
     "seed": 2026000,
     "theme": "house",
     "targetTier": "easy",
-    "generator": "almushtabah-gen/0.1",
-    "generatedAt": "2026-09-05T14:06:35.025Z",
+    "generator": "almushtabah-gen/0.2",
+    "generatedAt": "2026-09-05T14:15:45.452Z",
     "stats": {
       "clues": 5,
       "maxPerChar": 2,

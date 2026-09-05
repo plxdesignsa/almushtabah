@@ -2,6 +2,7 @@
   "id": "case-019",
   "size": 16,
   "difficulty": "expert",
+  "mode": "classic",
   "blockedCells": [
     [
       5,
@@ -3808,8 +3809,8 @@
     "seed": 2026017,
     "theme": "market",
     "targetTier": "expert",
-    "generator": "almushtabah-gen/0.1",
-    "generatedAt": "2026-09-05T14:06:45.477Z",
+    "generator": "almushtabah-gen/0.2",
+    "generatedAt": "2026-09-05T14:16:11.819Z",
     "stats": {
       "clues": 19,
       "maxPerChar": 2,

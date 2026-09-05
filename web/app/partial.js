@@ -9,9 +9,10 @@ import { CLUE_TYPES } from '../../src/engine/clues.js';
 /**
  * @param {import('../../src/engine/scene.js').Scene} scene
  * @param {number[]} placed  خلية كل شخصية أو -1
+ * @param {Set<number>} [doubted]  شهود كذّبهم اللاعب: بطاقاتهم لا تُفحص
  * @returns {{clues:Set<number>, rules:Set<number>, cells:Set<number>}}
  */
-export function partialViolations(scene, placed) {
+export function partialViolations(scene, placed, doubted = new Set()) {
   const clues = new Set();
   const rules = new Set();
   const cells = new Set();
@@ -27,6 +28,7 @@ export function partialViolations(scene, placed) {
     const def = CLUE_TYPES[clue.type];
     const p = placed[clue.char];
     if (p < 0) continue;
+    if (doubted.has(clue.char) && !clue.implicit) continue;
     if (def.kind === 'unary') {
       if (!def.cellPredicate(scene, clue)(p)) flag(clues, clue.index, clue.char);
     } else if (def.kind === 'binary') {

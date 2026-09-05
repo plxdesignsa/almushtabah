@@ -1,7 +1,7 @@
 # Dependencies
 node_modules/
 
-# Build output (later phases)
+# Build output (npm run build)
 dist/
 build/
 .vite/

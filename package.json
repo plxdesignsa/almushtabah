@@ -9,6 +9,8 @@
   },
   "scripts": {
     "dev": "node src/cli/serve.js",
+    "build": "node scripts/build.js",
+    "preview": "node src/cli/serve.js --dir dist --port 5180",
     "solve": "node src/cli/solve.js",
     "solve:trace": "node src/cli/solve.js cases/case-001.json --trace",
     "solve:minimal": "node src/cli/solve.js cases/case-001.json --trace --minimal",

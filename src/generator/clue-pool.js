@@ -27,8 +27,8 @@ DROP_WEIGHTS.expert = DROP_WEIGHTS.hard;
  * @param {{victim:number, killer:number}} roles
  * @returns {object[]} أدلة بصيغة JSON (char/other أرقام، room/object مفاتيح)
  */
-export function buildCluePool(rng, scene, placement, { victim, killer }) {
-  const { size, roomOfCell, rooms, objects } = scene;
+export function buildCluePool(rng, scene, placement, { victim, killer, silent = [] }) {
+  const { roomOfCell, rooms, objects } = scene;
   const pool = [];
   const add = (clue) => pool.push(clue);
   const row = (cell) => scene.rowOf(cell);
@@ -37,7 +37,7 @@ export function buildCluePool(rng, scene, placement, { victim, killer }) {
   const occupants = (roomId) => roomCount(scene, placement, roomId);
 
   for (const ch of scene.characters) {
-    if (ch.id === victim) continue;
+    if (ch.id === victim || silent.includes(ch.id)) continue;
     const p = placement[ch.id];
     const rm = roomOfCell[p];
     const others = scene.characters.filter((o) => o.id !== ch.id);
@@ -86,6 +86,44 @@ export function buildCluePool(rng, scene, placement, { victim, killer }) {
 
   add({ char: victim, type: 'aloneWithKiller' });
   return pool;
+}
+
+/**
+ * مرشّحات الكذبة (الشاهد الكاذب): أدلة كاذبة على الحل يقولها القاتل، مرتّبة بأثرها الدرامي.
+ * لا تُفضح الكذبة بقاعدة عامة (لا يدّعي ضيف أنه في المستودع)، بل تُكشف بالتناقض مع الشهود الآخرين.
+ */
+export function lieCandidates(rng, scene, placement, killer, victim) {
+  const { roomOfCell, rooms, objects } = scene;
+  const p = placement[killer];
+  const rm = roomOfCell[p];
+  const cls = scene.char(killer).class;
+  const forbidden = new Set();
+  for (const g of scene.globalRules) if (g.type === 'classRestriction' && g.class === cls) g.forbiddenRooms.forEach((r) => forbidden.add(r));
+  const objectKeys = [...new Set(objects.map((o) => o.key))];
+  const out = [];
+  const push = (weight, clue) => out.push({ weight: weight + rng.next(), clue: { char: killer, ...clue, lie: true } });
+
+  // «ما كنت مع الضحية» / «كنت لحالي»: الأقوى دراميًا.
+  push(6, { type: 'diffRoom', other: victim });
+  push(6, { type: 'aloneInRoom' });
+  for (const r of rooms) if (r.id !== rm && !forbidden.has(r.id)) push(4, { type: 'inRoom', room: r.key });
+  for (const k of objectKeys) {
+    if (!scene.besideObjectCells(k).has(p)) push(3.5, { type: 'besideObject', object: k });
+    if (!scene.objectCells(k).has(p)) push(2.5, { type: 'onObject', object: k });
+  }
+  for (const o of scene.characters) {
+    if (o.id === killer || o.id === victim) continue;
+    const q = placement[o.id];
+    if (roomOfCell[q] !== rm) push(3, { type: 'sameRoom', other: o.id });
+    if (!scene.isBeside(p, q)) push(2, { type: 'besideChar', other: o.id });
+    const dr = scene.rowOf(p) - scene.rowOf(q);
+    const dc = scene.colOf(p) - scene.colOf(q);
+    for (const n of [-2, -1, 1, 2]) {
+      if (n !== dr) push(1.5, { type: 'rowOffset', n, other: o.id });
+      if (n !== dc) push(1.5, { type: 'colOffset', n, other: o.id });
+    }
+  }
+  return out.sort((a, b) => b.weight - a.weight).map((x) => x.clue);
 }
 
 /**

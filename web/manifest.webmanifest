@@ -1,0 +1,14 @@
+{
+  "name": "المشتبه",
+  "short_name": "المشتبه",
+  "description": "لعبة ألغاز تحقيق عربية: ضع الشهود على خريطة مسرح الجريمة من كلامهم، ومن ينتهي في غرفة الضحية هو القاتل.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4eee2",
+  "theme_color": "#1d1a16",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

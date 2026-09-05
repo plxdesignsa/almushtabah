@@ -25,6 +25,7 @@ export class Game {
     this.pencil = new Map(); // خلية → شخصية
     this.marks = new Set(); // خلايا ✗
     this.struck = new Set(); // بطاقات شطبها اللاعب
+    this.doubted = new Set(); // شهود كذّبهم اللاعب (نمط الشاهد الكاذب): بطاقاتهم لا تدخل فحص التناقض
     this.hintsUsed = 0;
     this.selected = null;
     this.history = [];
@@ -40,6 +41,7 @@ export class Game {
       pencil: [...this.pencil],
       marks: [...this.marks],
       struck: [...this.struck],
+      doubted: [...this.doubted],
       hintsUsed: this.hintsUsed,
       finished: this.finished,
     };
@@ -50,6 +52,7 @@ export class Game {
     this.pencil = new Map(s.pencil);
     this.marks = new Set(s.marks);
     this.struck = new Set(s.struck ?? []);
+    this.doubted = new Set(s.doubted ?? []);
     this.hintsUsed = s.hintsUsed ?? 0;
     this.finished = s.finished ?? null;
   }
@@ -166,6 +169,13 @@ export class Game {
     this.#mutate(() => {
       if (this.struck.has(clueIndex)) this.struck.delete(clueIndex);
       else this.struck.add(clueIndex);
+    });
+  }
+
+  toggleDoubt(charId) {
+    this.#mutate(() => {
+      if (this.doubted.has(charId)) this.doubted.delete(charId);
+      else this.doubted.add(charId);
     });
   }
 

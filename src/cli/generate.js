@@ -29,6 +29,8 @@ const LIBRARY_PLAN = [
   ...[7, 8, 8, 9, 10].map((size) => ({ size, tier: 'medium' })),
   ...[10, 11, 12, 12, 13, 14].map((size) => ({ size, tier: 'hard' })),
   ...[14, 15, 16, 16, 16].map((size) => ({ size, tier: 'expert' })),
+  // الشاهد الكاذب (القسم 11): الميكانيكا المميزة، بأحجام يسهل فيها تعقّب التناقض.
+  { size: 7, tier: 'medium', lying: true }, { size: 8, tier: 'medium', lying: true }, { size: 9, tier: 'hard', lying: true }, { size: 11, tier: 'hard', lying: true },
 ];
 const THEME_CYCLE = ['house', 'farm', 'market'];
 
@@ -60,6 +62,7 @@ function catalogEntry(result) {
     rooms: c.rooms.length,
     suspects: c.characters.length,
     clues: c.clues.length,
+    mode: c.mode ?? 'classic',
     theme: c.meta.theme,
     seed: c.meta.seed,
   };
@@ -75,7 +78,7 @@ function summarize(result, report, ms) {
   const c = result.case;
   const ok = report.ok ? '✓' : '✗';
   const s = c.meta.stats;
-  console.log(`${ok} ${c.id.padEnd(9)} ${String(c.size + '×' + c.size).padEnd(6)} هدف ${result.report.targetTier.padEnd(6)} قياس ${c.difficulty.padEnd(6)} غرف ${String(c.rooms.length).padStart(2)}  أدلة ${String(s.clues).padStart(2)}  أقصى/شخصية ${s.maxPerChar}  صامتون ${s.silentCharacters}  تلميحات ${String(s.hintSteps).padStart(2)}  ${ms}ms  بذرة ${c.meta.seed}${report.ok ? '' : '  ← ' + report.issues.map((i) => i.code).join(',')}`);
+  console.log(`${ok} ${c.id.padEnd(9)} ${String(c.size + '×' + c.size).padEnd(6)} هدف ${result.report.targetTier.padEnd(6)} قياس ${c.difficulty.padEnd(6)} غرف ${String(c.rooms.length).padStart(2)}  أدلة ${String(s.clues).padStart(2)}  أقصى/شخصية ${s.maxPerChar}  صامتون ${s.silentCharacters}  تلميحات ${String(s.hintSteps).padStart(2)}  ${ms}ms  بذرة ${c.meta.seed}${c.mode === 'lyingWitness' ? '  🤥' : ''}${report.ok ? '' : '  ← ' + report.issues.map((i) => i.code).join(',')}`);
 }
 
 if (flag('library')) {
@@ -99,13 +102,13 @@ if (flag('library')) {
 
 const size = Number(opt('size'));
 if (!size) {
-  console.error('الاستخدام: --size N [--tier easy|medium|hard|expert] [--seed S] [--theme T] [--id ID] [--out DIR] [--dry]  |  --library');
+  console.error('الاستخدام: --size N [--tier easy|medium|hard|expert] [--lying] [--seed S] [--theme T] [--id ID] [--out DIR] [--dry]  |  --library');
   process.exit(2);
 }
 const t0 = Date.now();
 const result = generateCase({
   size, tier: opt('tier', 'hard'), seed: opt('seed') !== undefined ? Number(opt('seed')) : undefined,
-  theme: opt('theme'), id: opt('id'), attempts: Number(opt('attempts', 10)),
+  theme: opt('theme'), id: opt('id'), attempts: Number(opt('attempts', 10)), lying: flag('lying'),
 });
 const report = gate(result);
 summarize(result, report, Date.now() - t0);

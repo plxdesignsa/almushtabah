@@ -2,6 +2,7 @@
   "id": "case-020",
   "size": 16,
   "difficulty": "expert",
+  "mode": "classic",
   "blockedCells": [
     [
       4,
@@ -4405,8 +4406,8 @@
     "seed": 2026018,
     "theme": "house",
     "targetTier": "expert",
-    "generator": "almushtabah-gen/0.1",
-    "generatedAt": "2026-09-05T14:06:48.075Z",
+    "generator": "almushtabah-gen/0.2",
+    "generatedAt": "2026-09-05T14:16:18.370Z",
     "stats": {
       "clues": 21,
       "maxPerChar": 2,

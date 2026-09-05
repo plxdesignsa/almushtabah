@@ -1,16 +1,17 @@
 // serialize.js — تجميع ملف القضية الرئيسي (القسم 05) وطبقة الترجمة العربية.
 
 import { describeClue, describeRung } from '../engine/describe.js';
-import { hintLadder, humanSteps } from '../engine/solver.js';
+import { hintLadder, humanSteps, withClues } from '../engine/solver.js';
 import { OBJECTS } from './content.js';
 import { voiceClues } from './voice.js';
 
 /** يبني كائن القضية (JSON) من مكوّنات المولّد. */
-export function assembleCase({ id, size, layout, characters, placement, globalRules, clues, difficulty, hintChain, hintLadder: ladder, meta }) {
+export function assembleCase({ id, size, layout, characters, placement, globalRules, clues, difficulty, hintChain, hintLadder: ladder, mode, meta }) {
   return {
     id,
     size,
     difficulty: difficulty ?? null,
+    mode: mode ?? 'classic',
     blockedCells: layout.blockedCells.map((c) => [Math.floor(c / size), c % size]),
     roomMap: layout.roomMap,
     rooms: layout.rooms.map((r) => ({ id: r.id, key: r.key, restricted: r.restricted, floor: r.floor ?? (r.restricted ? 'concrete' : 'tile') })),
@@ -32,6 +33,7 @@ function serializeClue(c, characters) {
   if (c.other !== undefined) out.other = characters[c.other].key;
   if (c.n !== undefined) out.n = c.n;
   if (c.count !== undefined) out.count = c.count;
+  if (c.lie) out.lie = true;
   return out;
 }
 
@@ -64,7 +66,11 @@ export function buildOverlay(scene, theme, { title, characters, trace, rng }) {
   overlay.cards = voiced.cards;
   overlay.victimCard = voiced.victimCard;
   overlay.machineClues = Object.fromEntries(scene.clues.map((c) => [String(c.index), describeClue(scene, c, overlay)]));
-  overlay.hints = Object.fromEntries(hintLadder(trace).map((r) => [String(r.step), describeRung(scene, r, overlay)]));
+  // التلميحات تُبنى على البطاقات الصادقة؛ في نمط الشاهد الكاذب تبدأ بدرجة تشرح المبدأ بلا كشف الكاذب.
+  const truthScene = scene.liar === null ? scene : withClues(scene, scene.truthfulClues);
+  const rungs = hintLadder(trace).map((r) => [String(r.step), describeRung(truthScene, r, overlay)]);
+  overlay.hints = Object.fromEntries(rungs);
+  if (scene.liar !== null) overlay.lyingIntro = 'أحد الشهود يكذب، وهو القاتل. صدّق الجميع أولًا وستصل إلى تناقض؛ البطاقة التي إذا استبعدتها زال التناقض وانحلّت القضية هي بطاقة القاتل.';
   return overlay;
 }
 

@@ -7,7 +7,7 @@
 import { CLUE_TYPES } from '../../src/engine/clues.js';
 import { arNum, describeGlobalRule, describeRung } from '../../src/engine/describe.js';
 import { Scene } from '../../src/engine/scene.js';
-import { hintLadder, solve } from '../../src/engine/solver.js';
+import { hintLadder, solve, withClues } from '../../src/engine/solver.js';
 import { avatarSVG } from '../art/avatar.js';
 import { floorBackground, floorOf } from '../art/floors.js';
 import { hasProp, propSymbolSheet } from '../art/props.js';
@@ -16,6 +16,11 @@ import { partialViolations } from './partial.js';
 
 const app = document.getElementById('app');
 document.body.insertAdjacentHTML('afterbegin', propSymbolSheet());
+
+// عامل الخدمة (عمل بلا إنترنت) في النشر فقط؛ أثناء التطوير نريد أحدث الملفات دائمًا.
+if ('serviceWorker' in navigator && !['localhost', '127.0.0.1'].includes(location.hostname)) {
+  navigator.serviceWorker.register('/sw.js').catch(() => { /* اختياري */ });
+}
 
 const h = (tag, attrs = {}, ...children) => {
   const el = document.createElement(tag);
@@ -89,7 +94,7 @@ async function showList() {
           return h('a', { class: `dossier ${done ? 'done' : ''}`, href: `#/case/${c.id}` },
             h('div', { class: 'dossier-tab' }, `ملف ${caseNumber(c.id)}`),
             h('div', { class: 'dossier-title' }, c.title_ar ?? c.id),
-            h('div', { class: 'dossier-meta' }, `${THEME_AR[c.theme] ?? ''} · ${arNum(c.size)}×${arNum(c.size)} · ${arNum(c.suspects)} مشتبه · ${arNum(c.rooms)} غرف`),
+            h('div', { class: 'dossier-meta' }, `${THEME_AR[c.theme] ?? ''} · ${arNum(c.size)}×${arNum(c.size)} · ${arNum(c.suspects)} مشتبه · ${arNum(c.rooms)} غرف`, c.mode === 'lyingWitness' ? h('span', { class: 'chip lying' }, '🤥 شاهد كاذب') : null),
             done ? h('div', { class: 'stamp small-stamp' }, 'أُغلقت') : saved ? h('div', { class: 'badge soft' }, 'قيد التحقيق') : null,
           );
         })),
@@ -103,8 +108,10 @@ async function showList() {
 async function openCase(id) {
   const [raw, overlay] = await Promise.all([fetchJSON(`/cases/${id}.json`), fetchJSON(`/cases/i18n/ar/${id}.json`).catch(() => ({}))]);
   const scene = new Scene(raw);
-  const solved = solve(scene);
-  const ladder = hintLadder(solved.trace);
+  const solved = solve(scene); // في نمط الشاهد الكاذب يُحلّ على البطاقات الصادقة
+  const lying = scene.mode === 'lyingWitness';
+  // في نمط الكذب تُسبَق الدرجات بتلميح افتتاحي يشرح المبدأ بلا كشف الكاذب.
+  const ladder = [...(lying ? [{ step: 0, intro: true }] : []), ...hintLadder(solved.trace)];
   const game = new Game(scene, `mushtabah:${id}`);
   const N = {
     char: (i) => overlay.chars?.[scene.char(i).key] ?? scene.char(i).key,
@@ -135,10 +142,11 @@ async function openCase(id) {
   };
 
   function render() {
-    const viol = partialViolations(scene, game.placed);
+    const viol = partialViolations(scene, game.placed, game.doubted);
     app.style.setProperty('--cell', `${cellSize()}px`);
     app.replaceChildren(...[
       renderTop(),
+      lying ? h('div', { class: 'banner lying' }, h('strong', {}, '🤥 شاهد كاذب: '), 'بطاقة واحدة كاذبة، وهي بطاقة القاتل. الباقون صادقون. إذا صدّقت الجميع وصلت إلى تناقض؛ اضغط «كذّب» على بطاقة لتستثنيها من الفحص.') : null,
       h('div', { class: 'stage' }, renderCards(viol), renderBoard(viol)),
       renderRules(viol),
       renderFooter(),
@@ -180,9 +188,16 @@ async function openCase(id) {
   function renderCards(viol) {
     const cards = [];
     if (scene.victim) {
-      cards.push(h('div', { class: 'card victim' },
-        h('div', { class: 'avatar' }, avatar(scene.victim, 44)),
-        h('div', { class: 'card-body' }, h('div', { class: 'name' }, N.char(scene.victim.id), h('span', { class: 'tag' }, 'الضحية')), h('div', { class: 'text' }, overlay.victimCard ?? 'وُجد وحده مع القاتل.')),
+      // الضحية تُوضع على الخريطة أيضًا (بطاقتها ثابتة: «وُجد وحده مع القاتل»).
+      const v = scene.victim;
+      const placed = game.placed[v.id] >= 0;
+      cards.push(h('div', {
+        class: `card victim ${game.selected === v.id ? 'active' : ''} ${placed ? 'placed' : ''} ${ui.linkedChars.has(v.id) ? 'linked' : ''}`,
+        dataset: { char: v.id },
+        onclick: () => { game.select(v.id); linkClues(); render(); },
+      },
+        h('div', { class: 'avatar' }, avatar(v, 44)),
+        h('div', { class: 'card-body' }, h('div', { class: 'name' }, N.char(v.id), h('span', { class: 'tag' }, 'الضحية'), placed ? h('span', { class: 'pin', title: 'موضوع على الخريطة' }, '📍') : null), h('div', { class: 'text' }, overlay.victimCard ?? 'وُجد وحده مع القاتل.')),
       ));
     }
     for (const ch of scene.characters) {
@@ -192,18 +207,22 @@ async function openCase(id) {
       const text = overlay.cards?.[ch.key] ?? (fallback || 'ما عندي شي أقوله.');
       const alert = myClues.some((c) => viol.clues.has(c.index));
       const struck = myClues.length && myClues.every((c) => game.struck.has(c.index));
+      const doubted = game.doubted.has(ch.id);
       const placed = game.placed[ch.id] >= 0;
       cards.push(h('div', {
-        class: `card ${game.selected === ch.id ? 'active' : ''} ${alert ? 'alert' : ''} ${struck ? 'struck' : ''} ${placed ? 'placed' : ''} ${ui.linkedChars.has(ch.id) ? 'linked' : ''}`,
+        class: `card ${game.selected === ch.id ? 'active' : ''} ${alert ? 'alert' : ''} ${struck ? 'struck' : ''} ${doubted ? 'doubted' : ''} ${placed ? 'placed' : ''} ${ui.linkedChars.has(ch.id) ? 'linked' : ''}`,
         dataset: { char: ch.id },
         onclick: () => { game.select(ch.id); linkClues(); render(); },
       },
         h('div', { class: 'avatar' }, avatar(ch, 44)),
         h('div', { class: 'card-body' },
-          h('div', { class: 'name' }, N.char(ch.id), h('span', { class: 'tag' }, N.cls(ch.class)), placed ? h('span', { class: 'pin', title: 'موضوع على الخريطة' }, '📍') : null),
+          h('div', { class: 'name' }, N.char(ch.id), h('span', { class: 'tag' }, N.cls(ch.class)), placed ? h('span', { class: 'pin', title: 'موضوع على الخريطة' }, '📍') : null, doubted ? h('span', { class: 'tag doubt' }, 'مكذَّب') : null),
           h('div', { class: 'text' }, text),
         ),
-        myClues.length ? h('button', { class: 'strike', title: 'شطب البطاقة (استعملتها)', onclick: (e) => { e.stopPropagation(); myClues.forEach((c) => game.toggleStrike(c.index)); render(); } }, struck ? '↺' : '✓') : null,
+        h('div', { class: 'card-actions' },
+          myClues.length ? h('button', { class: 'strike', title: 'شطب البطاقة (استعملتها)', onclick: (e) => { e.stopPropagation(); myClues.forEach((c) => game.toggleStrike(c.index)); render(); } }, struck ? '↺' : '✓') : null,
+          lying && myClues.length ? h('button', { class: `strike doubt ${doubted ? 'on' : ''}`, title: 'تكذيب هذا الشاهد (لا تدخل بطاقته في فحص التناقض)', onclick: (e) => { e.stopPropagation(); game.toggleDoubt(ch.id); render(); } }, doubted ? 'صدّق' : 'كذّب') : null,
+        ),
       ));
     }
     return h('aside', { class: 'cards' }, cards);
@@ -319,7 +338,10 @@ async function openCase(id) {
     const f = game.finished;
     return h('section', { class: `result ${f.correct ? 'good' : 'bad'}` },
       f.correct
-        ? h('div', {}, h('h3', {}, 'أُغلقت القضية.'), h('p', {}, `القاتل: ${N.char(f.killer)} — كان في ${N.room(scene.roomOfCell[game.placed[f.killer]])} مع ${N.char(scene.victim.id)}.`), h('p', { class: 'muted small' }, `استعملت ${arNum(game.hintsUsed)} تلميحًا.`), h('button', { class: 'btn', onclick: () => { game.restart(); render(); } }, 'إعادة من البداية'))
+        ? h('div', {}, h('h3', {}, 'أُغلقت القضية.'), h('p', {}, (() => {
+          const fem = scene.char(f.killer).gender === 'f';
+          return `${fem ? 'القاتلة' : 'القاتل'}: ${N.char(f.killer)} — ${fem ? 'كانت' : 'كان'} في ${N.room(scene.roomOfCell[game.placed[f.killer]])} مع ${N.char(scene.victim.id)}${lying ? (fem ? '، وكانت تكذب في بطاقتها' : '، وكان يكذب في بطاقته') : ''}.`;
+        })()), h('p', { class: 'muted small' }, `استعملت ${arNum(game.hintsUsed)} ${game.hintsUsed === 1 ? 'تلميحًا واحدًا' : game.hintsUsed === 2 ? 'تلميحين' : game.hintsUsed <= 10 ? 'تلميحات' : 'تلميحًا'}.`), h('button', { class: 'btn', onclick: () => { game.restart(); render(); } }, 'إعادة من البداية'))
         : h('div', {}, h('h3', {}, 'ليس بعد.'), h('p', {}, `${arNum(f.wrong)} ${f.wrong === 1 ? 'شخصية في غير مكانها' : f.wrong === 2 ? 'شخصيتان في غير مكانهما' : 'شخصيات في غير أماكنها'}. راجع البطاقات المحمرّة.`)),
     );
   }
@@ -365,8 +387,14 @@ async function openCase(id) {
     }
     const rung = ladder[game.hintsUsed - 1];
     ui.hintShown = game.hintsUsed;
-    ui.hint = { step: rung.step, text: describeRung(scene, rung, overlay).replace(/^[٠-٩]+\. /, '') };
-    ui.linked = new Set([rung.cell]);
+    if (rung.intro) {
+      ui.hint = { step: game.hintsUsed, text: overlay.lyingIntro ?? 'أحد الشهود يكذب، وهو القاتل. صدّق الجميع أولًا وستصل إلى تناقض؛ البطاقة التي إذا استبعدتها زال التناقض هي بطاقة القاتل.' };
+      ui.linked = new Set();
+    } else {
+      const truthScene = scene.liar === null ? scene : withClues(scene, scene.truthfulClues);
+      ui.hint = { step: game.hintsUsed, text: describeRung(truthScene, rung, overlay).replace(/^[٠-٩]+\. /, '') };
+      ui.linked = new Set([rung.cell]);
+    }
     render();
   }
 

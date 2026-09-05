@@ -2,6 +2,7 @@
   "id": "case-003",
   "size": 6,
   "difficulty": "easy",
+  "mode": "classic",
   "blockedCells": [],
   "roomMap": [
     2,
@@ -321,17 +322,22 @@
     },
     {
       "char": "amal",
-      "type": "inRoom",
-      "room": "pumproom"
-    },
-    {
-      "char": "amal",
       "type": "onObject",
       "object": "bucket"
     },
     {
+      "char": "amal",
+      "type": "besideObject",
+      "object": "barrel"
+    },
+    {
       "char": "hessa",
       "type": "aloneWithKiller"
+    },
+    {
+      "char": "mohammed",
+      "type": "inRow",
+      "n": 6
     },
     {
       "char": "majed",
@@ -341,11 +347,6 @@
     {
       "char": "majed",
       "type": "inCol",
-      "n": 6
-    },
-    {
-      "char": "mohammed",
-      "type": "inRow",
       "n": 6
     }
   ],
@@ -361,16 +362,16 @@
     {
       "step": 2,
       "action": "isolate",
-      "char": 2,
-      "cell": 17,
-      "because": "clues[7]",
+      "char": 4,
+      "cell": 30,
+      "because": "clues[6]",
       "rule": "unary"
     },
     {
       "step": 3,
       "action": "isolate",
-      "char": 4,
-      "cell": 30,
+      "char": 2,
+      "cell": 17,
       "because": "clues[8]",
       "rule": "unary"
     },
@@ -431,17 +432,17 @@
     },
     {
       "step": 2,
-      "char": 2,
-      "cell": 17,
-      "because": "clues[7]",
+      "char": 4,
+      "cell": 30,
+      "because": "clues[6]",
       "rule": "unary",
       "blocks": [],
       "cascade": []
     },
     {
       "step": 3,
-      "char": 4,
-      "cell": 30,
+      "char": 2,
+      "cell": 17,
       "because": "clues[8]",
       "rule": "unary",
       "blocks": [],
@@ -468,8 +469,8 @@
     "seed": 2026001,
     "theme": "farm",
     "targetTier": "easy",
-    "generator": "almushtabah-gen/0.1",
-    "generatedAt": "2026-09-05T14:06:35.035Z",
+    "generator": "almushtabah-gen/0.2",
+    "generatedAt": "2026-09-05T14:15:45.462Z",
     "stats": {
       "clues": 8,
       "maxPerChar": 2,

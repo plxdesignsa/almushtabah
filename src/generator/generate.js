@@ -12,8 +12,8 @@ import { createRng } from '../engine/random.js';
 import { evaluatePlacement } from '../engine/evaluate.js';
 import { RULE_SETS, propagate } from '../engine/propagate.js';
 import { Scene } from '../engine/scene.js';
-import { measureTier, minimizeClues, withClues } from '../engine/solver.js';
-import { buildCluePool, removalOrder } from './clue-pool.js';
+import { lyingWitnessReport, measureTier, minimizeClues, withClues } from '../engine/solver.js';
+import { buildCluePool, lieCandidates, removalOrder } from './clue-pool.js';
 import { NAMES, THEMES, THEME_KEYS } from './content.js';
 import { PERSONA_KEYS } from './voice.js';
 import { defaultRoomCount, generateLayout } from './layout.js';
@@ -32,11 +32,13 @@ const TIER_RANK = { easy: 0, medium: 1, hard: 2, expert: 3 };
  * @param {string} [opts.id]
  * @param {number} [opts.attempts=10]
  * @param {number} [opts.maxPerChar=3]  أقصى أدلة لشخصية واحدة (بطاقة + سطر ثانٍ + ثالث)
+ * @param {boolean} [opts.lying=false]  نمط الشاهد الكاذب: بطاقة القاتل وحدها كاذبة
  * @returns {{case:object, overlay:object, report:object}}
  */
 export function generateCase(opts) {
   const size = opts.size;
   const tier = opts.tier ?? 'hard';
+  const lying = Boolean(opts.lying);
   const seed = opts.seed ?? Math.floor(Math.random() * 2 ** 31);
   const attempts = opts.attempts ?? 10;
   const maxPerChar = opts.maxPerChar ?? 3;
@@ -51,7 +53,7 @@ export function generateCase(opts) {
   for (let attempt = 0; attempt < attempts; attempt++) {
     const rng = master.fork();
     const t0 = Date.now();
-    const candidate = attemptOnce(rng, { size, tier, theme, id, maxPerChar, roomCount: opts.roomCount, blockedCount: opts.blockedCount });
+    const candidate = attemptOnce(rng, { size, tier, theme, id, maxPerChar, lying, roomCount: opts.roomCount, blockedCount: opts.blockedCount });
     const ms = Date.now() - t0;
     if (!candidate) { log.push({ attempt, ms, ok: false }); continue; }
     log.push({ attempt, ms, ok: true, tier: candidate.tier, clues: candidate.clueCount, maxPerChar: candidate.maxPerChar, score: candidate.score });
@@ -64,13 +66,14 @@ export function generateCase(opts) {
   const caseJson = assembleCase({
     id, size, layout: best.layout, characters: best.characters, placement: best.placement,
     globalRules: best.globalRules, clues: best.clues, difficulty: best.tier, hintChain, hintLadder: hintLadderFrom(best.trace),
-    meta: { seed, theme: themeKey, targetTier: tier, generator: 'almushtabah-gen/0.1', generatedAt: new Date().toISOString(), stats: best.stats },
+    mode: lying ? 'lyingWitness' : 'classic',
+    meta: { seed, theme: themeKey, targetTier: tier, generator: 'almushtabah-gen/0.2', generatedAt: new Date().toISOString(), stats: best.stats },
   });
   const overlay = buildOverlay(best.scene, theme, { title: theme.titles[master.int(theme.titles.length)], characters: best.characters, trace: best.trace, rng: master.fork() });
   return { case: caseJson, overlay, report: { seed, theme: themeKey, targetTier: tier, tier: best.tier, attempts: log, stats: best.stats } };
 }
 
-function attemptOnce(rng, { size, tier, theme, id, maxPerChar, roomCount, blockedCount }) {
+function attemptOnce(rng, { size, tier, theme, id, maxPerChar, lying, roomCount, blockedCount }) {
   const rooms = roomCount ?? defaultRoomCount(size);
   const blocked = blockedCount ?? (size >= 10 ? rng.int(3) : 0);
   const layout = generateLayout(rng, theme, { size, roomCount: rooms, blockedCount: blocked });
@@ -98,8 +101,9 @@ function attemptOnce(rng, { size, tier, theme, id, maxPerChar, roomCount, blocke
 
   const base = assembleCase({ id, size, layout, characters, placement, globalRules, clues: [] });
   const emptyScene = new Scene(base);
-  const pool = buildCluePool(rng, emptyScene, placement, { victim, killer });
-  const fullScene = completePool(rng, base, pool, placement, TIER_RULES[tier]);
+  // في نمط الشاهد الكاذب يُبنى اللغز بلا بطاقة القاتل أصلًا، ثم تُضاف كذبته فوقه.
+  const pool = buildCluePool(rng, emptyScene, placement, { victim, killer, silent: lying ? [killer] : [] });
+  const fullScene = completePool(rng, base, pool, placement, TIER_RULES[tier], lying ? [killer, victim] : [victim]);
   if (!fullScene) return null; // نادر: تعذّر إكمال المجمّع بقواعد الدرجة
 
   const truth = evaluatePlacement(fullScene, placement);
@@ -108,12 +112,20 @@ function attemptOnce(rng, { size, tier, theme, id, maxPerChar, roomCount, blocke
   const order = removalOrder(rng, fullScene.clues, tier);
   const { kept } = minimizeClues(fullScene, order, { rules: TIER_RULES[tier] });
   const keptSet = new Set(kept);
-  const finalClues = fullScene.clues.filter((c) => keptSet.has(c.index) || c.type === 'aloneWithKiller');
-  const scene = withClues(fullScene, finalClues.map((c, i) => ({ ...c, index: i })));
+  let finalClues = fullScene.clues.filter((c) => keptSet.has(c.index) || c.type === 'aloneWithKiller');
+  let scene = withClues(fullScene, finalClues.map((c, i) => ({ ...c, index: i })));
 
   const measured = measureTier(scene);
   if (!measured) return null;
   const solved = propagate(scene);
+
+  if (lying) {
+    // أضف كذبة القاتل: أول مرشّح يجتاز فحص الشاهد الكاذب كاملًا (تناقض مع الجميع، حلّ بدونه، لا اتهام لبريء).
+    const lieScene = craftLie(rng, base, scene, placement, killer, victim);
+    if (!lieScene) return null;
+    scene = lieScene;
+    finalClues = scene.clues;
+  }
   const perChar = new Map();
   scene.clues.filter((c) => c.type !== 'aloneWithKiller').forEach((c) => perChar.set(c.char, (perChar.get(c.char) ?? 0) + 1));
   const maxPer = Math.max(0, ...perChar.values());
@@ -124,9 +136,32 @@ function attemptOnce(rng, { size, tier, theme, id, maxPerChar, roomCount, blocke
   const score = scoreCandidate({ tier, measured, maxPer, maxPerChar, silent, size, clueCount });
   return {
     layout, characters, placement, globalRules, scene, trace: solved.trace,
-    clues: scene.clues.map((c) => ({ char: c.char, type: c.type, room: c.room !== undefined ? scene.rooms[c.room].key : undefined, object: c.object, other: c.other, n: c.n, count: c.count })),
+    clues: scene.clues.map((c) => plainClue(scene, c)),
     tier: measured, clueCount, maxPerChar: maxPer, silent, stats, score,
   };
+}
+
+/** دليل مطبَّع → كائن JSON خام (بلا مفاتيح فارغة) صالح لإعادة التحميل. */
+function plainClue(scene, c) {
+  const out = { char: c.char, type: c.type };
+  if (c.room !== undefined) out.room = scene.rooms[c.room].key;
+  if (c.object !== undefined) out.object = c.object;
+  if (c.other !== undefined) out.other = c.other;
+  if (c.n !== undefined) out.n = c.n;
+  if (c.count !== undefined) out.count = c.count;
+  if (c.lie) out.lie = true;
+  return out;
+}
+
+/** يضيف كذبة القاتل ويعيد مشهدًا يجتاز فحص الشاهد الكاذب، أو null. */
+function craftLie(rng, base, scene, placement, killer, victim) {
+  const truthful = scene.clues.filter((c) => !c.implicit).map((c) => plainClue(scene, c));
+  const candidates = lieCandidates(rng, scene, placement, killer, victim);
+  for (const lie of candidates.slice(0, 24)) {
+    const trial = new Scene({ ...base, mode: 'lyingWitness', clues: [...truthful, lie] });
+    if (lyingWitnessReport(trial).ok) return trial;
+  }
+  return null;
 }
 
 /**
@@ -136,7 +171,7 @@ function attemptOnce(rng, { size, tier, theme, id, maxPerChar, roomCount, blocke
  * الأقل فقط، والأوزان تجعل الإحداثي أول ما يُحذف، فلا يبقى إلا حين لا بديل مشهدي له.
  * @returns {Scene|null}
  */
-function completePool(rng, base, pool, placement, rules) {
+function completePool(rng, base, pool, placement, rules, silent = []) {
   let clues = pool.map((c) => ({ ...c }));
   for (let round = 0; round < 4; round++) {
     const scene = new Scene({ ...base, clues });
@@ -145,13 +180,13 @@ function completePool(rng, base, pool, placement, rules) {
     if (r.solved) return scene;
     const unpinned = r.domains.map((d, id) => (d.size > 1 ? id : -1)).filter((id) => id >= 0);
     for (const id of unpinned) {
-      if (id === scene.victim?.id) continue; // الضحية بلا بطاقات: تُحسم من الآخرين
+      if (silent.includes(id)) continue; // الضحية (والقاتل في نمط الكذب) بلا بطاقات: يُحسمان من الآخرين
       const p = placement[id];
       const has = (type, extra = {}) => clues.some((c) => c.char === id && c.type === type && Object.entries(extra).every(([k, v]) => c[k] === v));
       const onKey = scene.objects.find((o) => o.cell === p)?.key;
       if (round === 0 && onKey && !has('onObject', { object: onKey })) { clues.push({ char: id, type: 'onObject', object: onKey }); continue; }
       if (round <= 1) {
-        const others = scene.characters.filter((o) => o.id !== id);
+        const others = scene.characters.filter((o) => o.id !== id && !silent.includes(o.id));
         const cands = [];
         for (const o of others) {
           const dr = scene.rowOf(p) - scene.rowOf(placement[o.id]);

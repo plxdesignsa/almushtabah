@@ -27,6 +27,8 @@ export class Scene {
     this.size = raw.size;
     this.cellCount = raw.size * raw.size;
     this.difficulty = raw.difficulty ?? null;
+    // نمط اللعب: 'classic' (كل البطاقات صادقة) أو 'lyingWitness' (بطاقة القاتل وحدها كاذبة).
+    this.mode = raw.mode === 'lyingWitness' ? 'lyingWitness' : 'classic';
 
     this.#loadRooms(raw);
     this.#loadObjects(raw);
@@ -158,6 +160,16 @@ export class Scene {
         implicit: true,
       });
     }
+    // الشاهد الكاذب: الدليل المعلَّم lie كاذب، وصاحبه هو الكاذب (القاتل). المستنتج يحلّ بدون بطاقته كلها.
+    const lies = this.clues.filter((c) => c.lie);
+    assert(this.mode === 'lyingWitness' ? lies.length === 1 : lies.length === 0,
+      this.mode === 'lyingWitness' ? 'نمط الشاهد الكاذب يتطلب دليلًا واحدًا معلَّمًا lie' : 'لا يجوز دليل كاذب خارج نمط الشاهد الكاذب');
+    this.liar = lies.length ? lies[0].char : null;
+  }
+
+  /** الأدلة التي يُبنى عليها الحل: في نمط الشاهد الكاذب تُستبعد بطاقة الكاذب كلها. */
+  get truthfulClues() {
+    return this.liar === null ? this.clues : this.clues.filter((c) => c.char !== this.liar || c.implicit);
   }
 
   #normalizeClue(c, i) {

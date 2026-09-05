@@ -106,15 +106,24 @@ h1, h2, h3, .file-title, .dossier-title, .btn, .stamp, .chip, .name { font-famil
 .card.alert { border-color: var(--alert); background: var(--alert-wash); animation: pulse .6s ease 1; }
 .card.struck { opacity: .5; order: 99; }
 .card.struck .text { text-decoration: line-through; }
-.card.victim { background: var(--paper); border: 1px solid var(--wall); cursor: default; }
+.card.victim { background: var(--paper); border: 1px solid var(--wall); }
 .card .name { font-weight: 700; display: flex; align-items: center; gap: .4rem; }
 .card .tag { font-size: .7rem; color: var(--muted); font-weight: 500; border: 1px solid var(--line); border-radius: 3px; padding: 0 .35rem; }
 .card .text { font-size: .93rem; color: var(--ink-2); }
 .card .pin { font-size: .8rem; }
 .avatar { flex: none; width: 44px; height: 44px; }
 .avatar svg { display: block; filter: drop-shadow(0 1px 1px rgba(0,0,0,.2)); }
-.strike { position: absolute; top: .4rem; left: .4rem; border: none; background: transparent; color: var(--muted); cursor: pointer; font-size: .9rem; }
+.card-actions { position: absolute; top: .35rem; left: .4rem; display: flex; gap: .2rem; align-items: center; }
+.strike { border: none; background: transparent; color: var(--muted); cursor: pointer; font-size: .9rem; padding: .1rem .3rem; border-radius: 4px; }
 .strike:hover { color: var(--pen); }
+.strike.doubt { font-size: .74rem; border: 1px solid var(--line); font-family: var(--f-display); }
+.strike.doubt.on { background: var(--alert-wash); color: var(--alert); border-color: var(--alert); }
+.card.doubted { border-style: dotted; border-color: var(--alert); }
+.card.doubted .text { opacity: .6; }
+.tag.doubt { color: var(--alert); border-color: var(--alert); }
+.banner { max-width: 1180px; margin: .8rem auto 0; padding: .6rem 1rem; border-radius: 8px; font-size: .92rem; }
+.banner.lying { background: var(--alert-wash); color: var(--ink); border: 1px dashed var(--alert); }
+.chip.lying { background: var(--alert-wash); color: var(--alert); margin-inline-start: .4rem; }
 
 /* ---------- اللوحة ---------- */
 .board-wrap { overflow: auto; width: fit-content; max-width: 100%; margin: 0 auto; border: 2px solid var(--ink); border-radius: 6px; background: var(--paper-2); box-shadow: 0 10px 30px rgba(0,0,0,.12); }

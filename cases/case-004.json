@@ -2,6 +2,7 @@
   "id": "case-004",
   "size": 6,
   "difficulty": "easy",
+  "mode": "classic",
   "blockedCells": [],
   "roomMap": [
     1,
@@ -310,6 +311,11 @@
       "object": "camera"
     },
     {
+      "char": "nayef",
+      "type": "inRoom",
+      "room": "dates"
+    },
+    {
       "char": "khalid",
       "type": "inRoom",
       "room": "dates"
@@ -329,9 +335,9 @@
       "n": 4
     },
     {
-      "char": "nayef",
-      "type": "inRow",
-      "n": 4
+      "char": "khalid",
+      "type": "inCol",
+      "n": 3
     },
     {
       "char": "hamad",
@@ -350,14 +356,14 @@
       "action": "isolate",
       "char": 4,
       "cell": 25,
-      "because": "clues[7]",
+      "because": "clues[8]",
       "rule": "unary"
     },
     {
       "step": 2,
       "action": "isolate",
-      "char": 1,
-      "cell": 18,
+      "char": 3,
+      "cell": 32,
       "because": "placed:4",
       "rule": "rowCol"
     },
@@ -397,19 +403,27 @@
       "cells": [
         6
       ],
-      "because": "clues[3]",
+      "because": "clues[4]",
       "rule": "occupancy"
     },
     {
       "step": 5,
       "action": "isolate",
-      "char": 3,
-      "cell": 32,
-      "because": "placed:1",
+      "char": 1,
+      "cell": 18,
+      "because": "placed:3",
       "rule": "rowCol"
     },
     {
       "step": 6,
+      "action": "isolate",
+      "char": 0,
+      "cell": 3,
+      "because": "row:1",
+      "rule": "hiddenSingle"
+    },
+    {
+      "step": 7,
       "action": "isolate",
       "char": 5,
       "cell": 17,
@@ -417,20 +431,12 @@
       "rule": "rowCol"
     },
     {
-      "step": 7,
-      "action": "isolate",
-      "char": 0,
-      "cell": 3,
-      "because": "placed:5",
-      "rule": "rowCol"
-    },
-    {
       "step": 8,
       "action": "isolate",
       "char": 2,
       "cell": 10,
-      "because": "col:5",
-      "rule": "hiddenSingle"
+      "because": "placed:5",
+      "rule": "rowCol"
     }
   ],
   "hintLadder": [
@@ -438,37 +444,27 @@
       "step": 1,
       "char": 4,
       "cell": 25,
-      "because": "clues[7]",
+      "because": "clues[8]",
       "rule": "unary",
       "blocks": [],
       "cascade": [
         {
-          "char": 1,
-          "cell": 18,
+          "char": 3,
+          "cell": 32,
           "because": "placed:4"
         },
         {
-          "char": 3,
-          "cell": 32,
-          "because": "placed:1"
-        },
-        {
-          "char": 5,
-          "cell": 17,
-          "because": "placed:1"
-        },
-        {
-          "char": 0,
-          "cell": 3,
-          "because": "placed:5"
+          "char": 1,
+          "cell": 18,
+          "because": "placed:3"
         }
       ]
     },
     {
       "step": 2,
-      "char": 2,
-      "cell": 10,
-      "because": "col:5",
+      "char": 0,
+      "cell": 3,
+      "because": "row:1",
       "rule": "hiddenSingle",
       "blocks": [
         {
@@ -503,27 +499,38 @@
           "cells": [
             6
           ],
-          "because": "clues[3]",
+          "because": "clues[4]",
           "rule": "occupancy"
         }
       ],
-      "cascade": []
+      "cascade": [
+        {
+          "char": 5,
+          "cell": 17,
+          "because": "placed:1"
+        },
+        {
+          "char": 2,
+          "cell": 10,
+          "because": "placed:5"
+        }
+      ]
     }
   ],
   "meta": {
     "seed": 2026002,
     "theme": "market",
     "targetTier": "easy",
-    "generator": "almushtabah-gen/0.1",
-    "generatedAt": "2026-09-05T14:06:35.042Z",
+    "generator": "almushtabah-gen/0.2",
+    "generatedAt": "2026-09-05T14:15:45.470Z",
     "stats": {
-      "clues": 7,
+      "clues": 8,
       "maxPerChar": 2,
       "silentCharacters": 0,
       "hintSteps": 2,
       "deductions": 8,
       "rooms": 5,
-      "rounds": 3
+      "rounds": 4
     }
   }
 }

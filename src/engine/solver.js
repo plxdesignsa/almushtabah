@@ -88,7 +88,9 @@ export function hintLadder(trace) {
  * @returns {SolveResult}
  */
 export function solve(caseOrScene) {
-  const scene = caseOrScene instanceof Scene ? caseOrScene : new Scene(caseOrScene);
+  const raw = caseOrScene instanceof Scene ? caseOrScene : new Scene(caseOrScene);
+  // في نمط الشاهد الكاذب يُحلّ اللغز على البطاقات الصادقة (بدون بطاقة الكاذب).
+  const scene = raw.liar === null ? raw : withClues(raw, raw.truthfulClues);
   const result = propagate(scene);
 
   const placement = result.solved ? result.domains.map((d) => d.fixed) : null;
@@ -101,7 +103,7 @@ export function solve(caseOrScene) {
   let clueCheck = null;
   if (placement) {
     killer = deriveKiller(scene, placement);
-    clueCheck = evaluatePlacement(scene, placement);
+    clueCheck = evaluatePlacement(scene, placement); // على البطاقات الصادقة
     if (scene.solution) matchesSolution = placement.every((cell, i) => cell === scene.solution[i]);
   }
 
@@ -121,8 +123,45 @@ export function solve(caseOrScene) {
     rounds: result.rounds,
     tier: result.solved ? measureTier(scene) : null,
     contradiction: result.contradiction ?? null,
-    scene,
+    liar: raw.liar,
+    scene: raw,
   };
+}
+
+/**
+ * فحص نمط الشاهد الكاذب (القسم 11): يعيد قائمة المخالفات.
+ *  1. كل البطاقات معًا ⇒ متناقضة (اللاعب يكتشف أن أحدهم يكذب).
+ *  2. بدون بطاقة الكاذب ⇒ تُحل بلا تخمين وتطابق الحل، والكاذب هو القاتل.
+ *  3. بدون بطاقة أي شاهد آخر (مع بقاء الكذبة) ⇒ لا تُحل، فلا يمكن اتهام غير الكاذب.
+ *  4. الدليل الكاذب كاذب فعلًا على الحل، وباقي الأدلة صادقة.
+ */
+export function lyingWitnessReport(scene) {
+  const issues = [];
+  if (scene.liar === null) return { ok: false, issues: [{ code: 'noLiar' }] };
+  const allTogether = propagate(scene);
+  if (allTogether.ok) issues.push({ code: 'lieNotDetectable', detail: 'كل البطاقات معًا لا تؤدي لتناقض' });
+
+  const truth = propagate(withClues(scene, scene.truthfulClues));
+  if (!(truth.ok && truth.solved)) issues.push({ code: 'unsolvedWithoutLiar' });
+  else {
+    const placement = truth.domains.map((d) => d.fixed);
+    if (scene.solution && !placement.every((c, i) => c === scene.solution[i])) issues.push({ code: 'solutionMismatch' });
+    if (deriveKiller(scene, placement) !== scene.liar) issues.push({ code: 'liarIsNotKiller' });
+    const ev = evaluatePlacement(withClues(scene, scene.truthfulClues), placement);
+    if (!ev.ok) issues.push({ code: 'truthfulCluesViolated', detail: ev.failures });
+    const lie = scene.clues.find((c) => c.lie);
+    const lieHolds = evaluatePlacement(withClues(scene, [lie]), placement).ok;
+    if (lieHolds) issues.push({ code: 'lieIsActuallyTrue' });
+  }
+
+  for (const ch of scene.characters) {
+    if (ch.id === scene.liar || ch.victim) continue;
+    const without = scene.clues.filter((c) => c.char !== ch.id || c.implicit);
+    if (without.length === scene.clues.length) continue; // بلا بطاقة أصلًا
+    const r = propagate(withClues(scene, without));
+    if (r.ok && r.solved) issues.push({ code: 'innocentCouldBeBlamed', detail: ch.id });
+  }
+  return { ok: issues.length === 0, issues };
 }
 
 /**
@@ -189,12 +228,13 @@ export function minimizeClues(scene, order, options = {}) {
 export function acceptanceReport(scene) {
   const issues = [];
   const r = solve(scene);
+  const truthScene = scene.liar === null ? scene : withClues(scene, scene.truthfulClues);
 
   if (!r.ok) issues.push({ code: 'contradiction', detail: r.contradiction });
   else if (!r.solved) issues.push({ code: 'unsolved', detail: r.unpinned });
 
   if (scene.solution) {
-    const ev = evaluatePlacement(scene, scene.solution);
+    const ev = evaluatePlacement(truthScene, scene.solution);
     if (!ev.ok) issues.push({ code: 'solutionViolatesClues', detail: ev.failures });
     if (r.solved && r.matchesSolution === false) issues.push({ code: 'solutionMismatch' });
   }
@@ -205,9 +245,11 @@ export function acceptanceReport(scene) {
   if (r.ok && r.solved) {
     // الضرورة تُقاس بقواعد درجة القضية نفسها: لاعب المستوى السهل لا يُفترض أن يستعمل قواعد الخبير.
     const rules = RULE_SETS[r.tier === 'expert' ? 'hard' : r.tier];
-    const { redundant } = checkClueNecessity(scene, { rules });
+    const { redundant } = checkClueNecessity(truthScene, { rules });
     if (redundant.length) issues.push({ code: 'redundantClues', detail: redundant });
   }
+
+  if (scene.mode === 'lyingWitness') issues.push(...lyingWitnessReport(scene).issues);
 
   return { ok: issues.length === 0, issues, result: r };
 }
