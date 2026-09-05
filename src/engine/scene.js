@@ -166,6 +166,8 @@ export class Scene {
     assert(def, `${where}: نوع غير معروف "${c.type}"`);
     const clue = { ...c, index: i, char: this.#resolveChar(c.char, `${where}.char`) };
     for (const arg of def.args) assert(c[arg] !== undefined, `${where}.${arg} مطلوب لنوع ${c.type}`);
+    // بطاقة الضحية ثابتة بحكم القواعد: لا تُعدّ دليلًا قابلًا للحذف حتى لو كُتبت صراحةً.
+    if (c.type === 'aloneWithKiller' && this.victim && clue.char === this.victim.id) clue.implicit = true;
     if ('room' in c) clue.room = this.#resolveRoom(c.room, `${where}.room`);
     if ('object' in c) {
       assert(this.cellsByObjectKey.has(c.object), `${where}.object: لا يوجد شيء بمفتاح "${c.object}"`);

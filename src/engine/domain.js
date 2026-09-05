@@ -2,6 +2,7 @@
 //
 // المستنتج لا يبحث ولا يخمّن؛ كل ما يفعله هو تضييق هذه المجالات بقواعد
 // استنتاج صريحة حتى ينكمش كل مجال إلى خلية واحدة (أو يفرغ فتظهر المتناقضة).
+// التمثيل: مجموعة أعداد؛ الاستعلامات لا تنسخ ولا ترتّب إلا عند الطلب الصريح.
 
 export class Domain {
   /** @param {Iterable<number>} cells */
@@ -30,13 +31,23 @@ export class Domain {
     return this._cells.size === 0;
   }
 
-  /** نسخة كمصفوفة مرتبة (آمنة للتعديل أثناء التكرار). */
+  /** نسخة كمصفوفة مرتبة (للأثر والعرض). */
   cells() {
     return [...this._cells].sort((a, b) => a - b);
   }
 
+  some(pred) {
+    for (const cell of this._cells) if (pred(cell)) return true;
+    return false;
+  }
+
+  every(pred) {
+    for (const cell of this._cells) if (!pred(cell)) return false;
+    return true;
+  }
+
   /**
-   * يحذف الخلايا التي تحقّق الشرط. يعيد الخلايا المحذوفة فعليًا.
+   * يحذف الخلايا التي تحقّق الشرط. يعيد الخلايا المحذوفة فعليًا (مرتبة).
    * @param {(cell:number)=>boolean} shouldRemove
    */
   removeWhere(shouldRemove) {
@@ -45,7 +56,7 @@ export class Domain {
       if (shouldRemove(cell)) removed.push(cell);
     }
     for (const cell of removed) this._cells.delete(cell);
-    return removed;
+    return removed.sort((a, b) => a - b);
   }
 
   /** يبقي الخلايا التي تحقّق الشرط فقط. يعيد المحذوف. */

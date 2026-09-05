@@ -19,6 +19,16 @@ import { Domain } from './domain.js';
 
 const MAX_ROUNDS = 10_000;
 
+/**
+ * مجموعات القواعد الدورية حسب درجة الصعوبة (القسم 06-C). التهيئة (الأدلة الأحادية،
+ * قيود الصنف، الخلايا المحجوبة) تعمل دائمًا. القياس: أدنى مجموعة تحل القضية هي درجتها.
+ */
+export const RULE_SETS = {
+  easy: new Set(['rowCol']),
+  medium: new Set(['rowCol', 'hiddenSingle', 'relation']),
+  hard: new Set(['rowCol', 'hiddenSingle', 'relation', 'occupancy', 'pairwiseClass']),
+};
+
 export class Contradiction extends Error {
   constructor(message, detail = {}) {
     super(message);
@@ -115,7 +125,6 @@ function rowColElimination(state) {
     const c = scene.colOf(cell);
     for (const other of scene.characters) {
       if (other.id === ch.id) continue;
-      if (!domains[other.id].cells().some((x) => scene.rowOf(x) === r || scene.colOf(x) === c)) continue;
       changed |= state.eliminate(other.id, (x) => scene.rowOf(x) === r || scene.colOf(x) === c, {
         rule: 'rowCol',
         ref: `placed:${ch.id}`,
@@ -128,17 +137,28 @@ function rowColElimination(state) {
 
 function hiddenSingles(state) {
   const { scene, domains } = state;
+  const { size } = scene;
   let changed = false;
+  // مسح واحد: أي الصفوف والأعمدة يطلّ عليها مجال كل شخصية.
+  const rowsOf = scene.characters.map(() => new Uint8Array(size));
+  const colsOf = scene.characters.map(() => new Uint8Array(size));
+  for (const ch of scene.characters) {
+    for (const cell of domains[ch.id]) {
+      rowsOf[ch.id][scene.rowOf(cell)] = 1;
+      colsOf[ch.id][scene.colOf(cell)] = 1;
+    }
+  }
   for (const axis of ['row', 'col']) {
+    const presence = axis === 'row' ? rowsOf : colsOf;
     const lineOf = axis === 'row' ? (x) => scene.rowOf(x) : (x) => scene.colOf(x);
-    for (let k = 0; k < scene.size; k++) {
-      const candidates = scene.characters.filter((ch) => domains[ch.id].cells().some((x) => lineOf(x) === k));
+    for (let k = 0; k < size; k++) {
+      const candidates = scene.characters.filter((ch) => presence[ch.id][k]);
       if (candidates.length === 0) {
         throw new Contradiction(`لا أحد يمكنه شغل ${axis === 'row' ? 'الصف' : 'العمود'} ${k + 1}`, { axis, k });
       }
       if (candidates.length !== 1) continue;
       const ch = candidates[0];
-      if (domains[ch.id].cells().every((x) => lineOf(x) === k)) continue;
+      if (presence[ch.id].reduce((a, b) => a + b, 0) === 1) continue; // كله في هذا الخط أصلًا
       changed |= state.restrictTo(ch.id, (x) => lineOf(x) === k, {
         rule: 'hiddenSingle',
         ref: `${axis}:${k + 1}`,
@@ -161,10 +181,24 @@ function relations(state) {
       [rel.char, rel.other, rel.forward],
       [rel.other, rel.char, rel.backward],
     ]) {
-      const support = domains[b].cells();
+      const support = domains[b];
+      if (domains[a].isFixed && support.isFixed) {
+        // كلاهما محسوم: إمّا تتحقق العلاقة أو نصل لمتناقضة.
+        const x = domains[a].fixed;
+        const y = support.fixed;
+        if (!relation(x, y)) state.eliminate(a, () => true, { rule: 'relation', ref: rel.ref });
+        continue;
+      }
       changed |= state.eliminate(
         a,
-        (x) => !support.some((y) => y !== x && scene.rowOf(y) !== scene.rowOf(x) && scene.colOf(y) !== scene.colOf(x) && relation(x, y)),
+        (x) => {
+          const xr = scene.rowOf(x);
+          const xc = scene.colOf(x);
+          for (const y of support) {
+            if (y !== x && scene.rowOf(y) !== xr && scene.colOf(y) !== xc && relation(x, y)) return false;
+          }
+          return true;
+        },
         { rule: 'relation', ref: rel.ref },
       );
     }
@@ -312,14 +346,24 @@ function binaryConstraintsOf(scene) {
 
 // ---------- الحلقة الرئيسية ----------
 
+const RULE_FNS = [
+  ['rowCol', rowColElimination],
+  ['hiddenSingle', hiddenSingles],
+  ['relation', relations],
+  ['occupancy', occupancy],
+  ['pairwiseClass', pairwiseClass],
+];
+
 /**
  * يشغّل الاستنتاج حتى النقطة الثابتة.
  * @param {import('./scene.js').Scene} scene
+ * @param {{rules?: Set<string>}} [options]  القواعد الدورية المسموحة (الافتراضي: كلها)
  * @returns {{ok:boolean, solved:boolean, domains:Domain[], trace:object[], rulesUsed:Map, rounds:number, contradiction?:object}}
  */
-export function propagate(scene) {
+export function propagate(scene, { rules = RULE_SETS.hard } = {}) {
   const state = new State(scene);
   state.binaryConstraints = binaryConstraintsOf(scene);
+  const active = RULE_FNS.filter(([name]) => rules.has(name));
   let rounds = 0;
 
   try {
@@ -328,11 +372,7 @@ export function propagate(scene) {
     while (changed) {
       if (++rounds > MAX_ROUNDS) throw new Error('تجاوز الاستنتاج الحد الأقصى للدورات');
       changed = false;
-      changed = rowColElimination(state) || changed;
-      changed = hiddenSingles(state) || changed;
-      changed = relations(state) || changed;
-      changed = occupancy(state) || changed;
-      changed = pairwiseClass(state) || changed;
+      for (const [, fn] of active) changed = fn(state) || changed;
     }
   } catch (e) {
     if (!(e instanceof Contradiction)) throw e;

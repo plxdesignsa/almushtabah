@@ -3,6 +3,7 @@
 //
 //   node src/cli/solve.js cases/case-001.json            ملخص + خريطة الحل
 //   node src/cli/solve.js cases/case-001.json --trace    + سلسلة الاستنتاج كاملة
+//   node src/cli/solve.js cases/case-001.json --hints    + سلّم التلميحات المضغوط
 //   node src/cli/solve.js cases/case-001.json --minimal  + فحص ضرورة كل دليل
 //   node src/cli/solve.js cases/case-001.json --prune    + اقتراح أصغر مجموعة أدلة (قلب المولّد)
 //   node src/cli/solve.js cases/case-001.json --json     إخراج JSON خام (للأدوات)
@@ -12,10 +13,10 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 
-import { arNum, describeClue, describeGlobalRule, describeStep, makeNamer } from '../engine/describe.js';
+import { arNum, describeClue, describeGlobalRule, describeRung, describeStep, makeNamer } from '../engine/describe.js';
 import { evaluatePlacement } from '../engine/evaluate.js';
 import { sceneFromJSON } from '../engine/scene.js';
-import { checkClueNecessity, minimizeClues, solve } from '../engine/solver.js';
+import { checkClueNecessity, hintLadder, minimizeClues, solve } from '../engine/solver.js';
 
 const args = process.argv.slice(2);
 const file = args.find((a) => !a.startsWith('--'));
@@ -68,7 +69,7 @@ if (!result.ok) {
   line('✗ لم تُحسم كل الشخصيات بالاستنتاج المباشر. المتبقي:');
   result.unpinned.forEach((u) => line(`  - ${N.char(u.char)}: ${arNum(u.remaining)} خلايا ممكنة`));
 } else {
-  line(`✓ حُلّت بالاستنتاج المباشر فقط — بلا تخمين ولا تراجع. ${arNum(result.rounds)} دورات، ${arNum(result.trace.length)} خطوة (${arNum(result.hintChain.length)} منها جوهرية).`);
+  line(`✓ حُلّت بالاستنتاج المباشر فقط — بلا تخمين ولا تراجع. ${arNum(result.rounds)} دورات، ${arNum(result.trace.length)} خطوة (${arNum(result.hintChain.length)} استنتاجية، ${arNum(hintLadder(result.trace).length)} درجات تلميح).`);
   line(`  درجة الصعوبة المقاسة: ${result.tier}`);
   line(`  القواعد المستخدمة: ${Object.entries(result.rulesUsed).map(([k, v]) => `${k}×${arNum(v)}`).join('، ')}`);
   if (result.matchesSolution !== null) line(`  مطابقة الحل المكتوب في الملف: ${result.matchesSolution ? '✓' : '✗'}`);
@@ -90,6 +91,13 @@ if (flag('trace') && result.trace.length) {
   rule();
   line('سلسلة الاستنتاج (كل خطوة مع سببها):');
   result.trace.forEach((s) => line('  ' + describeStep(scene, s, overlay)));
+}
+
+if (flag('hints') && result.solved) {
+  rule();
+  const ladder = hintLadder(result.trace);
+  line(`سلّم التلميحات (${arNum(ladder.length)} درجات — تُكشف للاعب واحدة واحدة):`);
+  ladder.forEach((r) => line('  ' + describeRung(scene, r, overlay)));
 }
 
 if (necessity) {

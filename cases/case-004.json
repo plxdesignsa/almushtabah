@@ -1,0 +1,452 @@
+{
+  "id": "case-004",
+  "size": 6,
+  "difficulty": "easy",
+  "blockedCells": [],
+  "roomMap": [
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    2,
+    3,
+    3,
+    0,
+    0,
+    2,
+    2,
+    3,
+    3,
+    3,
+    0,
+    4,
+    2,
+    3,
+    3,
+    3,
+    4,
+    4,
+    4
+  ],
+  "rooms": [
+    {
+      "id": 0,
+      "key": "office",
+      "restricted": true
+    },
+    {
+      "id": 1,
+      "key": "entrance",
+      "restricted": false
+    },
+    {
+      "id": 2,
+      "key": "cafekitchen",
+      "restricted": true
+    },
+    {
+      "id": 3,
+      "key": "dates",
+      "restricted": false
+    },
+    {
+      "id": 4,
+      "key": "perfumes",
+      "restricted": false
+    }
+  ],
+  "objects": [
+    {
+      "cell": [
+        0,
+        5
+      ],
+      "key": "camera",
+      "sprite": "obj_camera",
+      "variant": 3
+    },
+    {
+      "cell": [
+        1,
+        1
+      ],
+      "key": "sign",
+      "sprite": "obj_sign",
+      "variant": 3
+    },
+    {
+      "cell": [
+        1,
+        2
+      ],
+      "key": "desk",
+      "sprite": "obj_desk",
+      "variant": 3
+    },
+    {
+      "cell": [
+        1,
+        3
+      ],
+      "key": "camera",
+      "sprite": "obj_camera",
+      "variant": 1
+    },
+    {
+      "cell": [
+        1,
+        5
+      ],
+      "key": "desk",
+      "sprite": "obj_desk",
+      "variant": 2
+    },
+    {
+      "cell": [
+        3,
+        3
+      ],
+      "key": "safe",
+      "sprite": "obj_safe",
+      "variant": 3
+    },
+    {
+      "cell": [
+        3,
+        5
+      ],
+      "key": "sink",
+      "sprite": "obj_sink",
+      "variant": 2
+    },
+    {
+      "cell": [
+        4,
+        4
+      ],
+      "key": "display",
+      "sprite": "obj_display",
+      "variant": 3
+    },
+    {
+      "cell": [
+        5,
+        0
+      ],
+      "key": "counter",
+      "sprite": "obj_counter",
+      "variant": 2
+    }
+  ],
+  "characters": [
+    {
+      "id": 0,
+      "key": "maha",
+      "gender": "f",
+      "class": "staff",
+      "victim": false,
+      "avatar": {
+        "body": 3,
+        "skin": 5,
+        "hair": 20,
+        "hairColor": 3,
+        "facial": 0,
+        "clothes": 2,
+        "clothesColor": 11,
+        "hat": 2
+      }
+    },
+    {
+      "id": 1,
+      "key": "sara",
+      "gender": "f",
+      "class": "customer",
+      "victim": false,
+      "avatar": {
+        "body": 2,
+        "skin": 3,
+        "hair": 53,
+        "hairColor": 2,
+        "facial": 0,
+        "clothes": 2,
+        "clothesColor": 7,
+        "hat": 2
+      }
+    },
+    {
+      "id": 2,
+      "key": "nayef",
+      "gender": "m",
+      "class": "staff",
+      "victim": false,
+      "avatar": {
+        "body": 2,
+        "skin": 1,
+        "hair": 33,
+        "hairColor": 1,
+        "facial": 2,
+        "clothes": 4,
+        "clothesColor": 2,
+        "hat": 3
+      }
+    },
+    {
+      "id": 3,
+      "key": "rana",
+      "gender": "f",
+      "class": "customer",
+      "victim": true,
+      "avatar": {
+        "body": 3,
+        "skin": 5,
+        "hair": 52,
+        "hairColor": 3,
+        "facial": 0,
+        "clothes": 2,
+        "clothesColor": 9,
+        "hat": 2
+      }
+    },
+    {
+      "id": 4,
+      "key": "latifa",
+      "gender": "f",
+      "class": "customer",
+      "victim": false,
+      "avatar": {
+        "body": 3,
+        "skin": 2,
+        "hair": 52,
+        "hairColor": 2,
+        "facial": 0,
+        "clothes": 3,
+        "clothesColor": 7,
+        "hat": 0
+      }
+    },
+    {
+      "id": 5,
+      "key": "mohammed",
+      "gender": "m",
+      "class": "staff",
+      "victim": false,
+      "avatar": {
+        "body": 2,
+        "skin": 1,
+        "hair": 59,
+        "hairColor": 4,
+        "facial": 1,
+        "clothes": 5,
+        "clothesColor": 12,
+        "hat": 2
+      }
+    }
+  ],
+  "solution": [
+    [
+      4,
+      3
+    ],
+    [
+      0,
+      2
+    ],
+    [
+      3,
+      5
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      5,
+      4
+    ],
+    [
+      2,
+      1
+    ]
+  ],
+  "globalRules": [
+    {
+      "type": "classRestriction",
+      "class": "customer",
+      "forbidRestricted": true
+    },
+    {
+      "type": "noEmptyRegion",
+      "scope": "restricted"
+    }
+  ],
+  "clues": [
+    {
+      "char": "maha",
+      "type": "besideObject",
+      "object": "safe"
+    },
+    {
+      "char": "maha",
+      "type": "notBesideObject",
+      "object": "camera"
+    },
+    {
+      "char": "sara",
+      "type": "inCol",
+      "n": 3
+    },
+    {
+      "char": "nayef",
+      "type": "onObject",
+      "object": "sink"
+    },
+    {
+      "char": "latifa",
+      "type": "besideObject",
+      "object": "display"
+    },
+    {
+      "char": "mohammed",
+      "type": "inRoom",
+      "room": "office"
+    },
+    {
+      "char": "rana",
+      "type": "aloneWithKiller"
+    }
+  ],
+  "hintChain": [
+    {
+      "step": 1,
+      "action": "isolate",
+      "char": 2,
+      "cell": 23,
+      "because": "clues[3]",
+      "rule": "unary"
+    },
+    {
+      "step": 2,
+      "action": "isolate",
+      "char": 4,
+      "cell": 34,
+      "because": "clues[4]",
+      "rule": "unary"
+    },
+    {
+      "step": 3,
+      "action": "isolate",
+      "char": 0,
+      "cell": 27,
+      "because": "placed:2",
+      "rule": "rowCol"
+    },
+    {
+      "step": 4,
+      "action": "block",
+      "char": 3,
+      "cells": [
+        1,
+        2,
+        7,
+        25,
+        26
+      ],
+      "because": "col:1",
+      "rule": "hiddenSingle"
+    },
+    {
+      "step": 5,
+      "action": "isolate",
+      "char": 1,
+      "cell": 2,
+      "because": "placed:0",
+      "rule": "rowCol"
+    },
+    {
+      "step": 6,
+      "action": "isolate",
+      "char": 5,
+      "cell": 13,
+      "because": "placed:1",
+      "rule": "rowCol"
+    },
+    {
+      "step": 7,
+      "action": "isolate",
+      "char": 3,
+      "cell": 6,
+      "because": "placed:5",
+      "rule": "rowCol"
+    }
+  ],
+  "hintLadder": [
+    {
+      "step": 1,
+      "char": 2,
+      "cell": 23,
+      "because": "clues[3]",
+      "rule": "unary",
+      "blocks": [],
+      "cascade": []
+    },
+    {
+      "step": 2,
+      "char": 4,
+      "cell": 34,
+      "because": "clues[4]",
+      "rule": "unary",
+      "blocks": [],
+      "cascade": [
+        {
+          "char": 0,
+          "cell": 27,
+          "because": "placed:2"
+        },
+        {
+          "char": 1,
+          "cell": 2,
+          "because": "placed:0"
+        },
+        {
+          "char": 5,
+          "cell": 13,
+          "because": "placed:1"
+        },
+        {
+          "char": 3,
+          "cell": 6,
+          "because": "placed:5"
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "seed": 2026002,
+    "theme": "market",
+    "targetTier": "easy",
+    "generator": "almushtabah-gen/0.1",
+    "generatedAt": "2026-09-05T13:36:09.331Z",
+    "stats": {
+      "clues": 6,
+      "maxPerChar": 2,
+      "silentCharacters": 0,
+      "hintSteps": 2,
+      "deductions": 7,
+      "rooms": 5,
+      "rounds": 3
+    }
+  }
+}

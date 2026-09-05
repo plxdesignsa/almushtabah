@@ -1,0 +1,549 @@
+{
+  "id": "case-005",
+  "size": 7,
+  "difficulty": "easy",
+  "blockedCells": [],
+  "roomMap": [
+    0,
+    0,
+    3,
+    3,
+    4,
+    4,
+    4,
+    0,
+    0,
+    3,
+    3,
+    3,
+    4,
+    2,
+    0,
+    0,
+    5,
+    3,
+    2,
+    2,
+    2,
+    0,
+    5,
+    5,
+    5,
+    2,
+    2,
+    2,
+    0,
+    5,
+    5,
+    1,
+    2,
+    2,
+    2,
+    0,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2
+  ],
+  "rooms": [
+    {
+      "id": 0,
+      "key": "guestroom",
+      "restricted": false
+    },
+    {
+      "id": 1,
+      "key": "garage",
+      "restricted": true
+    },
+    {
+      "id": 2,
+      "key": "bedroom",
+      "restricted": true
+    },
+    {
+      "id": 3,
+      "key": "maidroom",
+      "restricted": true
+    },
+    {
+      "id": 4,
+      "key": "stairs",
+      "restricted": false
+    },
+    {
+      "id": 5,
+      "key": "courtyard",
+      "restricted": false
+    }
+  ],
+  "objects": [
+    {
+      "cell": [
+        1,
+        1
+      ],
+      "key": "table",
+      "sprite": "obj_table",
+      "variant": 2
+    },
+    {
+      "cell": [
+        1,
+        3
+      ],
+      "key": "bed",
+      "sprite": "obj_bed",
+      "variant": 3
+    },
+    {
+      "cell": [
+        1,
+        4
+      ],
+      "key": "bed",
+      "sprite": "obj_bed",
+      "variant": 3
+    },
+    {
+      "cell": [
+        1,
+        5
+      ],
+      "key": "lamp",
+      "sprite": "obj_lamp",
+      "variant": 1
+    },
+    {
+      "cell": [
+        1,
+        6
+      ],
+      "key": "lamp",
+      "sprite": "obj_lamp",
+      "variant": 2
+    },
+    {
+      "cell": [
+        2,
+        1
+      ],
+      "key": "sofa",
+      "sprite": "obj_sofa",
+      "variant": 1
+    },
+    {
+      "cell": [
+        2,
+        2
+      ],
+      "key": "car",
+      "sprite": "obj_car",
+      "variant": 1
+    },
+    {
+      "cell": [
+        3,
+        2
+      ],
+      "key": "well",
+      "sprite": "obj_well",
+      "variant": 3
+    },
+    {
+      "cell": [
+        5,
+        3
+      ],
+      "key": "ladder",
+      "sprite": "obj_ladder",
+      "variant": 1
+    },
+    {
+      "cell": [
+        5,
+        4
+      ],
+      "key": "ladder",
+      "sprite": "obj_ladder",
+      "variant": 3
+    },
+    {
+      "cell": [
+        6,
+        3
+      ],
+      "key": "barrel",
+      "sprite": "obj_barrel",
+      "variant": 1
+    }
+  ],
+  "characters": [
+    {
+      "id": 0,
+      "key": "aljohara",
+      "gender": "f",
+      "class": "household",
+      "victim": false,
+      "avatar": {
+        "body": 3,
+        "skin": 2,
+        "hair": 15,
+        "hairColor": 2,
+        "facial": 0,
+        "clothes": 5,
+        "clothesColor": 2,
+        "hat": 3
+      }
+    },
+    {
+      "id": 1,
+      "key": "lama",
+      "gender": "f",
+      "class": "household",
+      "victim": false,
+      "avatar": {
+        "body": 3,
+        "skin": 2,
+        "hair": 60,
+        "hairColor": 1,
+        "facial": 0,
+        "clothes": 6,
+        "clothesColor": 11,
+        "hat": 3
+      }
+    },
+    {
+      "id": 2,
+      "key": "rana",
+      "gender": "f",
+      "class": "household",
+      "victim": false,
+      "avatar": {
+        "body": 3,
+        "skin": 5,
+        "hair": 53,
+        "hairColor": 3,
+        "facial": 0,
+        "clothes": 5,
+        "clothesColor": 12,
+        "hat": 0
+      }
+    },
+    {
+      "id": 3,
+      "key": "arwa",
+      "gender": "f",
+      "class": "household",
+      "victim": false,
+      "avatar": {
+        "body": 3,
+        "skin": 1,
+        "hair": 8,
+        "hairColor": 4,
+        "facial": 0,
+        "clothes": 5,
+        "clothesColor": 2,
+        "hat": 3
+      }
+    },
+    {
+      "id": 4,
+      "key": "ghada",
+      "gender": "f",
+      "class": "guest",
+      "victim": false,
+      "avatar": {
+        "body": 2,
+        "skin": 5,
+        "hair": 28,
+        "hairColor": 1,
+        "facial": 0,
+        "clothes": 6,
+        "clothesColor": 3,
+        "hat": 0
+      }
+    },
+    {
+      "id": 5,
+      "key": "nayef",
+      "gender": "m",
+      "class": "guest",
+      "victim": true,
+      "avatar": {
+        "body": 3,
+        "skin": 1,
+        "hair": 44,
+        "hairColor": 4,
+        "facial": 2,
+        "clothes": 7,
+        "clothesColor": 5,
+        "hat": 2
+      }
+    },
+    {
+      "id": 6,
+      "key": "bandar",
+      "gender": "m",
+      "class": "guest",
+      "victim": false,
+      "avatar": {
+        "body": 1,
+        "skin": 3,
+        "hair": 11,
+        "hairColor": 2,
+        "facial": 1,
+        "clothes": 2,
+        "clothesColor": 2,
+        "hat": 0
+      }
+    }
+  ],
+  "solution": [
+    [
+      0,
+      3
+    ],
+    [
+      2,
+      6
+    ],
+    [
+      5,
+      4
+    ],
+    [
+      6,
+      5
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      3,
+      2
+    ]
+  ],
+  "globalRules": [
+    {
+      "type": "classRestriction",
+      "class": "guest",
+      "forbidRestricted": true
+    },
+    {
+      "type": "noEmptyRegion",
+      "scope": "restricted"
+    }
+  ],
+  "clues": [
+    {
+      "char": "aljohara",
+      "type": "inRoom",
+      "room": "maidroom"
+    },
+    {
+      "char": "lama",
+      "type": "inRoom",
+      "room": "bedroom"
+    },
+    {
+      "char": "lama",
+      "type": "besideObject",
+      "object": "lamp"
+    },
+    {
+      "char": "rana",
+      "type": "onObject",
+      "object": "ladder"
+    },
+    {
+      "char": "ghada",
+      "type": "besideObject",
+      "object": "table"
+    },
+    {
+      "char": "ghada",
+      "type": "inRow",
+      "n": 2
+    },
+    {
+      "char": "bandar",
+      "type": "besideObject",
+      "object": "car"
+    },
+    {
+      "char": "nayef",
+      "type": "aloneWithKiller"
+    }
+  ],
+  "hintChain": [
+    {
+      "step": 1,
+      "action": "isolate",
+      "char": 1,
+      "cell": 20,
+      "because": "clues[2]",
+      "rule": "unary"
+    },
+    {
+      "step": 2,
+      "action": "isolate",
+      "char": 4,
+      "cell": 7,
+      "because": "clues[5]",
+      "rule": "unary"
+    },
+    {
+      "step": 3,
+      "action": "isolate",
+      "char": 6,
+      "cell": 23,
+      "because": "clues[6]",
+      "rule": "unary"
+    },
+    {
+      "step": 4,
+      "action": "isolate",
+      "char": 0,
+      "cell": 3,
+      "because": "placed:6",
+      "rule": "rowCol"
+    },
+    {
+      "step": 5,
+      "action": "block",
+      "char": 3,
+      "cells": [
+        1,
+        3,
+        4,
+        5,
+        29,
+        31,
+        32,
+        33,
+        36,
+        38,
+        39,
+        40
+      ],
+      "because": "row:7",
+      "rule": "hiddenSingle"
+    },
+    {
+      "step": 6,
+      "action": "block",
+      "char": 5,
+      "cells": [
+        4,
+        5
+      ],
+      "because": "clues[7]",
+      "rule": "occupancy"
+    },
+    {
+      "step": 7,
+      "action": "isolate",
+      "char": 2,
+      "cell": 39,
+      "because": "placed:0",
+      "rule": "rowCol"
+    },
+    {
+      "step": 8,
+      "action": "isolate",
+      "char": 5,
+      "cell": 29,
+      "because": "placed:0",
+      "rule": "rowCol"
+    },
+    {
+      "step": 9,
+      "action": "isolate",
+      "char": 3,
+      "cell": 47,
+      "because": "placed:5",
+      "rule": "rowCol"
+    }
+  ],
+  "hintLadder": [
+    {
+      "step": 1,
+      "char": 1,
+      "cell": 20,
+      "because": "clues[2]",
+      "rule": "unary",
+      "blocks": [],
+      "cascade": []
+    },
+    {
+      "step": 2,
+      "char": 4,
+      "cell": 7,
+      "because": "clues[5]",
+      "rule": "unary",
+      "blocks": [],
+      "cascade": []
+    },
+    {
+      "step": 3,
+      "char": 6,
+      "cell": 23,
+      "because": "clues[6]",
+      "rule": "unary",
+      "blocks": [],
+      "cascade": [
+        {
+          "char": 0,
+          "cell": 3,
+          "because": "placed:6"
+        },
+        {
+          "char": 2,
+          "cell": 39,
+          "because": "placed:0"
+        },
+        {
+          "char": 5,
+          "cell": 29,
+          "because": "placed:0"
+        },
+        {
+          "char": 3,
+          "cell": 47,
+          "because": "placed:5"
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "seed": 2026003,
+    "theme": "house",
+    "targetTier": "easy",
+    "generator": "almushtabah-gen/0.1",
+    "generatedAt": "2026-09-05T13:36:09.344Z",
+    "stats": {
+      "clues": 7,
+      "maxPerChar": 2,
+      "silentCharacters": 1,
+      "hintSteps": 3,
+      "deductions": 9,
+      "rooms": 6,
+      "rounds": 3
+    }
+  }
+}

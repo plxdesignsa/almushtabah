@@ -11,6 +11,9 @@
     "solve": "node src/cli/solve.js",
     "solve:trace": "node src/cli/solve.js cases/case-001.json --trace",
     "solve:minimal": "node src/cli/solve.js cases/case-001.json --trace --minimal",
+    "generate": "node src/cli/generate.js",
+    "generate:library": "node src/cli/generate.js --library --seed 2026",
+    "verify:library": "node src/cli/verify.js cases --write-catalog",
     "test": "node --test"
   },
   "license": "UNLICENSED"

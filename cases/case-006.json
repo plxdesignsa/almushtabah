@@ -1,0 +1,800 @@
+{
+  "id": "case-006",
+  "size": 7,
+  "difficulty": "medium",
+  "blockedCells": [],
+  "roomMap": [
+    4,
+    1,
+    1,
+    1,
+    1,
+    5,
+    5,
+    4,
+    4,
+    1,
+    1,
+    2,
+    2,
+    5,
+    4,
+    4,
+    1,
+    2,
+    2,
+    2,
+    2,
+    4,
+    4,
+    1,
+    2,
+    2,
+    2,
+    2,
+    0,
+    0,
+    3,
+    3,
+    2,
+    2,
+    2,
+    0,
+    0,
+    3,
+    3,
+    3,
+    2,
+    2,
+    0,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+  ],
+  "rooms": [
+    {
+      "id": 0,
+      "key": "palmgrove",
+      "restricted": false
+    },
+    {
+      "id": 1,
+      "key": "orchard",
+      "restricted": false
+    },
+    {
+      "id": 2,
+      "key": "pool",
+      "restricted": false
+    },
+    {
+      "id": 3,
+      "key": "coop",
+      "restricted": true
+    },
+    {
+      "id": 4,
+      "key": "pumproom",
+      "restricted": true
+    },
+    {
+      "id": 5,
+      "key": "workers",
+      "restricted": true
+    }
+  ],
+  "objects": [
+    {
+      "cell": [
+        0,
+        3
+      ],
+      "key": "bucket",
+      "sprite": "obj_bucket",
+      "variant": 2
+    },
+    {
+      "cell": [
+        0,
+        6
+      ],
+      "key": "fan",
+      "sprite": "obj_fan",
+      "variant": 1
+    },
+    {
+      "cell": [
+        2,
+        4
+      ],
+      "key": "bench",
+      "sprite": "obj_bench",
+      "variant": 3
+    },
+    {
+      "cell": [
+        2,
+        5
+      ],
+      "key": "plant",
+      "sprite": "obj_plant",
+      "variant": 3
+    },
+    {
+      "cell": [
+        3,
+        1
+      ],
+      "key": "barrel",
+      "sprite": "obj_barrel",
+      "variant": 3
+    },
+    {
+      "cell": [
+        4,
+        1
+      ],
+      "key": "basket",
+      "sprite": "obj_basket",
+      "variant": 2
+    },
+    {
+      "cell": [
+        5,
+        0
+      ],
+      "key": "well",
+      "sprite": "obj_well",
+      "variant": 2
+    },
+    {
+      "cell": [
+        5,
+        2
+      ],
+      "key": "sack",
+      "sprite": "obj_sack",
+      "variant": 3
+    },
+    {
+      "cell": [
+        5,
+        3
+      ],
+      "key": "cage",
+      "sprite": "obj_cage",
+      "variant": 2
+    },
+    {
+      "cell": [
+        6,
+        4
+      ],
+      "key": "basket",
+      "sprite": "obj_basket",
+      "variant": 3
+    },
+    {
+      "cell": [
+        6,
+        5
+      ],
+      "key": "basket",
+      "sprite": "obj_basket",
+      "variant": 3
+    }
+  ],
+  "characters": [
+    {
+      "id": 0,
+      "key": "reem",
+      "gender": "f",
+      "class": "visitor",
+      "victim": true,
+      "avatar": {
+        "body": 2,
+        "skin": 3,
+        "hair": 13,
+        "hairColor": 3,
+        "facial": 0,
+        "clothes": 4,
+        "clothesColor": 2,
+        "hat": 0
+      }
+    },
+    {
+      "id": 1,
+      "key": "sultan",
+      "gender": "m",
+      "class": "worker",
+      "victim": false,
+      "avatar": {
+        "body": 3,
+        "skin": 3,
+        "hair": 47,
+        "hairColor": 4,
+        "facial": 5,
+        "clothes": 4,
+        "clothesColor": 5,
+        "hat": 3
+      }
+    },
+    {
+      "id": 2,
+      "key": "mohammed",
+      "gender": "m",
+      "class": "worker",
+      "victim": false,
+      "avatar": {
+        "body": 3,
+        "skin": 5,
+        "hair": 6,
+        "hairColor": 4,
+        "facial": 1,
+        "clothes": 7,
+        "clothesColor": 7,
+        "hat": 0
+      }
+    },
+    {
+      "id": 3,
+      "key": "alanoud",
+      "gender": "f",
+      "class": "worker",
+      "victim": false,
+      "avatar": {
+        "body": 1,
+        "skin": 2,
+        "hair": 21,
+        "hairColor": 3,
+        "facial": 0,
+        "clothes": 8,
+        "clothesColor": 6,
+        "hat": 3
+      }
+    },
+    {
+      "id": 4,
+      "key": "ziyad",
+      "gender": "m",
+      "class": "worker",
+      "victim": false,
+      "avatar": {
+        "body": 2,
+        "skin": 2,
+        "hair": 55,
+        "hairColor": 1,
+        "facial": 4,
+        "clothes": 4,
+        "clothesColor": 6,
+        "hat": 2
+      }
+    },
+    {
+      "id": 5,
+      "key": "hamad",
+      "gender": "m",
+      "class": "visitor",
+      "victim": false,
+      "avatar": {
+        "body": 2,
+        "skin": 1,
+        "hair": 5,
+        "hairColor": 3,
+        "facial": 7,
+        "clothes": 5,
+        "clothesColor": 6,
+        "hat": 2
+      }
+    },
+    {
+      "id": 6,
+      "key": "waleed",
+      "gender": "m",
+      "class": "visitor",
+      "victim": false,
+      "avatar": {
+        "body": 1,
+        "skin": 1,
+        "hair": 54,
+        "hairColor": 2,
+        "facial": 0,
+        "clothes": 3,
+        "clothesColor": 9,
+        "hat": 0
+      }
+    }
+  ],
+  "solution": [
+    [
+      5,
+      5
+    ],
+    [
+      4,
+      1
+    ],
+    [
+      0,
+      6
+    ],
+    [
+      2,
+      0
+    ],
+    [
+      6,
+      3
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      3,
+      4
+    ]
+  ],
+  "globalRules": [
+    {
+      "type": "classRestriction",
+      "class": "visitor",
+      "forbidRestricted": true
+    },
+    {
+      "type": "noEmptyRegion",
+      "scope": "restricted"
+    }
+  ],
+  "clues": [
+    {
+      "char": "sultan",
+      "type": "colOffset",
+      "other": "ziyad",
+      "n": -2
+    },
+    {
+      "char": "sultan",
+      "type": "diffRoom",
+      "other": "ziyad"
+    },
+    {
+      "char": "mohammed",
+      "type": "inRoom",
+      "room": "workers"
+    },
+    {
+      "char": "mohammed",
+      "type": "notBesideObject",
+      "object": "fan"
+    },
+    {
+      "char": "alanoud",
+      "type": "inRoom",
+      "room": "pumproom"
+    },
+    {
+      "char": "ziyad",
+      "type": "besideObject",
+      "object": "basket"
+    },
+    {
+      "char": "ziyad",
+      "type": "rowOffset",
+      "other": "sultan",
+      "n": 2
+    },
+    {
+      "char": "hamad",
+      "type": "inRoom",
+      "room": "orchard"
+    },
+    {
+      "char": "hamad",
+      "type": "diffRoom",
+      "other": "sultan"
+    },
+    {
+      "char": "waleed",
+      "type": "besideObject",
+      "object": "bench"
+    },
+    {
+      "char": "waleed",
+      "type": "rowOffset",
+      "other": "alanoud",
+      "n": 1
+    },
+    {
+      "char": "reem",
+      "type": "aloneWithKiller"
+    }
+  ],
+  "hintChain": [
+    {
+      "step": 1,
+      "action": "isolate",
+      "char": 2,
+      "cell": 6,
+      "because": "clues[3]",
+      "rule": "unary"
+    },
+    {
+      "step": 2,
+      "action": "block",
+      "char": 1,
+      "cells": [
+        7,
+        11,
+        12,
+        14,
+        18,
+        19,
+        21,
+        25,
+        26,
+        28,
+        32,
+        33,
+        35,
+        39,
+        40,
+        42,
+        43,
+        45,
+        46,
+        47
+      ],
+      "because": "clues[0]",
+      "rule": "relation"
+    },
+    {
+      "step": 3,
+      "action": "block",
+      "char": 4,
+      "cells": [
+        28,
+        36
+      ],
+      "because": "clues[0]",
+      "rule": "relation"
+    },
+    {
+      "step": 4,
+      "action": "block",
+      "char": 1,
+      "cells": [
+        30,
+        31,
+        37,
+        38,
+        44
+      ],
+      "because": "clues[1]",
+      "rule": "relation"
+    },
+    {
+      "step": 5,
+      "action": "block",
+      "char": 1,
+      "cells": [
+        8,
+        9,
+        10,
+        15,
+        16,
+        17,
+        36
+      ],
+      "because": "clues[6]",
+      "rule": "relation"
+    },
+    {
+      "step": 6,
+      "action": "block",
+      "char": 1,
+      "cells": [
+        23
+      ],
+      "because": "clues[8]",
+      "rule": "relation"
+    },
+    {
+      "step": 7,
+      "action": "block",
+      "char": 6,
+      "cells": [
+        11
+      ],
+      "because": "clues[10]",
+      "rule": "relation"
+    },
+    {
+      "step": 8,
+      "action": "block",
+      "char": 3,
+      "cells": [
+        21,
+        22
+      ],
+      "because": "clues[10]",
+      "rule": "relation"
+    },
+    {
+      "step": 9,
+      "action": "block",
+      "char": 4,
+      "cells": [
+        39,
+        46
+      ],
+      "because": "clues[0]",
+      "rule": "relation"
+    },
+    {
+      "step": 10,
+      "action": "isolate",
+      "char": 1,
+      "cell": 29,
+      "because": "clues[6]",
+      "rule": "relation"
+    },
+    {
+      "step": 11,
+      "action": "block",
+      "char": 0,
+      "cells": [
+        9,
+        10,
+        11,
+        12,
+        16,
+        17,
+        18,
+        19,
+        23,
+        24,
+        25,
+        26,
+        42
+      ],
+      "because": "row:6",
+      "rule": "hiddenSingle"
+    },
+    {
+      "step": 12,
+      "action": "isolate",
+      "char": 4,
+      "cell": 45,
+      "because": "clues[0]",
+      "rule": "relation"
+    },
+    {
+      "step": 13,
+      "action": "isolate",
+      "char": 6,
+      "cell": 25,
+      "because": "col:5",
+      "rule": "hiddenSingle"
+    },
+    {
+      "step": 14,
+      "action": "isolate",
+      "char": 3,
+      "cell": 14,
+      "because": "clues[10]",
+      "rule": "relation"
+    },
+    {
+      "step": 15,
+      "action": "isolate",
+      "char": 0,
+      "cell": 40,
+      "because": "placed:3",
+      "rule": "rowCol"
+    },
+    {
+      "step": 16,
+      "action": "isolate",
+      "char": 5,
+      "cell": 9,
+      "because": "placed:6",
+      "rule": "rowCol"
+    }
+  ],
+  "hintLadder": [
+    {
+      "step": 1,
+      "char": 2,
+      "cell": 6,
+      "because": "clues[3]",
+      "rule": "unary",
+      "blocks": [],
+      "cascade": []
+    },
+    {
+      "step": 2,
+      "char": 1,
+      "cell": 29,
+      "because": "clues[6]",
+      "rule": "relation",
+      "blocks": [
+        {
+          "char": 1,
+          "cells": [
+            7,
+            11,
+            12,
+            14,
+            18,
+            19,
+            21,
+            25,
+            26,
+            28,
+            32,
+            33,
+            35,
+            39,
+            40,
+            42,
+            43,
+            45,
+            46,
+            47
+          ],
+          "because": "clues[0]",
+          "rule": "relation"
+        },
+        {
+          "char": 4,
+          "cells": [
+            28,
+            36
+          ],
+          "because": "clues[0]",
+          "rule": "relation"
+        },
+        {
+          "char": 1,
+          "cells": [
+            30,
+            31,
+            37,
+            38,
+            44
+          ],
+          "because": "clues[1]",
+          "rule": "relation"
+        },
+        {
+          "char": 1,
+          "cells": [
+            8,
+            9,
+            10,
+            15,
+            16,
+            17,
+            36
+          ],
+          "because": "clues[6]",
+          "rule": "relation"
+        },
+        {
+          "char": 1,
+          "cells": [
+            23
+          ],
+          "because": "clues[8]",
+          "rule": "relation"
+        },
+        {
+          "char": 6,
+          "cells": [
+            11
+          ],
+          "because": "clues[10]",
+          "rule": "relation"
+        },
+        {
+          "char": 3,
+          "cells": [
+            21,
+            22
+          ],
+          "because": "clues[10]",
+          "rule": "relation"
+        },
+        {
+          "char": 4,
+          "cells": [
+            39,
+            46
+          ],
+          "because": "clues[0]",
+          "rule": "relation"
+        }
+      ],
+      "cascade": []
+    },
+    {
+      "step": 3,
+      "char": 4,
+      "cell": 45,
+      "because": "clues[0]",
+      "rule": "relation",
+      "blocks": [
+        {
+          "char": 0,
+          "cells": [
+            9,
+            10,
+            11,
+            12,
+            16,
+            17,
+            18,
+            19,
+            23,
+            24,
+            25,
+            26,
+            42
+          ],
+          "because": "row:6",
+          "rule": "hiddenSingle"
+        }
+      ],
+      "cascade": []
+    },
+    {
+      "step": 4,
+      "char": 6,
+      "cell": 25,
+      "because": "col:5",
+      "rule": "hiddenSingle",
+      "blocks": [],
+      "cascade": []
+    },
+    {
+      "step": 5,
+      "char": 3,
+      "cell": 14,
+      "because": "clues[10]",
+      "rule": "relation",
+      "blocks": [],
+      "cascade": [
+        {
+          "char": 0,
+          "cell": 40,
+          "because": "placed:3"
+        },
+        {
+          "char": 5,
+          "cell": 9,
+          "because": "placed:6"
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "seed": 2026004,
+    "theme": "farm",
+    "targetTier": "medium",
+    "generator": "almushtabah-gen/0.1",
+    "generatedAt": "2026-09-05T13:36:09.381Z",
+    "stats": {
+      "clues": 11,
+      "maxPerChar": 2,
+      "silentCharacters": 0,
+      "hintSteps": 5,
+      "deductions": 16,
+      "rooms": 6,
+      "rounds": 6
+    }
+  }
+}

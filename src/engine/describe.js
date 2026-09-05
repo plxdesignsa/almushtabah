@@ -34,8 +34,20 @@ export function makeNamer(scene, overlay = {}) {
     object: (key) => overlay.objects?.[key] ?? key,
     cell: (cell) => formatCell(cell, scene.size),
     cells: (cells) => cells.map((c) => formatCell(c, scene.size)).join('، '),
+    /** قائمة مختصرة: تُعدَّد الخلايا القليلة، وتُلخَّص الكثيرة بصفوفها أو أعمدتها أو عددها. */
+    cellsBrief: (cells) => {
+      if (cells.length <= 6) return cells.map((c) => formatCell(c, scene.size)).join('، ');
+      const rows = new Set(cells.map((c) => Math.floor(c / scene.size)));
+      const cols = new Set(cells.map((c) => c % scene.size));
+      if (rows.size <= 2) return `${rows.size === 1 ? 'الصف' : 'الصفين'} ${[...rows].map((r) => arNum(r + 1)).join(' و')}`;
+      if (cols.size <= 2) return `${cols.size === 1 ? 'العمود' : 'العمودين'} ${[...cols].map((c) => arNum(c + 1)).join(' و')}`;
+      return `${arNum(cells.length)} خلية`;
+    },
   };
 }
+
+const female = (scene, id) => scene.char(id).gender === 'f';
+const trimDot = (s) => s.replace(/[.\s]+$/, '');
 
 export function describeClue(scene, clue, overlay) {
   const N = makeNamer(scene, overlay);
@@ -59,9 +71,10 @@ export function describeClue(scene, clue, overlay) {
       return `${who}: ${v.kan} ${countWord(k, 'صفًّا واحدًا', 'صفّين', 'صفوف')} ${dir} ${N.char(clue.other)} بالضبط.`;
     }
     case 'colOffset': {
+      // الخريطة شمالها فوق وشرقها يمين بغض النظر عن اتجاه اللغة؛ لذا الأعمدة بالشرق والغرب كالصفوف بالشمال والجنوب.
       const k = Math.abs(clue.n);
-      const dir = clue.n < 0 ? 'يسار' : 'يمين';
-      return `${who}: ${v.kan} ${countWord(k, 'عمودًا واحدًا', 'عمودين', 'أعمدة')} على ${dir} ${N.char(clue.other)} بالضبط (بترقيم الأعمدة من اليسار).`;
+      const dir = clue.n < 0 ? 'غرب' : 'شرق';
+      return `${who}: ${v.kan} ${countWord(k, 'عمودًا واحدًا', 'عمودين', 'أعمدة')} ${dir} ${N.char(clue.other)} بالضبط.`;
     }
     case 'aloneInRoom': return `${who}: ${v.kan} ${v.wahd} في الغرفة.`;
     case 'aloneWith': return `${who}: ${v.kan} ${v.wahd} مع ${N.char(clue.other)}.`;
@@ -108,10 +121,26 @@ function describeReason(scene, step, overlay) {
   }
   if (step.rule === 'hiddenSingle') {
     const [axis, k] = step.because.split(':');
-    return `لا أحد غيره يمكنه شغل ${axis === 'row' ? 'الصف' : 'العمود'} ${arNum(k)}`;
+    const female = scene.char(step.char).gender === 'f';
+    return `لا أحد ${female ? 'غيرها' : 'غيره'} يمكنه شغل ${axis === 'row' ? 'الصف' : 'العمود'} ${arNum(k)}`;
   }
   if (step.rule === 'blocked') return 'خلية محجوبة';
   return step.because;
+}
+
+/** درجة من سلّم التلميحات كفقرة عربية واحدة. */
+export function describeRung(scene, rung, overlay) {
+  const N = makeNamer(scene, overlay);
+  const parts = [];
+  for (const b of rung.blocks) {
+    parts.push(`استبعد ${N.char(b.char)} من ${N.cellsBrief(b.cells)} لأن ${trimDot(describeReason(scene, b, overlay))}.`);
+  }
+  const f = female(scene, rung.char);
+  parts.push(`${N.char(rung.char)} لا يمكن أن ${f ? 'تكون' : 'يكون'} إلا في ${N.cell(rung.cell)} لأن ${trimDot(describeReason(scene, rung, overlay))}.`);
+  if (rung.cascade.length) {
+    parts.push(`وهذا يحسم بدوره: ${rung.cascade.map((c) => `${N.char(c.char)} في ${N.cell(c.cell)}`).join('، ')}.`);
+  }
+  return `${arNum(rung.step)}. ${parts.join(' ')}`;
 }
 
 export function describeStep(scene, step, overlay) {
@@ -119,7 +148,7 @@ export function describeStep(scene, step, overlay) {
   const who = N.char(step.char);
   const verb = step.action === 'isolate' ? 'حسم' : 'حجب';
   const what = step.action === 'isolate'
-    ? `${who} لا يمكن أن يكون إلا في ${N.cell(step.cell)}`
+    ? `${who} لا يمكن أن ${female(scene, step.char) ? 'تكون' : 'يكون'} إلا في ${N.cell(step.cell)}`
     : `استبعد ${who} من ${countWord(step.cells.length, 'خلية واحدة', 'خليتين', 'خلايا')} (${N.cells(step.cells)})، بقي ${arNum(step.remaining)}`;
-  return `${arNum(step.step)}. [${verb}] ${what} — ${describeReason(scene, step, overlay)}`;
+  return `${arNum(step.step)}. [${verb}] ${what} — ${trimDot(describeReason(scene, step, overlay))}`;
 }
