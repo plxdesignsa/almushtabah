@@ -26,8 +26,18 @@ cpSync(join(root, 'web/app'), join(dist, 'web/app'), { recursive: true });
 cpSync(join(root, 'web/art'), join(dist, 'web/art'), { recursive: true });
 cpSync(join(root, 'src/engine'), join(dist, 'src/engine'), { recursive: true });
 mkdirSync(join(dist, 'cases/i18n/ar'), { recursive: true });
-for (const f of readdirSync(join(root, 'cases'))) if (f.endsWith('.json')) cpSync(join(root, 'cases', f), join(dist, 'cases', f));
-cpSync(join(root, 'cases/i18n/ar'), join(dist, 'cases/i18n/ar'), { recursive: true });
+// القضايا تُنسخ مضغوطة: بلا أثر التلميحات التفصيلي (التطبيق يحسبه لحظيًا من المحرّك) وبلا بيانات المولّد الداخلية.
+for (const f of readdirSync(join(root, 'cases'))) {
+  if (!f.endsWith('.json')) continue;
+  const data = JSON.parse(readFileSync(join(root, 'cases', f), 'utf8'));
+  if (f.startsWith('case-')) { delete data.hintChain; delete data.hintLadder; if (data.meta) data.meta = { seed: data.meta.seed, theme: data.meta.theme }; }
+  writeFileSync(join(dist, 'cases', f), JSON.stringify(data));
+}
+for (const f of readdirSync(join(root, 'cases/i18n/ar'))) {
+  const data = JSON.parse(readFileSync(join(root, 'cases/i18n/ar', f), 'utf8'));
+  delete data.machineClues; delete data.hints; // مسودات للمراجعة لا تحتاجها اللعبة
+  writeFileSync(join(dist, 'cases/i18n/ar', f), JSON.stringify(data));
+}
 
 const html = readFileSync(join(root, 'web/index.html'), 'utf8').replace('</head>', `  <link rel="manifest" href="/manifest.webmanifest" />\n  <meta name="theme-color" content="#1d1a16" />\n  <meta name="build" content="${version}" />\n</head>`);
 writeFileSync(join(dist, 'index.html'), html);

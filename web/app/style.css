@@ -288,19 +288,54 @@ h1, h2, h3, .file-title, .dossier-title, .btn, .stamp, .chip, .name { font-famil
 @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 
-/* ---------- الجوال (تخطيطنا الحالي حتى تصل لوحته) ---------- */
+/* ---------- لمس ---------- */
+.cell, .card, .btn, .room-label, .strike { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.note-short { display: none; }
+
+/* خلايا صغيرة (الخريطة تناسب عرض الجوال): حدود قراءة دنيا وإخفاء ما لا يتّسع */
+.hdr { font-size: max(9px, calc(var(--cell) * .25)); }
+.room-label { font-size: max(8px, calc(var(--cell) * .24)); }
+.mark { font-size: max(11px, calc(var(--cell) * .46)); }
+.pencil { font-size: max(8px, calc(var(--cell) * .27)); }
+.tiny .token-name { display: none; }
+.tiny .token { width: 100%; height: 100%; }
+.tiny .token svg { width: 84%; height: 84%; }
+.tiny .prop { width: 50%; height: 50%; top: 2%; left: 3%; filter: none; }
+.tiny .room-label { padding: 0 3px; line-height: 1.4; max-width: calc(var(--cell) * 2.9); bottom: 0; }
+.tiny .cell.wt, .tiny .cell.wb, .tiny .cell.wr, .tiny .cell.wl { border-width: 2px; }
+.micro .prop { display: none; }
+.micro .room-label { font-size: 8px; max-width: calc(var(--cell) * 3.4); }
+.micro .cell.restricted::before { background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgba(0, 0, 0, .14) 4px 5px); }
+
+/* ---------- الجوال: تجربة أولى لا تصغيرًا ---------- */
 @media (max-width: 899px) {
+  body { padding-bottom: calc(122px + env(safe-area-inset-bottom)); }
   .dossier-bar { padding: 10px 12px 8px; gap: 8px; }
-  .file-title { font-size: 19px; }
+  .file-title { font-size: 19px; flex: 1 1 100%; order: 3; }
   .dossier-bar .count { display: none; }
-  .topbar { padding: 8px 10px; gap: 6px; }
-  .topbar .sep { display: none; }
-  .btn { padding: 10px 12px; min-height: 44px; }
-  .btn.primary { padding: 10px 14px; }
-  .stage { padding: 12px 10px 0; }
-  .cards { align-items: flex-start; }
+  .dossier-bar .stamp { font-size: 12px; }
+  /* شريط الأدوات ينزل لأسفل الشاشة كشبكة من صفين بحجم الإبهام: (مشهد/مخطط)(إضاءة)(تراجع) / (تلميح)(مسح)(تسليم) */
+  .topbar { position: fixed; top: auto; bottom: 0; inset-inline: 0; z-index: 30; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 8px 8px calc(8px + env(safe-area-inset-bottom)); border-top: 2px solid var(--ink); border-bottom: none; background: var(--paper-bar); backdrop-filter: none; }
+  .topbar .sep, .topbar .spacer, .topbar .btn.redo { display: none; }
+  .topbar .btn { min-height: 46px; padding: 0 6px; justify-content: center; white-space: nowrap; font-size: 13px; }
+  .topbar .btn.primary { grid-column: span 2; padding: 0 10px; font-size: 15px; }
+  .topbar .seg { grid-column: span 2; display: flex; }
+  .topbar .seg .btn { flex: 1; padding: 0; }
+  .stage { padding: 10px 10px 0; gap: 10px; }
+  .cards { align-items: flex-start; gap: 10px; padding: 4px 2px 8px; scroll-snap-type: x mandatory; }
+  .card { flex: 0 0 min(80vw, 19rem); }
+  .orient { justify-content: space-between; margin-bottom: 6px; }
   .orient .note { display: none; }
+  .orient .note-short { display: inline; }
+  .board-wrap { overflow: hidden; width: 100%; }
+  .grid { width: 100%; }
   .rules { padding: 10px 10px 18px; }
+  .rules-row { flex-direction: column; }
+  .btn.howto { width: 100%; justify-content: center; }
+  .sheet { bottom: calc(114px + env(safe-area-inset-bottom)); max-height: 42vh; }
+  .toast { bottom: calc(126px + env(safe-area-inset-bottom)); }
+  .banner { margin: 10px 10px 0; }
+  .result { margin: 0 10px 2rem; }
 }
 
 /* ---------- الطباعة: المخطط فقط ---------- */

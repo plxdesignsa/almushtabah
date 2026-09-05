@@ -137,9 +137,15 @@ async function openCase(id) {
     return svgEl(avatarCache.get(key));
   };
 
+  // الخريطة تناسب عرض الشاشة دائمًا: لا تمرير أفقي على الجوال مهما كان الحجم.
   const cellSize = () => {
-    const avail = Math.min(window.innerWidth, 1180) - (window.innerWidth >= 900 ? 320 + 16 + 40 + 6 : 24);
-    return Math.max(30, Math.min(60, Math.floor((avail - 26) / scene.size)));
+    const vw = document.documentElement.clientWidth; // بلا شريط التمرير الرأسي
+    const mobile = vw < 900;
+    // نقيس عمود الخريطة الفعلي من الرسم السابق إن وُجد (أدق من تقدير العرض)، ثم نخصم إطار اللوحة وشريط الترقيم.
+    const col = document.querySelector('.board-col');
+    const avail = mobile ? (col ? col.clientWidth : vw - 20) - 4 - 26 - 2 : Math.min(vw, 1180) - (320 + 16 + 40 + 6) - 26;
+    const fit = Math.floor(avail / scene.size);
+    return mobile ? Math.max(16, Math.min(60, fit)) : Math.max(30, Math.min(60, fit));
   };
 
   function render() {
@@ -189,7 +195,7 @@ async function openCase(id) {
       h('button', { class: 'btn', onclick: cycleGrade, title: 'الإضاءة', disabled: ui.view !== 'scene' }, h('span', { class: 'light-dot' }), GRADES.find(([k]) => k === ui.grade)?.[1] ?? 'نهار'),
       sep(),
       h('button', { class: 'btn', onclick: () => { game.undo(); render(); }, disabled: !game.history.length, title: 'تراجع (Ctrl+Z)' }, 'تراجع'),
-      h('button', { class: 'btn', onclick: () => { game.redo(); render(); }, disabled: !game.future.length, title: 'إعادة (Ctrl+Y)' }, 'إعادة'),
+      h('button', { class: 'btn redo', onclick: () => { game.redo(); render(); }, disabled: !game.future.length, title: 'إعادة (Ctrl+Y)' }, 'إعادة'),
       sep(),
       h('button', { class: 'btn hintbtn', onclick: showHint, title: 'تلميح' }, 'تلميح', h('span', { class: 'counter' }, `${arNum(game.hintsUsed)}/${arNum(ladder.length)}`)),
       h('button', { class: 'btn ghost', onclick: () => { if (confirm('تمسح كل علامات ✗ والقلم؟ (المثبَّت يبقى)')) { game.clearMarks(); render(); } }, title: 'مسح العلامات' }, 'مسح العلامات'),
@@ -203,6 +209,7 @@ async function openCase(id) {
     return h('div', { class: 'orient' },
       h('span', { class: 'north' }, h('span', { class: 'arrow' }, '↑'), 'الشمال'),
       h('span', { class: 'note' }, 'العمود ١ أقصى اليمين · الصف ١ أعلى · الشرق يمين الشاشة'),
+      h('span', { class: 'note note-short' }, 'العمود ١ يمينًا · الشرق يمين'),
     );
   }
 
@@ -295,7 +302,8 @@ async function openCase(id) {
       }
     }
     // الخريطة عربية: العمود ١ أقصى اليمين (اتجاه القراءة)، والصف ١ أعلى. الشرق يمين الشاشة.
-    return h('div', { class: `board-wrap view-${ui.view} grade-${ui.grade}`, dir: 'rtl' }, grid);
+    const cs = cellSize();
+    return h('div', { class: `board-wrap view-${ui.view} grade-${ui.grade} ${cs < 30 ? 'tiny' : ''} ${cs < 22 ? 'micro' : ''}`, dir: 'rtl' }, grid);
   }
 
   function roomLabelCells() {
@@ -451,4 +459,6 @@ async function openCase(id) {
   window.addEventListener('resize', () => render(), { passive: true });
 
   render();
+  window.scrollTo(0, 0);
+  requestAnimationFrame(() => render()); // رسم ثانٍ بعد ظهور شريط التمرير الرأسي إن ظهر، لتناسب الخريطة العرض بدقة
 }
