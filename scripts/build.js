@@ -39,9 +39,10 @@ for (const f of readdirSync(join(root, 'cases/i18n/ar'))) {
   writeFileSync(join(dist, 'cases/i18n/ar', f), JSON.stringify(data));
 }
 
-const html = readFileSync(join(root, 'web/index.html'), 'utf8').replace('</head>', `  <link rel="manifest" href="/manifest.webmanifest" />\n  <meta name="theme-color" content="#1d1a16" />\n  <meta name="build" content="${version}" />\n</head>`);
+const html = readFileSync(join(root, 'web/index.html'), 'utf8').replace('</head>', `  <link rel="manifest" href="./manifest.webmanifest" />\n  <meta name="theme-color" content="#1d1a16" />\n  <meta name="build" content="${version}" />\n</head>`);
 writeFileSync(join(dist, 'index.html'), html);
 writeFileSync(join(dist, '404.html'), html);
+writeFileSync(join(dist, '.nojekyll'), ''); // GitHub Pages: لا تعالج الملفات بـJekyll
 writeFileSync(join(dist, 'sw.js'), readFileSync(join(root, 'web/sw.js'), 'utf8').replace('__VERSION__', version));
 cpSync(join(root, 'web/manifest.webmanifest'), join(dist, 'manifest.webmanifest'));
 cpSync(join(root, 'web/icon.svg'), join(dist, 'icon.svg'));

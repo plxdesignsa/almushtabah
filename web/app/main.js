@@ -19,7 +19,7 @@ document.body.insertAdjacentHTML('afterbegin', propSymbolSheet());
 
 // عامل الخدمة (عمل بلا إنترنت) في النشر فقط؛ أثناء التطوير نريد أحدث الملفات دائمًا.
 if ('serviceWorker' in navigator && !['localhost', '127.0.0.1'].includes(location.hostname)) {
-  navigator.serviceWorker.register('/sw.js').catch(() => { /* اختياري */ });
+  navigator.serviceWorker.register('./sw.js').catch(() => { /* اختياري */ });
 }
 
 const h = (tag, attrs = {}, ...children) => {
@@ -70,7 +70,7 @@ async function fetchJSON(path) {
 // ---------- قائمة القضايا ----------
 async function showList() {
   document.title = 'المشتبه';
-  const catalog = await fetchJSON('/cases/catalog.json');
+  const catalog = await fetchJSON('cases/catalog.json'); // مسارات نسبية: تعمل من جذر النطاق ومن مجلد فرعي
   const solvedCount = catalog.filter((c) => { try { return JSON.parse(localStorage.getItem(`mushtabah:${c.id}`))?.finished?.correct; } catch { return false; } }).length;
   const groups = ['easy', 'medium', 'hard', 'expert'].map((tier) => ({ tier, items: catalog.filter((c) => c.difficulty === tier) }));
   app.replaceChildren(
@@ -106,7 +106,7 @@ async function showList() {
 
 // ---------- القضية ----------
 async function openCase(id) {
-  const [raw, overlay] = await Promise.all([fetchJSON(`/cases/${id}.json`), fetchJSON(`/cases/i18n/ar/${id}.json`).catch(() => ({}))]);
+  const [raw, overlay] = await Promise.all([fetchJSON(`cases/${id}.json`), fetchJSON(`cases/i18n/ar/${id}.json`).catch(() => ({}))]);
   const scene = new Scene(raw);
   const solved = solve(scene); // في نمط الشاهد الكاذب يُحلّ على البطاقات الصادقة
   const lying = scene.mode === 'lyingWitness';

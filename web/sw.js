@@ -3,7 +3,7 @@
 
 const VERSION = '__VERSION__';
 const CACHE = `mushtabah-${VERSION}`;
-const SHELL = ['/', '/index.html', '/web/app/style.css', '/web/app/main.js', '/manifest.webmanifest'];
+const SHELL = ['./', './index.html', './web/app/style.css', './web/app/main.js', './manifest.webmanifest'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -20,6 +20,6 @@ self.addEventListener('fetch', (e) => {
     fetch(e.request).then((res) => {
       if (res.ok) caches.open(CACHE).then((c) => c.put(e.request, res.clone()));
       return res;
-    }).catch(() => caches.match(e.request).then((hit) => hit ?? caches.match('/index.html'))),
+    }).catch(() => caches.match(e.request).then((hit) => hit ?? caches.match('./index.html'))),
   );
 });
