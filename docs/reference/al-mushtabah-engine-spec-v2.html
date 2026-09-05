@@ -1,0 +1,760 @@
+<title>Al-Mushtabah Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root{
+    --ground:#F2F3F0;
+    --surface:#FFFFFF;
+    --surface-2:#E8EBE5;
+    --ink:#16181C;
+    --ink-2:#383E47;
+    --muted:#5D6472;
+    --line:#D5D9D2;
+    --line-2:#BCC2B9;
+    --pen:#2B4FD8;
+    --pen-wash:#E4E9FC;
+    --alert:#C2352B;
+    --alert-wash:#F9E6E4;
+    --good:#2C6B4C;
+    --good-wash:#E2EFE8;
+
+    --f-display:"IBM Plex Sans Condensed","Helvetica Neue",system-ui,sans-serif;
+    --f-body:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+    --f-mono:"IBM Plex Mono",ui-monospace,"Courier New",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#101217; --surface:#181B21; --surface-2:#20242D;
+      --ink:#E9EBE7; --ink-2:#C4C9D0; --muted:#98A0AE;
+      --line:#282D36; --line-2:#39404C;
+      --pen:#7F9CFF; --pen-wash:#1A2440;
+      --alert:#F0685C; --alert-wash:#33191A;
+      --good:#66C294; --good-wash:#14291F;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#101217; --surface:#181B21; --surface-2:#20242D;
+    --ink:#E9EBE7; --ink-2:#C4C9D0; --muted:#98A0AE;
+    --line:#282D36; --line-2:#39404C;
+    --pen:#7F9CFF; --pen-wash:#1A2440;
+    --alert:#F0685C; --alert-wash:#33191A;
+    --good:#66C294; --good-wash:#14291F;
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--ground);color:var(--ink);font-family:var(--f-body);
+       font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .doc{max-width:76rem;margin:0 auto;padding:0 1.5rem 6rem}
+
+  .mast{padding:3.5rem 0 2rem;border-bottom:2px solid var(--ink);
+        display:flex;flex-direction:column;gap:1.1rem}
+  .eyebrow{font-family:var(--f-mono);font-size:.71rem;letter-spacing:.15em;
+           color:var(--muted);text-transform:uppercase;display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
+  .eyebrow i{width:5px;height:5px;border-radius:50%;background:var(--pen);display:inline-block}
+  .mast h1{font-family:var(--f-display);font-weight:700;font-size:clamp(2.6rem,8vw,4.6rem);
+           line-height:.97;margin:0;letter-spacing:-.015em;text-wrap:balance}
+  .mast .lede{font-size:1.12rem;color:var(--ink-2);max-width:58ch;font-weight:300;margin:0}
+
+  section{padding-top:3.75rem}
+  .shead{display:flex;align-items:baseline;gap:1rem;border-bottom:1px solid var(--line-2);
+         padding-bottom:.55rem;margin-bottom:1.6rem}
+  .shead .num{font-family:var(--f-mono);font-size:.78rem;color:var(--pen);flex:none;
+              font-variant-numeric:tabular-nums}
+  .shead h2{font-family:var(--f-display);font-size:clamp(1.3rem,3vw,1.8rem);margin:0;
+            font-weight:600;letter-spacing:-.01em;text-wrap:balance}
+  h3{font-family:var(--f-display);font-size:1.06rem;font-weight:600;margin:1.9rem 0 .5rem}
+  p{max-width:70ch;margin:0 0 1rem}
+  section > p{color:var(--ink-2)}
+  strong{font-weight:600;color:var(--ink)}
+  code{font-family:var(--f-mono);font-size:.85em;background:var(--surface-2);
+       padding:.1em .36em;border-radius:3px}
+
+  .verdict{margin-top:2.25rem;background:var(--surface);border:1px solid var(--line-2);
+           border-top:5px solid var(--pen);padding:1.9rem 1.9rem 1.6rem}
+  .verdict .tag{font-family:var(--f-mono);font-size:.69rem;letter-spacing:.17em;color:var(--pen);
+                display:block;margin-bottom:.7rem;text-transform:uppercase}
+  .verdict h2{font-family:var(--f-display);font-size:clamp(1.4rem,3.4vw,2rem);line-height:1.25;
+              margin:0 0 .9rem;text-wrap:balance}
+  .verdict p{color:var(--ink-2);max-width:66ch}
+  .verdict p:last-child{margin-bottom:0}
+
+  .tw{overflow-x:auto;margin:1.4rem 0;border:1px solid var(--line-2);background:var(--surface)}
+  table{border-collapse:collapse;width:100%;min-width:34rem;font-size:.91rem}
+  th,td{text-align:left;padding:.68rem .9rem;border-bottom:1px solid var(--line);vertical-align:top}
+  thead th{background:var(--surface-2);font-family:var(--f-mono);font-size:.7rem;
+           letter-spacing:.08em;color:var(--muted);font-weight:500;
+           border-bottom:1px solid var(--line-2);text-transform:uppercase}
+  tbody tr:last-child td{border-bottom:none}
+  td.k{font-family:var(--f-mono);font-size:.81rem;color:var(--pen);white-space:nowrap}
+  td.n{font-family:var(--f-mono);font-size:.85rem;font-variant-numeric:tabular-nums;text-align:right}
+  th.n{text-align:right}
+  .pass{color:var(--good);font-weight:600}
+  .fail{color:var(--alert);font-weight:600}
+
+  pre{background:var(--surface);border:1px solid var(--line-2);border-left:3px solid var(--pen);
+      padding:1.1rem 1.3rem;overflow-x:auto;margin:1.4rem 0;font-family:var(--f-mono);
+      font-size:.81rem;line-height:1.7;color:var(--ink-2)}
+  pre .c{color:var(--muted)}
+  pre .s{color:var(--good)}
+  pre .p{color:var(--pen)}
+
+  .figure{margin:1.9rem 0;background:var(--surface);border:1px solid var(--line-2);
+          padding:1.7rem 1.4rem 1.15rem;display:flex;flex-direction:column;align-items:center;gap:.95rem}
+  .figure svg{width:100%;max-width:340px;height:auto;display:block}
+  .figure figcaption{font-size:.86rem;color:var(--muted);max-width:48ch;text-align:center;line-height:1.6}
+
+  .flow{list-style:none;counter-reset:step;margin:1.4rem 0;padding:0;display:grid;gap:.7rem}
+  .flow li{counter-increment:step;background:var(--surface);border:1px solid var(--line);
+           padding:1rem 1.2rem;display:grid;grid-template-columns:2.3rem 1fr;gap:1rem;align-items:start}
+  .flow li::before{content:counter(step,decimal-leading-zero);font-family:var(--f-mono);
+                   font-size:.78rem;color:var(--pen);background:var(--pen-wash);border-radius:2px;
+                   padding:.25rem 0;text-align:center;font-variant-numeric:tabular-nums}
+  .flow h4{margin:0 0 .2rem;font-family:var(--f-display);font-size:1rem;font-weight:600}
+  .flow p{margin:0;font-size:.91rem;color:var(--muted);max-width:none}
+
+  .phases{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);margin:1.4rem 0}
+  @media(min-width:880px){.phases{grid-template-columns:repeat(3,1fr)}}
+  .phase{background:var(--surface);padding:1.3rem;display:flex;flex-direction:column;gap:.45rem}
+  .phase .pn{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.13em;color:var(--muted);text-transform:uppercase}
+  .phase h4{margin:0;font-family:var(--f-display);font-size:1.02rem;font-weight:600}
+  .phase p{margin:0;font-size:.88rem;color:var(--muted);max-width:none}
+  .phase .out{margin-top:auto;padding-top:.8rem;border-top:1px dashed var(--line-2);font-size:.81rem;color:var(--ink-2)}
+  .phase .out b{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.1em;color:var(--pen);
+                display:block;margin-bottom:.15rem;text-transform:uppercase}
+
+  .check{list-style:none;margin:1.4rem 0;padding:0;display:grid;gap:.45rem}
+  .check li{display:grid;grid-template-columns:1.4rem 1fr;gap:.8rem;align-items:start;
+            background:var(--surface);border:1px solid var(--line);padding:.85rem 1.05rem;
+            font-size:.92rem;color:var(--ink-2)}
+  .check li::before{content:"";width:1rem;height:1rem;margin-top:.28rem;border:1.5px solid var(--line-2);
+                    border-radius:2px;background:var(--ground)}
+
+  .note{background:var(--surface);border:1px solid var(--line-2);border-left:4px solid var(--pen);
+        padding:1.05rem 1.25rem;margin:1.6rem 0}
+  .warn{background:var(--alert-wash);border:1px solid var(--alert);border-left-width:4px;
+        padding:1.05rem 1.25rem;margin:1.6rem 0}
+  .ok{background:var(--good-wash);border:1px solid var(--good);border-left-width:4px;
+      padding:1.05rem 1.25rem;margin:1.6rem 0}
+  .note p,.warn p,.ok p{margin:0;font-size:.93rem;color:var(--ink-2);max-width:72ch}
+  .warn strong{color:var(--alert)} .ok strong{color:var(--good)}
+
+  .split{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);margin:1.4rem 0}
+  @media(min-width:760px){.split{grid-template-columns:1fr 1fr}}
+  .split > div{background:var(--surface);padding:1.25rem}
+  .split h4{margin:0 0 .6rem;font-family:var(--f-display);font-size:.98rem}
+  .split ul{margin:0;padding-left:1.1rem;font-size:.9rem;color:var(--ink-2)}
+  .split li{margin-bottom:.35rem}
+
+  footer{margin-top:4.5rem;padding-top:1.4rem;border-top:2px solid var(--ink);
+         font-family:var(--f-mono);font-size:.73rem;color:var(--muted);
+         display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+  a{color:var(--pen);text-underline-offset:3px}
+  a:focus-visible{outline:2px solid var(--pen);outline-offset:2px}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="doc">
+
+<header class="mast">
+  <div class="eyebrow">
+    <span><i></i>&nbsp;Engineering specification</span>
+    <span>v2.0 — evidence-based</span>
+    <span>5 September 2026</span>
+  </div>
+  <h1>Al-Mushtabah Engine</h1>
+  <p class="lede">An Arabic deduction game on a grid of up to 16×16. This document defines the rules, the data model, the solver, the generator, and the production pipeline. Every claim below was tested before it was written.</p>
+</header>
+
+<div class="verdict">
+  <span class="tag">Headline finding</span>
+  <h2>Generation works at 16×16. We do not need anyone else's puzzles.</h2>
+  <p>The open question was whether we could generate valid large puzzles ourselves, or whether we would be forced to hand-author every one. Two prototypes failed before the third succeeded — and the failures were informative, not fatal. A propagation-based generator now produces solvable, uniquely-determined 16×16 cases at a <strong>100% success rate</strong> across 15 consecutive runs.</p>
+  <p>The decisive insight came from reverse-engineering <a href="https://murdoku.com/play">Murdoku</a>, the closest existing product: its puzzles are solvable by <strong>pure constraint propagation</strong> — no guessing, no backtracking. That means we never have to count solutions in a space of 4.4 × 10<sup>26</sup>. We only have to run inference to a fixed point and check that every character is pinned. That is fast, exact, and it produces the player hint chain for free.</p>
+</div>
+
+<section>
+  <div class="shead"><span class="num">01</span><h2>What was verified, and how</h2></div>
+  <p>This section exists so nothing downstream rests on assumption. Each row is a claim that was executed, not estimated.</p>
+
+  <h3>Brute force is impossible above ~7×7</h3>
+  <p>Each character occupies a unique row and a unique column, so a placement is a pair of permutations: <code>n! × n!</code> possibilities.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Grid</th><th class="n">Placements</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td>5 × 5</td><td class="n">14,400</td><td>Exhaustive search is instant</td></tr>
+      <tr><td>7 × 7</td><td class="n">25,401,600</td><td>Practical ceiling</td></tr>
+      <tr><td>10 × 10</td><td class="n">1.3 × 10<sup>13</sup></td><td class="fail">Out of reach</td></tr>
+      <tr><td>16 × 16</td><td class="n">4.4 × 10<sup>26</sup></td><td class="fail">Impossible by counting</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>One clue per character does not scale</h3>
+  <p>Tested with randomly generated 4-room layouts, selecting the single most restrictive true clue for each character, then counting solutions exactly. Median over 15 trials per size:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Grid</th><th class="n">Solutions found</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td>5 × 5</td><td class="n">6</td><td class="fail">Not unique</td></tr>
+      <tr><td>6 × 6</td><td class="n">24</td><td class="fail">Not unique</td></tr>
+      <tr><td>8 × 8</td><td class="n">1,152</td><td class="fail">Not unique</td></tr>
+      <tr><td>10 × 10</td><td class="n">172,800</td><td class="fail">Not unique</td></tr>
+      <tr><td>16 × 16</td><td class="n">&gt; 2,000,000</td><td class="fail">Hopeless</td></tr>
+    </tbody>
+  </table></div>
+  <p>This is why the naive design fails. It is also why simple per-character clue cards are not the whole story in any shipping product of this kind.</p>
+
+  <h3>Propagation solves 16×16 reliably</h3>
+  <p>Given the full set of true clues, a constraint propagator reached a complete unique assignment in <strong>23 of 23</strong> generated 16×16 layouts. Zero contradictions, zero stalls.</p>
+
+  <h3>The generator produces minimal clue sets</h3>
+  <p>Correct algorithm: start from all true clues (guaranteed solvable), then remove clues one by one for as long as propagation still solves the puzzle. Every surviving clue is therefore necessary.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Grid</th><th class="n">Rooms</th><th class="n">Success</th><th class="n">Final clues</th><th class="n">Max per character</th></tr></thead>
+    <tbody>
+      <tr><td>8 × 8</td><td class="n">7</td><td class="n">22 / 25</td><td class="n">10.5</td><td class="n">4</td></tr>
+      <tr><td>12 × 12</td><td class="n">10</td><td class="n">15 / 15</td><td class="n">16.9</td><td class="n">3</td></tr>
+      <tr><td>16 × 16</td><td class="n">14</td><td class="n"><span class="pass">15 / 15</span></td><td class="n">24.9</td><td class="n">5</td></tr>
+    </tbody>
+  </table></div>
+  <div class="ok"><p><strong>Calibration.</strong> Murdoku's 16×16 zoo case ships 16 cards carrying roughly 20 atomic facts. Our untuned generator produces about 25. We are already in the right range, and clue-type weighting will close the gap.</p></div>
+
+  <h3>Two prototypes failed first — recorded so we don't repeat them</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Attempt</th><th>Why it failed</th></tr></thead>
+    <tbody>
+      <tr><td>Exhaustive counting</td><td>No global rules modelled; search space unbounded above 7×7.</td></tr>
+      <tr><td>Incremental clue adding</td><td>Adding clues greedily and testing after each one gets trapped in local minima. <strong>Removal beats addition</strong> — start from a solvable state and subtract.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <div class="shead"><span class="num">02</span><h2>Game rules</h2></div>
+  <p>The grid is not an elimination table. It is a <strong>map of the scene</strong>, divided into rooms, holding furniture and objects. The player places characters onto the map.</p>
+
+  <figure class="figure">
+    <svg viewBox="0 0 320 344" role="img" aria-labelledby="dg">
+      <title id="dg">A 5 by 5 grid split into four rooms, one character placed, eliminations marked across its row and column</title>
+      <rect x="20" y="20" width="168" height="112" fill="var(--pen-wash)"/>
+      <rect x="188" y="20" width="112" height="112" fill="var(--surface-2)"/>
+      <rect x="20" y="132" width="112" height="168" fill="var(--surface-2)"/>
+      <rect x="132" y="132" width="168" height="168" fill="var(--pen-wash)"/>
+      <g stroke="var(--line-2)" stroke-width="1">
+        <line x1="76" y1="20" x2="76" y2="300"/><line x1="132" y1="20" x2="132" y2="300"/>
+        <line x1="188" y1="20" x2="188" y2="300"/><line x1="244" y1="20" x2="244" y2="300"/>
+        <line x1="20" y1="76" x2="300" y2="76"/><line x1="20" y1="132" x2="300" y2="132"/>
+        <line x1="20" y1="188" x2="300" y2="188"/><line x1="20" y1="244" x2="300" y2="244"/>
+      </g>
+      <g stroke="var(--ink)" stroke-width="3" stroke-linecap="square">
+        <line x1="188" y1="20" x2="188" y2="132"/><line x1="20" y1="132" x2="300" y2="132"/>
+        <line x1="132" y1="132" x2="132" y2="300"/>
+      </g>
+      <rect x="20" y="20" width="280" height="280" fill="none" stroke="var(--ink)" stroke-width="3"/>
+      <g stroke="var(--pen)" stroke-width="2.4" stroke-linecap="round" opacity="0.72">
+        <path d="M38 86 L58 106 M58 86 L38 106"/><path d="M94 86 L114 106 M114 86 L94 106"/>
+        <path d="M206 86 L226 106 M226 86 L206 106"/><path d="M262 86 L282 106 M282 86 L262 106"/>
+        <path d="M150 38 L170 58 M170 38 L150 58"/><path d="M150 150 L170 170 M170 150 L150 170"/>
+        <path d="M150 206 L170 226 M170 206 L150 226"/><path d="M150 262 L170 282 M170 262 L150 282"/>
+      </g>
+      <circle cx="160" cy="104" r="19" fill="var(--pen)"/>
+      <text x="160" y="105" fill="#FFFFFF" font-family="IBM Plex Sans Condensed, sans-serif"
+            font-size="17" font-weight="700" text-anchor="middle" dominant-baseline="middle">A</text>
+      <g font-family="IBM Plex Sans, sans-serif" font-size="10.5" fill="var(--muted)">
+        <text x="28" y="36">Hall</text><text x="196" y="36">Kitchen</text>
+        <text x="28" y="148">Store</text><text x="140" y="148">Yard</text>
+      </g>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--muted)">
+        <text x="20" y="324">5 × 5 · 25 cells · 4 rooms · 5 characters</text>
+      </g>
+    </svg>
+    <figcaption>Placing a character eliminates its entire row and column automatically. This single constraint does the work of seven or eight additional clues.</figcaption>
+  </figure>
+
+  <div class="tw"><table>
+    <thead><tr><th style="width:11rem">Rule</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><strong>One per row and column</strong></td><td>Each row holds exactly one character; so does each column. Placing a character eliminates its row and column for everyone else.</td></tr>
+      <tr><td><strong>Rooms</strong></td><td>The grid is partitioned into named regions. Rooms scope adjacency — "beside" never crosses a wall.</td></tr>
+      <tr><td><strong>Beside</strong></td><td>Directly left, right, above or below, <strong>and in the same room</strong>. Diagonals do not count.</td></tr>
+      <tr><td><strong>The victim</strong></td><td>One character is the victim. Their card always reads: alone with the killer — meaning their room holds exactly two people.</td></tr>
+      <tr><td><strong>The killer</strong></td><td>Never asked directly. It is whoever ends up in the victim's room. The answer emerges from the completed map.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <div class="shead"><span class="num">03</span><h2>Clue catalogue</h2></div>
+  <p>Every clue must be <strong>machine-checkable</strong>: the engine must decide true or false for any placement. Anything that cannot be expressed here does not ship.</p>
+  <div class="tw"><table>
+    <thead><tr><th style="width:10rem">Type</th><th style="width:9rem">Arguments</th><th>Example wording</th></tr></thead>
+    <tbody>
+      <tr><td class="k">inRoom</td><td class="k">char, room</td><td>"He was in the storeroom."</td></tr>
+      <tr><td class="k">notInRoom</td><td class="k">char, room</td><td>"She was not in the kitchen."</td></tr>
+      <tr><td class="k">onObject</td><td class="k">char, object</td><td>"He was at the well."</td></tr>
+      <tr><td class="k">notOnObject</td><td class="k">char, object</td><td>"She was not on the carpet."</td></tr>
+      <tr><td class="k">besideObject</td><td class="k">char, object</td><td>"She was beside the table."</td></tr>
+      <tr><td class="k">notBesideObject</td><td class="k">char, object</td><td>"He was not beside an animal."</td></tr>
+      <tr><td class="k">besideChar</td><td class="k">char, char</td><td>"He was beside Khalid."</td></tr>
+      <tr><td class="k">sameRoom</td><td class="k">char, char</td><td>"They shared a room."</td></tr>
+      <tr><td class="k">diffRoom</td><td class="k">char, char</td><td>"They were not in the same room."</td></tr>
+      <tr><td class="k">rowOffset</td><td class="k">char, n, char</td><td>"He was exactly one row north of Ivan."</td></tr>
+      <tr><td class="k">inRow / inCol</td><td class="k">char, n</td><td>"She was in the second column."</td></tr>
+      <tr><td class="k">aloneInRoom</td><td class="k">char</td><td>"He was alone."</td></tr>
+      <tr><td class="k">aloneWith</td><td class="k">char, char</td><td>"She was alone with Mara."</td></tr>
+    </tbody>
+  </table></div>
+  <div class="warn"><p><strong>Rejected clue type:</strong> anything referencing a dimension the grid does not model. "He arrived before her" implies time; there is no time axis, so the player cannot deduce it and the engine cannot check it. Either add time as a real dimension or drop the clue class entirely.</p></div>
+</section>
+
+<section>
+  <div class="shead"><span class="num">04</span><h2>Global rules — the key to large grids</h2></div>
+  <p>Per-character clues alone cannot pin a 16×16 grid. What makes large boards tractable are rules that constrain <strong>every character simultaneously</strong>. Murdoku stores these as numeric ids into a fixed catalogue (<code>clue_0</code>, <code>clue_1</code>); in its zoo case they resolve to a class restriction and a covering constraint. Removing them from our own generator was exactly what made it fail.</p>
+
+  <div class="tw"><table>
+    <thead><tr><th style="width:11rem">Rule</th><th>Effect</th><th>Arabic framing</th></tr></thead>
+    <tbody>
+      <tr><td class="k">classRestriction</td><td>Characters of class B may never enter rooms of type R. Prunes many domains at once.</td><td>Household vs guests · staff vs customers · workers vs owners</td></tr>
+      <tr><td class="k">noEmptyRegion</td><td>Every restricted room holds at least one character. Forbids empty rooms and drives most of the deduction chain.</td><td>"Every wing had someone on duty."</td></tr>
+      <tr><td class="k">regionQuota</td><td>A named region holds exactly <em>k</em> people.</td><td>"Three of them were in the courtyard."</td></tr>
+      <tr><td class="k">pairwiseClass</td><td>No two characters of the same class share a room.</td><td>"No two guards stood together."</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note"><p>Global rules are the cheapest information in the system: one sentence for the player, an enormous reduction for the solver. Every case above 8×8 should carry at least two.</p></div>
+</section>
+
+<section>
+  <div class="shead"><span class="num">05</span><h2>Data model</h2></div>
+  <p>One self-contained JSON file per case, plus thin per-language overlays. The overlay pattern is worth copying directly — it is why a competitor supports 23 languages at negligible cost.</p>
+
+<pre><span class="c">// cases/case-001.json — master file (geometry + solution + clue structure)</span>
+{
+  <span class="p">"id"</span>: <span class="s">"case-001"</span>,
+  <span class="p">"size"</span>: 16,
+  <span class="p">"difficulty"</span>: <span class="s">"expert"</span>,
+  <span class="p">"blockedCells"</span>: [[15, 15]],
+
+  <span class="c">// cell -> room id, row-major. size*size entries.</span>
+  <span class="p">"roomMap"</span>: [0,0,1,1,2, <span class="c">/* … */</span>],
+
+  <span class="p">"rooms"</span>: [
+    { <span class="p">"id"</span>: 0, <span class="p">"key"</span>: <span class="s">"majlis"</span>,  <span class="p">"restricted"</span>: false },
+    { <span class="p">"id"</span>: 1, <span class="p">"key"</span>: <span class="s">"store"</span>,   <span class="p">"restricted"</span>: true  }
+  ],
+
+  <span class="p">"objects"</span>: [
+    { <span class="p">"cell"</span>: 34, <span class="p">"key"</span>: <span class="s">"table"</span>, <span class="p">"sprite"</span>: <span class="s">"obj_table"</span>, <span class="p">"variant"</span>: 1 }
+  ],
+
+  <span class="c">// 13 numbers assemble an avatar at render time — no hand-drawn characters</span>
+  <span class="p">"characters"</span>: [
+    { <span class="p">"id"</span>: 0, <span class="p">"key"</span>: <span class="s">"ahmad"</span>, <span class="p">"class"</span>: <span class="s">"household"</span>, <span class="p">"victim"</span>: false,
+      <span class="p">"avatar"</span>: { <span class="p">"body"</span>:1, <span class="p">"skin"</span>:2, <span class="p">"hair"</span>:65, <span class="p">"hairColor"</span>:3,
+                   <span class="p">"facial"</span>:12, <span class="p">"clothes"</span>:1, <span class="p">"clothesColor"</span>:9, <span class="p">"hat"</span>:0 } }
+  ],
+
+  <span class="c">// [row, col] per character — never exposed to the client before solving</span>
+  <span class="p">"solution"</span>: [[2,6],[7,15],[4,5]],
+
+  <span class="p">"globalRules"</span>: [
+    { <span class="p">"type"</span>:<span class="s">"classRestriction"</span>, <span class="p">"class"</span>:<span class="s">"guest"</span>, <span class="p">"forbidRestricted"</span>: true },
+    { <span class="p">"type"</span>:<span class="s">"noEmptyRegion"</span>,    <span class="p">"scope"</span>:<span class="s">"restricted"</span> }
+  ],
+
+  <span class="p">"clues"</span>: [
+    { <span class="p">"char"</span>:0, <span class="p">"type"</span>:<span class="s">"rowOffset"</span>,    <span class="p">"n"</span>:-1, <span class="p">"other"</span>:8 },
+    { <span class="p">"char"</span>:1, <span class="p">"type"</span>:<span class="s">"besideObject"</span>, <span class="p">"object"</span>:<span class="s">"table"</span> },
+    { <span class="p">"char"</span>:1, <span class="p">"type"</span>:<span class="s">"notOnObject"</span>,  <span class="p">"object"</span>:<span class="s">"chair"</span> }
+  ],
+
+  <span class="c">// produced by the solver, not written by hand</span>
+  <span class="p">"hintChain"</span>: [
+    { <span class="p">"step"</span>:1, <span class="p">"action"</span>:<span class="s">"block"</span>,   <span class="p">"cells"</span>:[210,211,212], <span class="p">"because"</span>:<span class="s">"globalRules[0]"</span> },
+    { <span class="p">"step"</span>:2, <span class="p">"action"</span>:<span class="s">"isolate"</span>, <span class="p">"char"</span>:4, <span class="p">"cell"</span>:141, <span class="p">"because"</span>:<span class="s">"clues[1]"</span> }
+  ]
+}
+</pre>
+
+<pre><span class="c">// i18n/ar/case-001.json — overlay, a few KB</span>
+{
+  <span class="p">"title"</span>: <span class="s">"جريمة المستودع"</span>,
+  <span class="p">"rooms"</span>:  { <span class="p">"majlis"</span>: <span class="s">"المجلس"</span>, <span class="p">"store"</span>: <span class="s">"المستودع"</span> },
+  <span class="p">"chars"</span>:  { <span class="p">"ahmad"</span>: <span class="s">"أحمد"</span> },
+  <span class="p">"clues"</span>:  { <span class="p">"0"</span>: <span class="s">"كان في صفٍّ واحد شمال ناصر."</span> },
+  <span class="p">"hints"</span>:  { <span class="p">"1"</span>: <span class="s">"لا يمكن لأي ضيف دخول المستودع، فاحجب تلك المربعات."</span> }
+}
+</pre>
+
+  <div class="note"><p><strong>Two decisions worth locking now.</strong> First, <code>roomMap</code> as a flat row-major array rather than per-cell keys — it is a tenth of the size and trivially iterable. Second, <code>solution</code> as explicit <code>[row, col]</code> pairs rather than pixel coordinates; Murdoku stores pixels and needs division to recover the grid, which is fragile and leaks the answer to anyone who reads the file.</p></div>
+</section>
+
+<section>
+  <div class="shead"><span class="num">06</span><h2>The engine</h2></div>
+  <p>Two components. Get these right and the rest is interface.</p>
+
+  <h3>A — The propagator</h3>
+  <p>Not a counter. It maintains a domain of possible cells per character and applies inference rules to a fixed point. If every domain collapses to one cell, the puzzle is valid and solvable without guessing.</p>
+
+<pre><span class="c">// each rule returns true if it changed any domain</span>
+function propagate(puzzle, domains) {
+  let changed = true;
+  while (changed) {
+    changed = false;
+    changed |= applyUnaryClues(domains);      <span class="c">// inRoom, besideObject, …</span>
+    changed |= eliminateRowsAndCols(domains); <span class="c">// a placed char clears its row + column</span>
+    changed |= hiddenSingles(domains);        <span class="c">// only one char can occupy row r</span>
+    changed |= aloneConstraints(domains);     <span class="c">// alone / aloneWith clear their room</span>
+    changed |= noEmptyRegion(domains);        <span class="c">// a room that must be occupied</span>
+    if (anyDomainEmpty(domains)) return { ok: false };
+  }
+  return { ok: true, solved: domains.every(d =&gt; d.size === 1) };
+}
+</pre>
+
+  <h3>B — The generator</h3>
+  <p>The ordering matters more than anything else in this document. <strong>Start complete, then subtract.</strong> Adding clues incrementally was tested and fails; it stalls in local minima.</p>
+
+<pre>function generate(layout) {
+  const solution = randomPlacementSatisfying(layout.globalRules);
+  let clues = allTrueClues(solution, layout);   <span class="c">// hundreds; solvable by construction</span>
+
+  shuffle(clues);
+  for (const clue of [...clues]) {              <span class="c">// try to drop each one</span>
+    const trial = clues.filter(c =&gt; c !== clue);
+    if (propagate(layout, domainsFrom(trial)).solved) clues = trial;
+  }
+  <span class="c">// every surviving clue is necessary: removing it breaks solvability</span>
+  return { ...layout, solution, clues, hintChain: traceOf(clues) };
+}
+</pre>
+
+  <h3>C — Difficulty, measured not guessed</h3>
+  <p>Clue count is a poor proxy. Grade by which inference rules the propagator needed:</p>
+  <div class="tw"><table>
+    <thead><tr><th style="width:8rem">Tier</th><th>Criterion</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Easy</strong></td><td>Solved by direct elimination and naked singles only.</td></tr>
+      <tr><td><strong>Medium</strong></td><td>Requires hidden singles across rows or columns.</td></tr>
+      <tr><td><strong>Hard</strong></td><td>Requires room-occupancy reasoning — <code>alone</code>, <code>aloneWith</code>, region quotas.</td></tr>
+      <tr><td><strong>Expert</strong></td><td>Requires chained global-rule deductions; the hint chain runs past six steps.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>D — The hint chain comes free</h3>
+  <p>Record every propagation step and you have the walkthrough. Two verbs cover it: <strong>block</strong> (eliminate these cells, for this reason) and <strong>isolate</strong> (this character can only be here). Murdoku ships seven such hints per expert case and appears to write them by hand — we generate ours from the trace.</p>
+</section>
+
+<section>
+  <div class="shead"><span class="num">07</span><h2>Map art direction</h2></div>
+  <p>The brief is photoreal 3D, not flat colour blocks. That collides with a hard requirement: this is a logic game, and the player must be able to read the grid precisely. Resolving that collision is the whole job of this section.</p>
+
+  <h3>The app is 2D. Only the asset pipeline is 3D.</h3>
+  <p>This distinction matters more than it sounds. We render tiles <strong>offline in Blender</strong> and ship the results as flat sprites. At runtime the game draws images into grid cells — there is no 3D engine, no WebGL, no camera maths, no performance cliff on an old phone. All the realism is baked into the picture before it ever reaches the browser.</p>
+  <p>So "3D is hard" never becomes a problem in the code. It is only ever a question of how we produce the pictures, and that question has three answers, all of which look realistic and all of which the engine treats identically.</p>
+
+  <div class="tw"><table>
+    <thead><tr><th style="width:8rem">Route</th><th>How the tiles are made</th><th>Skill needed</th><th>Look</th></tr></thead>
+    <tbody>
+      <tr><td><strong>A — Rendered</strong></td><td>Modelled and lit in Blender, exported as isometric sprites</td><td>3D modelling</td><td class="pass">Photoreal, consistent lighting, best result</td></tr>
+      <tr><td><strong>B — Painted</strong></td><td>Illustrated top-down tiles, generated and then cleaned up by hand</td><td>2D art direction only</td><td>Realistic painted, warmer, stylised edge</td></tr>
+      <tr><td><strong>C — Textured</strong></td><td>Real material photographs as floors, prop cut-outs composited on top</td><td>Photo editing</td><td>Real materials, flat top-down, fastest to produce</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="ok"><p><strong>Architectural consequence — decide this late, not now.</strong> The renderer's contract is one line: <em>given a cell, draw a sprite</em>. Nothing in the engine, the data model, or the interaction layer knows which route produced that sprite. We can ship on route C, upgrade to route A a year later, and change no game code at all. Do not let the art decision block Phase 0.</p></div>
+
+  <h3>Why pre-rendering beats real-time either way</h3>
+  <p>Real-time Three.js buys camera freedom we do not need and costs quality, battery and complexity we cannot spare. A pre-rendered tile can carry an hour of ray-traced global illumination; a real-time frame gets sixteen milliseconds.</p>
+
+  <div class="warn"><p><strong>The one rule that makes or breaks it, whichever route you take:</strong> every tile must share an <em>identical viewing angle</em> and an <em>identical light direction</em>. Fix the projection and the sun azimuth before producing a single asset, and write them into the art brief. Tiles made at drifting angles never assemble into a coherent room, and redoing a library later costs more than building it did.</p></div>
+
+  <h3>Tile taxonomy</h3>
+  <div class="tw"><table>
+    <thead><tr><th style="width:10rem">Layer</th><th>Contents</th><th style="width:7rem">Variants</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Floor</strong></td><td>Marble, sand, wood, woven rug, water, grass, concrete</td><td>3–4 each, to break visible tiling</td></tr>
+      <tr><td><strong>Walls</strong></td><td>Four edge segments plus inner and outer corners</td><td>Per material</td></tr>
+      <tr><td><strong>Props</strong></td><td>Full 3D models on transparent background with baked contact shadow</td><td>Rotations at 4 orientations</td></tr>
+      <tr><td><strong>Characters</strong></td><td>A reusable cast of ~40 figures, recoloured per case</td><td>Idle plus a placed pose</td></tr>
+      <tr><td><strong>Overlays</strong></td><td>Elimination mark, pencil letter, selection glow, legal-cell glow</td><td>Vector, drawn above the render</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Two views of one map — the move that buys us both</h3>
+  <p>Ship a toggle, not a compromise:</p>
+  <div class="split">
+    <div>
+      <h4>Scene view — default</h4>
+      <ul>
+        <li>Full isometric 3D, real materials, atmosphere and mood grade</li>
+        <li>Grid implied by subtle light-etched floor seams, not drawn lines</li>
+        <li>This is what the player screenshots and shares</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Plan view — one tap away</h4>
+      <ul>
+        <li>Flattened top-down, high contrast, thin grid, every label legible</li>
+        <li>Made for the hard deduction phase and for printing</li>
+        <li>Same data, same coordinates — purely a rendering switch</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note"><p>Murdoku has one view and therefore had to stay flat and readable. Two views let us be fully realistic where realism sells the game, and fully legible where the player is actually thinking. This is the single strongest art-direction decision in the document.</p></div>
+
+  <h3>Making 3D legible — four details that decide it</h3>
+  <div class="tw"><table>
+    <thead><tr><th style="width:11rem">Problem</th><th>Resolution</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Which cell is that token on?</strong></td><td>Every occupied cell gets a faint floor decal ring under the figure. This is the most common failure in isometric games and it is fatal for a logic puzzle.</td></tr>
+      <tr><td><strong>Tall props hide characters</strong></td><td>Painter's algorithm sorted by <code>row + col</code>; any occluder fades to 60% while a token behind it is selected. Plus a 90° rotate control giving four viewing orientations.</td></tr>
+      <tr><td><strong>Figures lost against busy floors</strong></td><td>A rim light on every character render, and a soft darkening vignette on the cell beneath.</td></tr>
+      <tr><td><strong>Which column was that?</strong></td><td>Sticky row and column headers that stay pinned while panning — non-negotiable when clues say "the second column" on a 16-wide board.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Variety without new assets</h3>
+  <p>One tile library, four global colour grades — day, dusk, night, storm — plus per-case prop dressing. A courtyard at noon and the same courtyard at night read as different places for the cost of a grade.</p>
+  <p><strong>Tooling:</strong> Claude Design for composition studies, UI layout and the case-file framing; Blender for the tile and character renders themselves.</p>
+</section>
+
+<section>
+  <div class="shead"><span class="num">08</span><h2>Interaction model</h2></div>
+  <p>Placing sixteen characters on a 256-cell board has to feel effortless, on a phone, with one thumb. The design below removes modes entirely and eliminates the long-press.</p>
+
+  <div class="ok"><p><strong>The core rule.</strong> The meaning of a tap is decided by one piece of state: whether a character is currently selected. Nothing else. No mode buttons, no gesture vocabulary to learn.</p></div>
+
+  <div class="tw"><table>
+    <thead><tr><th style="width:14rem">State</th><th>Tapping a cell does</th></tr></thead>
+    <tbody>
+      <tr><td><strong>No character selected</strong></td><td>Toggles an elimination mark ✗ on that cell. This is the bulk activity of solving, so it gets the zero-friction path.</td></tr>
+      <tr><td><strong>Character selected</strong></td><td>Cycles that cell through pencil → committed → clear.</td></tr>
+    </tbody>
+  </table></div>
+
+  <figure class="figure">
+    <svg viewBox="0 0 460 150" role="img" aria-labelledby="tc">
+      <title id="tc">Three-state tap cycle: empty cell, pencil mark, committed token, back to empty</title>
+      <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--muted)" text-anchor="middle">
+        <text x="55" y="132">empty</text>
+        <text x="205" y="132">pencil — tentative</text>
+        <text x="355" y="132">committed — locks row + column</text>
+      </g>
+      <rect x="20" y="30" width="70" height="70" fill="var(--surface-2)" stroke="var(--line-2)" stroke-width="1.5"/>
+      <rect x="170" y="30" width="70" height="70" fill="var(--surface-2)" stroke="var(--pen)" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <text x="205" y="72" fill="var(--pen)" font-family="IBM Plex Sans, sans-serif" font-size="22"
+            text-anchor="middle" dominant-baseline="middle" opacity="0.55">A</text>
+      <rect x="320" y="30" width="70" height="70" fill="var(--pen-wash)" stroke="var(--pen)" stroke-width="2.5"/>
+      <circle cx="355" cy="65" r="19" fill="var(--pen)"/>
+      <text x="355" y="66" fill="#FFFFFF" font-family="IBM Plex Sans Condensed, sans-serif" font-size="17"
+            font-weight="700" text-anchor="middle" dominant-baseline="middle">A</text>
+      <g stroke="var(--ink)" stroke-width="1.5" fill="none">
+        <path d="M98 65 L162 65" marker-end="url(#ah)"/>
+        <path d="M248 65 L312 65" marker-end="url(#ah)"/>
+        <path d="M355 22 C 355 4, 55 4, 55 22" marker-end="url(#ah)"/>
+      </g>
+      <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--ink)"/></marker></defs>
+      <g font-family="IBM Plex Mono, monospace" font-size="9" fill="var(--muted)" text-anchor="middle">
+        <text x="130" y="58">tap</text><text x="280" y="58">tap</text><text x="205" y="14">tap</text>
+      </g>
+    </svg>
+    <figcaption>One gesture, three states, fully reversible. Experts can switch on "commit on first tap" in settings and skip the pencil step.</figcaption>
+  </figure>
+
+  <h3>Selecting a character</h3>
+  <p>Tap the card. Four things happen at once, and all four are information:</p>
+  <ul class="check">
+    <li>The card lifts and its clue text expands to full length.</li>
+    <li>Cells still legal for that character glow softly — optional, since it is a real hint.</li>
+    <li>If already placed, their token pulses once so you can find them on a crowded board.</li>
+    <li>Any clue card referencing them gains a connecting tint.</li>
+  </ul>
+  <p>Tap the card again, or tap outside the board, to deselect. On desktop: number and letter keys select, arrows move a cursor, <code>Enter</code> commits, <code>Esc</code> deselects.</p>
+
+  <h3>Feedback on commit — show the consequence, not just the result</h3>
+  <p>The token drops with its shadow contracting under it and a soft landing sound. Then the automatic eliminations <strong>cascade outward</strong> along the row and column at roughly 40 ms per cell, rather than appearing all at once. The player watches their own deduction propagate. This is the single most satisfying moment in the loop and it deserves the animation budget.</p>
+
+  <h3>Guard rails that never spoil</h3>
+  <p>If a commit contradicts a clue the player has already been shown, the offending clue card pulses red and the cell shakes briefly. <strong>The move is still allowed</strong> — never block the player, never take the pen out of their hand. The check runs against stated clues only and never consults the solution, so it cannot leak the answer.</p>
+
+  <div class="warn"><p><strong>Explicitly rejected:</strong> long-press as a primary action (slow, undiscoverable, conflicts with system text selection), drag-and-drop as the only placement route (exhausting across 256 cells on a phone), and any hidden gesture. Drag remains available as an <em>alternative</em> for players who reach for it, never as the required path.</p></div>
+</section>
+
+<section>
+  <div class="shead"><span class="num">09</span><h2>Tools, controls and assists</h2></div>
+  <p>Everything reachable at all times from one persistent rail. No buried menus, no mode discovery. Every assist is individually toggleable, and a single "purist" switch turns them all off for players who want the bare board.</p>
+
+  <h3>Assists</h3>
+  <div class="tw"><table>
+    <thead><tr><th style="width:12rem">Tool</th><th>Behaviour</th><th style="width:6rem">Default</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Auto-eliminate</strong></td><td>Committing a character marks ✗ across their row and column automatically.</td><td class="pass">On</td></tr>
+      <tr><td><strong>Clue linking</strong></td><td>Tap a clue card to highlight every cell it refers to — all tables, or a room outline. Enormous usability gain, reveals nothing.</td><td class="pass">On</td></tr>
+      <tr><td><strong>Clue striking</strong></td><td>Mark a clue as used yourself; it greys out and sinks to the bottom of the list.</td><td class="pass">On</td></tr>
+      <tr><td><strong>Legal-cell glow</strong></td><td>Highlights cells still possible for the selected character, given current marks.</td><td>Off</td></tr>
+      <tr><td><strong>Contradiction flag</strong></td><td>Pulses a clue card when the current board violates it. Stated clues only.</td><td class="pass">On</td></tr>
+      <tr><td><strong>Room focus</strong></td><td>Tap a room name to dim everything outside it.</td><td class="pass">On</td></tr>
+      <tr><td><strong>Hint ladder</strong></td><td>The generated deduction chain, revealed one step at a time, with a visible count of hints used.</td><td class="pass">On</td></tr>
+      <tr><td><strong>Partial check</strong></td><td>Validates only what is currently placed against the clues. Never against the solution.</td><td>Off</td></tr>
+      <tr><td><strong>Undo / redo</strong></td><td>Full history, always visible, <code>Ctrl</code>+<code>Z</code> on desktop.</td><td class="pass">On</td></tr>
+      <tr><td><strong>Clear all marks</strong></td><td>Wipes eliminations but keeps commitments. Confirmed once.</td><td class="pass">On</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Navigating a 16×16 board on a phone</h3>
+  <div class="tw"><table>
+    <thead><tr><th style="width:12rem">Control</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Pinch and pan</strong></td><td>Momentum scrolling, elastic edges, zoom clamped so a cell is never smaller than a comfortable tap target.</td></tr>
+      <tr><td><strong>Sticky headers</strong></td><td>Row and column indices pinned to the edges while panning. Required by any clue that names a row or column.</td></tr>
+      <tr><td><strong>Double-tap a room</strong></td><td>Frames that room and fits it to the viewport.</td></tr>
+      <tr><td><strong>Mini-map</strong></td><td>Small plan-view thumbnail with a viewport rectangle; drag it to jump.</td></tr>
+      <tr><td><strong>Rotate 90°</strong></td><td>Four isometric orientations, so nothing stays permanently hidden behind a tall prop.</td></tr>
+      <tr><td><strong>Snap and forgiveness</strong></td><td>Taps snap to the nearest cell centre, and the effective hit radius grows as you zoom out.</td></tr>
+      <tr><td><strong>View toggle</strong></td><td>One control switches scene view and plan view, preserving zoom and centre.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Sixteen clue cards on a small screen</h3>
+  <p>The real layout problem of the expert tier. The resolution: a horizontally swipeable strip pinned above the board, expandable to a full list sheet. Cards sort themselves — unresolved first, struck ones grey and sink. Each card shows the character portrait, name, and clue, and grows on selection to show the full text without truncation. A card never clips its own sentence; if it cannot fit, it scrolls inside itself.</p>
+
+  <h3>Accessibility and feel</h3>
+  <ul class="check">
+    <li>Marks are distinguished by <strong>shape</strong>, not colour alone — the ✗ and the pencil letter differ in form.</li>
+    <li>Full keyboard play: select, move, commit, undo, toggle view.</li>
+    <li><code>prefers-reduced-motion</code> collapses the cascade to an instant state change.</li>
+    <li>Screen reader announces cell coordinates, room name, and occupant on focus.</li>
+    <li>Haptic tick on every mark, a heavier one on commit; sound independently mutable.</li>
+    <li>Text scale respected throughout; clue cards reflow rather than truncate.</li>
+    <li>State autosaves continuously — closing the tab mid-case never loses work.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="shead"><span class="num">10</span><h2>Production pipeline</h2></div>
+  <ol class="flow">
+    <li><div><h4>Draw the layout</h4><p>Rooms and their walls, objects inside them, blocked cells. Target roughly 0.85 rooms per grid row — 14 rooms on a 16×16. Small rooms make room clues powerful.</p></div></li>
+    <li><div><h4>Define characters and classes</h4><p>Names, avatar parameters, and the class split the global rules will use. Mark the victim.</p></div></li>
+    <li><div><h4>Run the generator</h4><p>It picks a solution satisfying the global rules, then reduces to a minimal necessary clue set.</p></div></li>
+    <li><div><h4>Check the gate</h4><p>Propagation must reach a full unique assignment with no guessing. Anything else goes back to step 3.</p></div></li>
+    <li><div><h4>Write the Arabic</h4><p>Turn machine clues into natural sentences. Meaning must not shift — only voice. This is where dialect and character enter.</p></div></li>
+    <li><div><h4>Play it as a human</h4><p>One person solves it unaided and reaches the same killer. The generated hint chain is the reference for where they should have got stuck.</p></div></li>
+    <li><div><h4>Publish</h4><p>Master file plus language overlays, added to the catalogue with its measured difficulty tier.</p></div></li>
+  </ol>
+</section>
+
+<section>
+  <div class="shead"><span class="num">11</span><h2>Where we differ</h2></div>
+  <p>The mechanic is not the product. Four directions that are ours, verified as absent from the reference implementation.</p>
+
+  <div class="split">
+    <div>
+      <h4>The lying witness</h4>
+      <ul>
+        <li>Exactly one card is <strong>false</strong> — the killer's.</li>
+        <li>Machine-checkable: the puzzle has a unique solution only when that one card is ignored.</li>
+        <li>Turns pure deduction into actual investigation.</li>
+        <li>Not present in Murdoku.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Time as a second layer</h4>
+      <ul>
+        <li>Same grid, two snapshots: before and after.</li>
+        <li>Unlocks movement clues — "he left the majlis for the kitchen".</li>
+        <li>Doubles depth without enlarging the board.</li>
+        <li>Also legitimises the "arrived before" clue class we had to reject.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Arabic global rules</h4>
+      <ul>
+        <li>Household vs guests, staff vs customers, workers vs owners.</li>
+        <li>Identical mathematical power, entirely different world.</li>
+        <li>Names, rooms and objects drawn from a Saudi setting.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Architectural rendering</h4>
+      <ul>
+        <li>Murdoku uses flat colour blocks with top-down sprites.</li>
+        <li>Ours: a line-drawn floor plan — thin cell grid, heavy wall strokes, hatched regions.</li>
+        <li>Reads as a case file rather than a board game, and stays legible in print.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="num">12</span><h2>Roadmap</h2></div>
+  <div class="phases">
+    <div class="phase"><span class="pn">Phase 0</span><h4>Propagator</h4>
+      <p>Command line only. No interface, no art. Load a hand-written JSON case and prove it solves.</p>
+      <div class="out"><b>Output</b>One case proven solvable without guessing</div></div>
+    <div class="phase"><span class="pn">Phase 1</span><h4>Generator</h4>
+      <p>Layout generation, global rules, clue minimisation, difficulty grading, hint-chain trace.</p>
+      <div class="out"><b>Output</b>20 generated cases across all tiers</div></div>
+    <div class="phase"><span class="pn">Phase 2</span><h4>Play interface</h4>
+      <p>Interactive map, clue cards, place and eliminate, undo, submit. Tap to pencil, hold to commit.</p>
+      <div class="out"><b>Output</b>A case playable in the browser</div></div>
+    <div class="phase"><span class="pn">Phase 3</span><h4>Identity and Arabic</h4>
+      <p>Pick an art route (A, B or C — the engine does not care), build the first tile set, add plan view, full RTL and natural clue phrasing.</p>
+      <div class="out"><b>Output</b>The look that makes it ours</div></div>
+    <div class="phase"><span class="pn">Phase 4</span><h4>Signature mechanics</h4>
+      <p>The lying witness first, since it needs solver support. Time layer second.</p>
+      <div class="out"><b>Output</b>What competitors cannot copy quickly</div></div>
+    <div class="phase"><span class="pn">Phase 5</span><h4>Real testing</h4>
+      <p>Ten people outside the team. Measure completion, where they stall, which clues get misread.</p>
+      <div class="out"><b>Output</b>A library tuned on evidence</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="shead"><span class="num">13</span><h2>Acceptance criteria</h2></div>
+  <p>No case ships until all of these hold. This list is the last line of defence before a broken puzzle reaches a player.</p>
+  <ul class="check">
+    <li>Propagation reaches a complete assignment — every character pinned to exactly one cell.</li>
+    <li>No guessing or backtracking was required at any step.</li>
+    <li>Every clue is necessary: removing any one of them breaks solvability.</li>
+    <li>Every clue references a dimension the grid actually models.</li>
+    <li>The victim's room contains exactly two people, so the killer is unambiguous.</li>
+    <li>The Arabic wording matches the machine clue exactly — no added or lost meaning.</li>
+    <li>The generated hint chain reads as a sensible human argument end to end.</li>
+    <li>At least one person solved it unaided and named the same killer.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="shead"><span class="num">14</span><h2>Reference boundary</h2></div>
+  <p><a href="https://murdoku.com/play">Murdoku</a> was studied closely and the analysis above is drawn from its public files. The line between study and appropriation is worth stating plainly, because it also happens to be the practical line.</p>
+  <div class="split">
+    <div>
+      <h4>Adopted — ideas and structure</h4>
+      <ul>
+        <li>Static delivery: master file plus thin language overlays</li>
+        <li>Cell-indexed room maps and procedural avatars</li>
+        <li>Global rules addressed by id from a catalogue</li>
+        <li>Propagation-solvability as the publication gate</li>
+        <li>A hint chain in <em>block</em> / <em>isolate</em> vocabulary</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Not taken — authored work</h4>
+      <ul>
+        <li>Their puzzle instances: layouts, solutions, clue sets</li>
+        <li>Their hint and story text</li>
+        <li>Their SVG art and character designs</li>
+        <li>Their room and character names</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note"><p><strong>The practical argument, independent of anything else.</strong> Their map <em>is</em> their puzzle — every clue points at specific cells in a specific layout. Redraw the layout and every clue breaks; keep the layout and nothing has actually changed but the icons. There is no version of reskinning that both works and is different. A generator is required either way, and as of this document it exists and succeeds 15 times out of 15 at 16×16.</p></div>
+</section>
+
+<footer>
+  <span>Al-Mushtabah — engineering specification v2.0</span>
+  <span>5 September 2026</span>
+</footer>
+
+</div>

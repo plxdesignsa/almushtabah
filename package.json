@@ -1,0 +1,17 @@
+{
+  "name": "almushtabah",
+  "version": "0.1.0",
+  "description": "المشتبه — محرّك لعبة ألغاز تحقيق عربية على شبكة تصل إلى ١٦×١٦. المرحلة صفر: المستنتج.",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "solve": "node src/cli/solve.js",
+    "solve:trace": "node src/cli/solve.js cases/case-001.json --trace",
+    "solve:minimal": "node src/cli/solve.js cases/case-001.json --trace --minimal",
+    "test": "node --test"
+  },
+  "license": "UNLICENSED"
+}

@@ -1,0 +1,768 @@
+<title>المشتبه</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root{
+    --ground:#F2F3F0;
+    --surface:#FFFFFF;
+    --surface-2:#E9EBE6;
+    --ink:#16181C;
+    --ink-2:#3A4049;
+    --muted:#5C6270;
+    --line:#D5D9D2;
+    --line-2:#C0C5BC;
+    --pen:#2B4FD8;
+    --pen-deep:#1B2E7A;
+    --pen-wash:#E3E8FB;
+    --alert:#C2352B;
+    --alert-wash:#F8E5E3;
+    --good:#2F6B4F;
+
+    --f-display:"Reem Kufi","Noto Kufi Arabic",system-ui,sans-serif;
+    --f-body:"IBM Plex Sans Arabic","Segoe UI",system-ui,sans-serif;
+    --f-mono:"IBM Plex Mono",ui-monospace,"Courier New",monospace;
+
+    --maxw:74rem;
+    --r:4px;
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#111318;
+      --surface:#191C22;
+      --surface-2:#212530;
+      --ink:#E8EAE6;
+      --ink-2:#C3C8CE;
+      --muted:#98A0AE;
+      --line:#2A2F38;
+      --line-2:#3A414D;
+      --pen:#7E9BFF;
+      --pen-deep:#A8BCFF;
+      --pen-wash:#1B2540;
+      --alert:#F0685C;
+      --alert-wash:#33191A;
+      --good:#67C295;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#111318;
+    --surface:#191C22;
+    --surface-2:#212530;
+    --ink:#E8EAE6;
+    --ink-2:#C3C8CE;
+    --muted:#98A0AE;
+    --line:#2A2F38;
+    --line-2:#3A414D;
+    --pen:#7E9BFF;
+    --pen-deep:#A8BCFF;
+    --pen-wash:#1B2540;
+    --alert:#F0685C;
+    --alert-wash:#33191A;
+    --good:#67C295;
+  }
+
+  *{box-sizing:border-box}
+
+  body{
+    direction:rtl;
+    background:var(--ground);
+    color:var(--ink);
+    font-family:var(--f-body);
+    font-size:16px;
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .doc{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 1.5rem 6rem;
+  }
+
+  /* ---------- masthead ---------- */
+  .mast{
+    padding:3.5rem 0 2rem;
+    border-bottom:2px solid var(--ink);
+    display:flex;
+    flex-direction:column;
+    gap:1.25rem;
+  }
+  .eyebrow{
+    font-family:var(--f-mono);
+    font-size:.72rem;
+    letter-spacing:.14em;
+    color:var(--muted);
+    text-transform:uppercase;
+    display:flex;
+    gap:.9rem;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .eyebrow span{display:inline-flex;align-items:center;gap:.4rem}
+  .eyebrow i{
+    width:5px;height:5px;border-radius:50%;
+    background:var(--pen);display:inline-block;font-style:normal;
+  }
+  .mast h1{
+    font-family:var(--f-display);
+    font-weight:700;
+    font-size:clamp(3rem,10vw,5.5rem);
+    line-height:.95;
+    margin:0;
+    letter-spacing:-.01em;
+    text-wrap:balance;
+  }
+  .mast .lede{
+    font-size:1.15rem;
+    color:var(--ink-2);
+    max-width:52ch;
+    font-weight:300;
+    margin:0;
+  }
+
+  /* ---------- decision panel ---------- */
+  .verdict{
+    margin:2.5rem 0 0;
+    background:var(--surface);
+    border:1px solid var(--line-2);
+    border-top:5px solid var(--pen);
+    padding:2rem 2rem 1.75rem;
+  }
+  .verdict .tag{
+    font-family:var(--f-mono);
+    font-size:.7rem;
+    letter-spacing:.16em;
+    color:var(--pen);
+    display:block;
+    margin-bottom:.75rem;
+  }
+  .verdict h2{
+    font-family:var(--f-display);
+    font-size:clamp(1.5rem,3.6vw,2.1rem);
+    line-height:1.3;
+    margin:0 0 1rem;
+    text-wrap:balance;
+  }
+  .verdict p{margin:0 0 1rem;color:var(--ink-2);max-width:64ch}
+  .verdict p:last-child{margin-bottom:0}
+
+  .why{
+    list-style:none;
+    margin:1.5rem 0 0;
+    padding:0;
+    display:grid;
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  @media(min-width:720px){ .why{grid-template-columns:repeat(2,1fr)} }
+  .why li{
+    background:var(--surface);
+    padding:1.1rem 1.25rem;
+    display:flex;
+    gap:.85rem;
+    align-items:flex-start;
+  }
+  .why b{
+    font-family:var(--f-mono);
+    font-size:.78rem;
+    color:var(--pen);
+    flex:none;
+    padding-top:.28rem;
+    font-variant-numeric:tabular-nums;
+  }
+  .why span{font-size:.94rem;color:var(--ink-2);line-height:1.6}
+
+  /* ---------- sections ---------- */
+  section{padding-top:4rem}
+  .shead{
+    display:flex;
+    align-items:baseline;
+    gap:1rem;
+    border-bottom:1px solid var(--line-2);
+    padding-bottom:.6rem;
+    margin-bottom:1.75rem;
+  }
+  .shead .num{
+    font-family:var(--f-mono);
+    font-size:.8rem;
+    color:var(--pen);
+    font-variant-numeric:tabular-nums;
+    flex:none;
+  }
+  .shead h2{
+    font-family:var(--f-display);
+    font-size:clamp(1.35rem,3.2vw,1.85rem);
+    margin:0;
+    font-weight:600;
+    text-wrap:balance;
+  }
+  p{max-width:68ch}
+  section > p{color:var(--ink-2)}
+
+  h3{
+    font-family:var(--f-display);
+    font-size:1.08rem;
+    font-weight:600;
+    margin:2rem 0 .6rem;
+    color:var(--ink);
+  }
+
+  strong{font-weight:600;color:var(--ink)}
+  code{
+    font-family:var(--f-mono);
+    font-size:.86em;
+    background:var(--surface-2);
+    padding:.1em .38em;
+    border-radius:3px;
+    direction:ltr;
+    display:inline-block;
+  }
+
+  /* ---------- diagram ---------- */
+  .figure{
+    margin:2rem 0;
+    background:var(--surface);
+    border:1px solid var(--line-2);
+    padding:1.75rem 1.5rem 1.25rem;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:1rem;
+  }
+  .figure svg{width:100%;max-width:360px;height:auto;display:block}
+  .figure figcaption{
+    font-size:.88rem;
+    color:var(--muted);
+    max-width:46ch;
+    text-align:center;
+    line-height:1.65;
+  }
+
+  /* ---------- tables ---------- */
+  .tw{overflow-x:auto;margin:1.5rem 0;border:1px solid var(--line-2);background:var(--surface)}
+  table{border-collapse:collapse;width:100%;min-width:34rem;font-size:.92rem}
+  th,td{text-align:right;padding:.72rem .95rem;border-bottom:1px solid var(--line);vertical-align:top}
+  thead th{
+    background:var(--surface-2);
+    font-family:var(--f-mono);
+    font-size:.72rem;
+    letter-spacing:.09em;
+    color:var(--muted);
+    font-weight:500;
+    border-bottom:1px solid var(--line-2);
+  }
+  tbody tr:last-child td{border-bottom:none}
+  td.k{font-family:var(--f-mono);font-size:.82rem;color:var(--pen);direction:ltr;text-align:left;white-space:nowrap}
+  td.n{font-variant-numeric:tabular-nums;font-family:var(--f-mono);font-size:.86rem}
+
+  /* ---------- code ---------- */
+  pre{
+    direction:ltr;
+    text-align:left;
+    background:var(--surface);
+    border:1px solid var(--line-2);
+    border-right:3px solid var(--pen);
+    padding:1.2rem 1.35rem;
+    overflow-x:auto;
+    margin:1.5rem 0;
+    font-family:var(--f-mono);
+    font-size:.82rem;
+    line-height:1.72;
+    color:var(--ink-2);
+  }
+  pre .c{color:var(--muted)}
+  pre .s{color:var(--good)}
+  pre .p{color:var(--pen)}
+
+  /* ---------- pipeline ---------- */
+  .flow{
+    list-style:none;
+    counter-reset:step;
+    margin:1.5rem 0;
+    padding:0;
+    display:grid;
+    gap:.75rem;
+  }
+  .flow li{
+    counter-increment:step;
+    background:var(--surface);
+    border:1px solid var(--line);
+    padding:1.05rem 1.25rem 1.05rem 1.25rem;
+    display:grid;
+    grid-template-columns:2.4rem 1fr;
+    gap:1rem;
+    align-items:start;
+  }
+  .flow li::before{
+    content:counter(step,decimal-leading-zero);
+    font-family:var(--f-mono);
+    font-size:.8rem;
+    color:var(--pen);
+    background:var(--pen-wash);
+    border-radius:2px;
+    padding:.28rem 0;
+    text-align:center;
+    font-variant-numeric:tabular-nums;
+  }
+  .flow h4{
+    margin:0 0 .25rem;
+    font-family:var(--f-display);
+    font-size:1rem;
+    font-weight:600;
+  }
+  .flow p{margin:0;font-size:.93rem;color:var(--muted);max-width:none}
+
+  /* ---------- phases ---------- */
+  .phases{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);margin:1.5rem 0}
+  @media(min-width:860px){.phases{grid-template-columns:repeat(3,1fr)}}
+  .phase{background:var(--surface);padding:1.35rem 1.35rem 1.5rem;display:flex;flex-direction:column;gap:.5rem}
+  .phase .pn{
+    font-family:var(--f-mono);font-size:.7rem;letter-spacing:.13em;
+    color:var(--muted);
+  }
+  .phase h4{margin:0;font-family:var(--f-display);font-size:1.05rem;font-weight:600}
+  .phase p{margin:0;font-size:.9rem;color:var(--muted);max-width:none}
+  .phase .out{
+    margin-top:auto;padding-top:.85rem;border-top:1px dashed var(--line-2);
+    font-size:.82rem;color:var(--ink-2);
+  }
+  .phase .out b{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.1em;color:var(--pen);display:block;margin-bottom:.2rem}
+
+  /* ---------- checklist ---------- */
+  .check{list-style:none;margin:1.5rem 0;padding:0;display:grid;gap:.5rem}
+  .check li{
+    display:grid;grid-template-columns:1.5rem 1fr;gap:.85rem;align-items:start;
+    background:var(--surface);border:1px solid var(--line);padding:.9rem 1.1rem;
+    font-size:.94rem;color:var(--ink-2);
+  }
+  .check li::before{
+    content:"";width:1.05rem;height:1.05rem;margin-top:.28rem;
+    border:1.5px solid var(--line-2);border-radius:2px;background:var(--ground);
+  }
+
+  /* ---------- callout ---------- */
+  .warn{
+    background:var(--alert-wash);
+    border:1px solid var(--alert);
+    border-right-width:4px;
+    padding:1.15rem 1.35rem;
+    margin:1.75rem 0;
+  }
+  .warn strong{color:var(--alert)}
+  .warn p{margin:0;font-size:.95rem;color:var(--ink-2)}
+
+  .note{
+    background:var(--surface);
+    border:1px solid var(--line-2);
+    border-right:4px solid var(--pen);
+    padding:1.15rem 1.35rem;
+    margin:1.75rem 0;
+  }
+  .note p{margin:0;font-size:.95rem;color:var(--ink-2)}
+
+  footer{
+    margin-top:5rem;padding-top:1.5rem;border-top:2px solid var(--ink);
+    font-family:var(--f-mono);font-size:.75rem;color:var(--muted);
+    display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  }
+
+  a{color:var(--pen);text-decoration-thickness:1px;text-underline-offset:3px}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--pen);outline-offset:2px}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="doc">
+
+  <header class="mast">
+    <div class="eyebrow">
+      <span><i></i>وثيقة مواصفات وآلية عمل</span>
+      <span>الإصدار 1.0</span>
+      <span>5 سبتمبر 2026</span>
+    </div>
+    <h1>المشتبه</h1>
+    <p class="lede">لعبة ألغاز تحقيق عربية على شبكة ٥×٥. هذي الوثيقة تحدد القواعد ونموذج البيانات والمحرّك وآلية العمل — قبل كتابة أي سطر كود.</p>
+  </header>
+
+  <div class="verdict">
+    <span class="tag">القرار المطلوب</span>
+    <h2>ابدأوا بتطبيق الويب — لكن لا تلغوا الكتاب، أجّلوه</h2>
+    <p>سؤالك كان: نكنسل الكتاب ونكتفي بتطبيق ويب؟ الجواب إن الاثنين <strong>مو خيارين متعارضين</strong>. آلية الباركود اللي بنيتوا عليها الفكرة تحتاج موقعًا أصلًا — الباركود لازم يفتح صفحة. يعني تطبيق الويب <strong>ليس بديلًا عن الكتاب، هو الخطوة الأولى فيه</strong>.</p>
+    <p>ابنوا المحرّك والموقع أولًا، ولّدوا فيه عشرات القضايا، جرّبوها على ناس حقيقيين، وبعد ما تعرفون أي الألغاز نجحت — اطبعوا أفضلها في كتاب. وقتها يصير الكتاب حصيلة مؤكدة، مو مقامرة.</p>
+    <ul class="why">
+      <li><b>01</b><span><strong>الخطأ المطبوع دائم.</strong> لغز فيه حلّان في تطبيق ويب يتصلح في دقيقة؛ في كتاب مطبوع يبقى للأبد ويكسر ثقة القارئ في الكتاب كله.</span></li>
+      <li><b>02</b><span><strong>الويب يعطيكم بيانات.</strong> أي لغز أوقف الناس، كم واحد أكمل، أي مستوى صعب زيادة. هذي المعلومات ما تجيكم من كتاب مطبوع أبدًا.</span></li>
+      <li><b>03</b><span><strong>بدون تكلفة طباعة مقدمًا.</strong> تختبرون الفكرة كاملة قبل أي التزام مالي أو لوجستي.</span></li>
+      <li><b>04</b><span><strong>الكتاب يبقى هدفًا.</strong> نسخة مطبوعة من قضايا مجرّبة لها قيمة يصعب على موقع منافس يقلّدها.</span></li>
+    </ul>
+    <div class="warn" style="margin-bottom:0">
+      <p><strong>الخطر الوحيد وانتبهوا له:</strong> كتطبيق ويب أنتم تنافسون Murdoku مباشرة، وهو سابقكم بـ٣٦ قضية و٢٣ لغة وواجهة عربية جاهزة. لا تتميزوا بالآلية — تميزوا بـ<strong>المحتوى</strong>: بيئة سعودية، أسماء وأماكن مألوفة، قصة متسلسلة تربط القضايا، ولهجة تحكي زي الناس.</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="shead"><span class="num">01</span><h2>قواعد اللعبة</h2></div>
+    <p>الشبكة ليست جدولًا للاستبعاد — هي <strong>خريطة مسرح الجريمة نفسه</strong>، مقسّمة لغرف، وفيها أثاث وأشياء. اللاعب يضع الشخصيات على الخريطة.</p>
+
+    <figure class="figure">
+      <svg viewBox="0 0 320 348" role="img" aria-labelledby="digt">
+        <title id="digt">شبكة ٥×٥ مقسّمة لأربع غرف، مع شخصية موضوعة وعلامات استبعاد في صفها وعمودها</title>
+        <!-- room fills -->
+        <rect x="20" y="20" width="168" height="112" fill="var(--pen-wash)"/>
+        <rect x="188" y="20" width="112" height="112" fill="var(--surface-2)"/>
+        <rect x="20" y="132" width="112" height="168" fill="var(--surface-2)"/>
+        <rect x="132" y="132" width="168" height="168" fill="var(--pen-wash)"/>
+
+        <!-- thin cell grid -->
+        <g stroke="var(--line-2)" stroke-width="1">
+          <line x1="76"  y1="20" x2="76"  y2="300"/>
+          <line x1="132" y1="20" x2="132" y2="300"/>
+          <line x1="188" y1="20" x2="188" y2="300"/>
+          <line x1="244" y1="20" x2="244" y2="300"/>
+          <line x1="20" y1="76"  x2="300" y2="76"/>
+          <line x1="20" y1="132" x2="300" y2="132"/>
+          <line x1="20" y1="188" x2="300" y2="188"/>
+          <line x1="20" y1="244" x2="300" y2="244"/>
+        </g>
+
+        <!-- room dividers (thick) -->
+        <g stroke="var(--ink)" stroke-width="3" stroke-linecap="square">
+          <line x1="188" y1="20"  x2="188" y2="132"/>
+          <line x1="20"  y1="132" x2="300" y2="132"/>
+          <line x1="132" y1="132" x2="132" y2="300"/>
+        </g>
+        <rect x="20" y="20" width="280" height="280" fill="none" stroke="var(--ink)" stroke-width="3"/>
+
+        <!-- X marks: row of the placed character -->
+        <g stroke="var(--pen)" stroke-width="2.5" stroke-linecap="round" opacity="0.75">
+          <path d="M38 86 L58 106 M58 86 L38 106"/>
+          <path d="M94 86 L114 106 M114 86 L94 106"/>
+          <path d="M206 86 L226 106 M226 86 L206 106"/>
+          <path d="M262 86 L282 106 M282 86 L262 106"/>
+          <!-- column -->
+          <path d="M150 38 L170 58 M170 38 L150 58"/>
+          <path d="M150 150 L170 170 M170 150 L150 170"/>
+          <path d="M150 206 L170 226 M170 206 L150 226"/>
+          <path d="M150 262 L170 282 M170 262 L150 282"/>
+        </g>
+
+        <!-- placed character -->
+        <circle cx="160" cy="104" r="19" fill="var(--pen)"/>
+        <text x="160" y="105" fill="#FFFFFF" font-family="Reem Kufi, sans-serif" font-size="17" font-weight="700"
+              text-anchor="middle" dominant-baseline="middle">أ</text>
+
+        <!-- room labels -->
+        <g font-family="IBM Plex Sans Arabic, sans-serif" font-size="11" fill="var(--muted)" text-anchor="end">
+          <text x="180" y="36">الصالة</text>
+          <text x="292" y="36">المطبخ</text>
+          <text x="124" y="148">المخزن</text>
+          <text x="292" y="148">الحديقة</text>
+        </g>
+
+        <!-- caption strip -->
+        <g font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--muted)">
+          <text x="300" y="326" text-anchor="end">5 × 5 = 25 خلية · 4 غرف · 5 شخصيات</text>
+        </g>
+      </svg>
+      <figcaption>حالما تُوضع شخصية في خلية، يُستبعد صفها وعمودها بالكامل تلقائيًا. هذا القيد وحده يقوم بعمل سبعة أو ثمانية أدلة إضافية.</figcaption>
+    </figure>
+
+    <h3>القواعد الخمس</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th style="width:12rem">القاعدة</th><th>التفصيل</th></tr></thead>
+        <tbody>
+          <tr><td><strong>واحد لكل صف وعمود</strong></td><td>كل صف يحتوي شخصية واحدة فقط، وكل عمود كذلك — تمامًا كالسودوكو. وضع شخصية يستبعد صفها وعمودها آليًا.</td></tr>
+          <tr><td><strong>الغرف</strong></td><td>الشبكة مقسّمة لمناطق مسماة. الغرفة تحدد نطاق أدلة الجوار — «بجانب» لا تعبر جدارًا.</td></tr>
+          <tr><td><strong>«بجانب»</strong></td><td>مباشرة يمين أو يسار أو فوق أو تحت، <strong>وفي نفس الغرفة</strong>. القُطر لا يُحتسب.</td></tr>
+          <tr><td><strong>الضحية</strong></td><td>إحدى الشخصيات ضحية. دليلها ثابت: «كان وحده مع القاتل» — أي أن غرفتها تضم شخصين بالضبط.</td></tr>
+          <tr><td><strong>القاتل</strong></td><td>لا يُسأل عنه مباشرة. هو الشخص الوحيد الذي انتهى في غرفة الضحية. يظهر تلقائيًا عند اكتمال الخريطة.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <p><strong>لماذا هذا القيد مهم لكم تحديدًا:</strong> في المثال الذي أرسله شريكك (٥ أشخاص، ٥ أماكن، ٥ أدلة) وجدنا <strong>٤٠ حلًا صحيحًا</strong> لا حلًا واحدًا. مع قيد السودوكو، خمسة أدلة تكفي لحل واحد فريد. القيد هو ما يجعل اللغز قابلًا للنشر.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="shead"><span class="num">02</span><h2>كتالوج الأدلة</h2></div>
+    <p>كل دليل لازم يكون <strong>قابلًا للفحص آليًا</strong> — أي أن الكود يقدر يحكم عليه بصح أو خطأ لأي وضعية. أي دليل لا يندرج تحت نوع من هذي الأنواع، لا يدخل اللعبة.</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th style="width:11rem">النوع</th><th style="width:9rem">المعاملات</th><th>الصياغة العربية</th></tr></thead>
+        <tbody>
+          <tr><td class="k">inRoom</td><td class="k">char, room</td><td>«أحمد كان في المخزن.»</td></tr>
+          <tr><td class="k">notInRoom</td><td class="k">char, room</td><td>«خالد لم يكن في المطبخ.»</td></tr>
+          <tr><td class="k">onObject</td><td class="k">char, object</td><td>«ناصر كان عند البئر.»</td></tr>
+          <tr><td class="k">notOnObject</td><td class="k">char, object</td><td>«فهد لم يكن على السجادة.»</td></tr>
+          <tr><td class="k">besideObject</td><td class="k">char, object</td><td>«سالم كان بجانب الطاولة.»</td></tr>
+          <tr><td class="k">besideChar</td><td class="k">char, char</td><td>«أحمد كان بجانب خالد.»</td></tr>
+          <tr><td class="k">notBesideChar</td><td class="k">char, char</td><td>«ناصر لم يكن بجانب فهد.»</td></tr>
+          <tr><td class="k">sameRoom</td><td class="k">char, char</td><td>«خالد وسالم كانا في نفس الغرفة.»</td></tr>
+          <tr><td class="k">diffRoom</td><td class="k">char, char</td><td>«أحمد وناصر لم يكونا في نفس الغرفة.»</td></tr>
+          <tr><td class="k">direction</td><td class="k">char, dir, char</td><td>«فهد كان شمال سالم.»</td></tr>
+          <tr><td class="k">rowOffset</td><td class="k">char, n, char</td><td>«أحمد كان على بُعد صفّين من خالد.»</td></tr>
+          <tr><td class="k">inRow / inCol</td><td class="k">char, n</td><td>«ناصر كان في الصف الأخير.»</td></tr>
+          <tr><td class="k">aloneInRoom</td><td class="k">char</td><td>«فهد كان وحده في غرفته.»</td></tr>
+          <tr><td class="k">aloneWith</td><td class="k">victim, 1</td><td>«الضحية كان وحده مع القاتل.» — إلزامي في كل قضية</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="warn">
+      <p><strong>دليل مرفوض:</strong> «الشخص في المكتب وصل قبل الشخص في الصالة». هذا يتكلم عن <strong>الوقت</strong>، والوقت غير موجود في الشبكة — فاللاعب ما عنده وين يستنتجه، والكود ما يقدر يفحصه. إما تضيفون الوقت كبُعد كامل في نموذج البيانات، أو تحذفون هذا النوع نهائيًا.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="shead"><span class="num">03</span><h2>نموذج البيانات</h2></div>
+    <p>كل قضية ملف <code>JSON</code> واحد مستقل. هذا يخلي القضايا قابلة للتوليد والمراجعة والنسخ الاحتياطي بدون قاعدة بيانات في البداية.</p>
+
+<pre><span class="c">// cases/case-001.json — مثال لبنية الملف</span>
+{
+  <span class="p">"id"</span>: <span class="s">"case-001"</span>,
+  <span class="p">"title"</span>: <span class="s">"جريمة المستودع"</span>,
+  <span class="p">"size"</span>: 5,
+  <span class="p">"difficulty"</span>: <span class="s">"easy"</span>,
+  <span class="p">"blockedCells"</span>: [[4, 4]],          <span class="c">// خلايا لا يمكن الوقوف فيها</span>
+
+  <span class="p">"rooms"</span>: [
+    { <span class="p">"id"</span>: <span class="s">"hall"</span>,    <span class="p">"name"</span>: <span class="s">"الصالة"</span>,
+      <span class="p">"cells"</span>: [[0,0],[0,1],[0,2],[1,0],[1,1],[1,2]] },
+    { <span class="p">"id"</span>: <span class="s">"kitchen"</span>, <span class="p">"name"</span>: <span class="s">"المطبخ"</span>,
+      <span class="p">"cells"</span>: [[0,3],[0,4],[1,3],[1,4]] },
+    { <span class="p">"id"</span>: <span class="s">"store"</span>,   <span class="p">"name"</span>: <span class="s">"المخزن"</span>,
+      <span class="p">"cells"</span>: [[2,0],[2,1],[3,0],[3,1],[4,0],[4,1]] },
+    { <span class="p">"id"</span>: <span class="s">"yard"</span>,    <span class="p">"name"</span>: <span class="s">"الحديقة"</span>,
+      <span class="p">"cells"</span>: [[2,2],[2,3],[2,4],[3,2],[3,3],[3,4],[4,2],[4,3]] }
+  ],
+
+  <span class="p">"objects"</span>: [
+    { <span class="p">"id"</span>: <span class="s">"table"</span>, <span class="p">"name"</span>: <span class="s">"طاولة"</span>, <span class="p">"cell"</span>: [1, 1] },
+    { <span class="p">"id"</span>: <span class="s">"well"</span>,  <span class="p">"name"</span>: <span class="s">"بئر"</span>,   <span class="p">"cell"</span>: [3, 3] }
+  ],
+
+  <span class="p">"characters"</span>: [
+    { <span class="p">"id"</span>: <span class="s">"ahmad"</span>,  <span class="p">"name"</span>: <span class="s">"أحمد"</span>,  <span class="p">"victim"</span>: false },
+    { <span class="p">"id"</span>: <span class="s">"khalid"</span>, <span class="p">"name"</span>: <span class="s">"خالد"</span>,  <span class="p">"victim"</span>: false },
+    { <span class="p">"id"</span>: <span class="s">"nasir"</span>,  <span class="p">"name"</span>: <span class="s">"ناصر"</span>,  <span class="p">"victim"</span>: false },
+    { <span class="p">"id"</span>: <span class="s">"fahd"</span>,   <span class="p">"name"</span>: <span class="s">"فهد"</span>,   <span class="p">"victim"</span>: false },
+    { <span class="p">"id"</span>: <span class="s">"salim"</span>,  <span class="p">"name"</span>: <span class="s">"سالم"</span>,  <span class="p">"victim"</span>: true  }
+  ],
+
+  <span class="c">// الحل السري — [صف, عمود] لكل شخصية</span>
+  <span class="p">"solution"</span>: {
+    <span class="p">"ahmad"</span>: [0,2], <span class="p">"khalid"</span>: [1,0], <span class="p">"nasir"</span>: [2,4],
+    <span class="p">"fahd"</span>:  [3,1], <span class="p">"salim"</span>:  [4,3]
+  },
+
+  <span class="p">"clues"</span>: [
+    { <span class="p">"char"</span>:<span class="s">"ahmad"</span>,  <span class="p">"type"</span>:<span class="s">"inRoom"</span>,       <span class="p">"room"</span>:<span class="s">"hall"</span>  },
+    { <span class="p">"char"</span>:<span class="s">"khalid"</span>, <span class="p">"type"</span>:<span class="s">"besideObject"</span>, <span class="p">"object"</span>:<span class="s">"table"</span> },
+    { <span class="p">"char"</span>:<span class="s">"nasir"</span>,  <span class="p">"type"</span>:<span class="s">"notInRoom"</span>,    <span class="p">"room"</span>:<span class="s">"store"</span> },
+    { <span class="p">"char"</span>:<span class="s">"fahd"</span>,   <span class="p">"type"</span>:<span class="s">"inRoom"</span>,       <span class="p">"room"</span>:<span class="s">"store"</span> },
+    { <span class="p">"char"</span>:<span class="s">"salim"</span>,  <span class="p">"type"</span>:<span class="s">"aloneWith"</span>,    <span class="p">"count"</span>: 1     }
+  ]
+}
+</pre>
+
+    <div class="note">
+      <p>في هذا المثال، غرفة الضحية (الحديقة) تضم سالم وناصر فقط ⟸ <strong>ناصر هو القاتل</strong>. لاحظ أن الإجابة لم تُكتب في أي مكان — هي <em>نتيجة</em> للحل، لا حقل فيه. هذا مثال للبنية فقط؛ لا يُنشر أي لغز قبل مروره على المدقّق في القسم التالي.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="shead"><span class="num">04</span><h2>المحرّك</h2></div>
+    <p>قطعتان فقط، وهما قلب المشروع كله. لو ضبطتوهما، الباقي واجهات.</p>
+
+    <h3>أ — المدقّق: كم حلًا لهذا اللغز؟</h3>
+    <p>لأن كل شخصية تأخذ صفًا فريدًا وعمودًا فريدًا، فإن أي وضعية = تطابق بين الشخصيات والصفوف، وتطابق آخر بينها وبين الأعمدة. عدد الاحتمالات الكلي <code>n! × n!</code> — وهو رقم صغير جدًا يسمح بالفحص الشامل بلا خوارزميات معقدة:</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th style="width:8rem">حجم الشبكة</th><th style="width:12rem">عدد الوضعيات</th><th>الحكم</th></tr></thead>
+        <tbody>
+          <tr><td class="n">5 × 5</td><td class="n">14,400</td><td>فحص شامل فوري — أجزاء من الثانية</td></tr>
+          <tr><td class="n">6 × 6</td><td class="n">518,400</td><td>فحص شامل مريح</td></tr>
+          <tr><td class="n">7 × 7</td><td class="n">25,401,600</td><td>يحتاج تقليمًا مبكرًا للأدلة</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+<pre><span class="c">// المدقّق — الناتج الوحيد المقبول للنشر هو 1</span>
+function countSolutions(puzzle) {
+  const chars = puzzle.characters.map(c =&gt; c.id);
+  let found = 0, first = null;
+
+  <span class="c">// rowPerm: أي شخصية في أي صف · colPerm: أي شخصية في أي عمود</span>
+  for (const rowPerm of permutations(chars)) {
+    for (const colPerm of permutations(chars)) {
+      const placement = {};
+      for (const c of chars)
+        placement[c] = [rowPerm.indexOf(c), colPerm.indexOf(c)];
+
+      if (hitsBlockedCell(placement, puzzle)) continue;
+      if (!puzzle.clues.every(cl =&gt; check(cl, placement, puzzle))) continue;
+
+      found++;
+      if (!first) first = placement;
+      if (found &gt; 1) return { count: found, first };  <span class="c">// حلان = مرفوض</span>
+    }
+  }
+  return { count: found, first };
+}
+</pre>
+
+    <h3>ب — المولّد: من حل إلى لغز</h3>
+    <p>لا تكتبوا الأدلة يدويًا ثم تتمنوا أن الحل فريد. اعكسوا الاتجاه: ابدأوا بكل الأدلة الصادقة، ثم احذفوا منها ما دام الحل باقيًا فريدًا. هذي طريقة مضمونة رياضيًا وتنتج أدلة لا زائد فيها ولا ناقص.</p>
+
+<pre><span class="c">// المولّد — كل دليل ناتج ضروري بالضرورة</span>
+function generate(layout) {
+  const solution = randomValidPlacement(layout);   <span class="c">// 1. اختر الحل سرًا</span>
+  let clues = allTrueClues(solution, layout);      <span class="c">// 2. ولّد كل دليل صادق (مئات)</span>
+                                                   <span class="c">//    الحل فريد بالضرورة الآن</span>
+  shuffle(clues);
+  for (const clue of [...clues]) {                 <span class="c">// 3. جرّب حذف كل دليل</span>
+    const trial = clues.filter(c =&gt; c !== clue);
+    if (countSolutions({ ...layout, clues: trial }).count === 1)
+      clues = trial;                               <span class="c">//    بقي فريدًا ⟸ احذفه فعلًا</span>
+  }
+  return { ...layout, solution, clues };           <span class="c">// 4. أقل مجموعة أدلة ممكنة</span>
+}
+</pre>
+
+    <h3>ج — قياس الصعوبة</h3>
+    <p>عدد الأدلة مقياس ضعيف. المقياس الصحيح: <strong>هل ينحل اللغز بالاستنتاج المباشر وحده؟</strong> شغّلوا حلّالًا يستنتج بلا تخمين، وشوفوا وين يقف:</p>
+    <div class="tw">
+      <table>
+        <thead><tr><th style="width:9rem">المستوى</th><th>المعيار</th></tr></thead>
+        <tbody>
+          <tr><td><strong>سهل</strong></td><td>ينحل بالاستنتاج المباشر فقط — كل خطوة لها سبب واضح</td></tr>
+          <tr><td><strong>متوسط</strong></td><td>يحتاج افتراضًا واحدًا وتراجعًا</td></tr>
+          <tr><td><strong>صعب</strong></td><td>يحتاج افتراضين متداخلين أو أكثر</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="shead"><span class="num">05</span><h2>آلية العمل</h2></div>
+    <p>الرحلة من فكرة قضية إلى قضية منشورة. الترتيب مقصود — كل خطوة تعتمد على اللي قبلها.</p>
+
+    <ol class="flow">
+      <li><div><h4>ارسم التخطيط</h4><p>خريطة ٥×٥: الغرف وحدودها، والأشياء داخلها، والخلايا المحظورة. هذي مهمة تصميم بصري خالصة.</p></div></li>
+      <li><div><h4>اكتب الشخصيات والقصة</h4><p>خمسة أشخاص بأسماء وملامح سعودية، وواحد منهم الضحية. سطر أو سطران يمهدان للقضية.</p></div></li>
+      <li><div><h4>شغّل المولّد</h4><p>يختار حلًا سريًا ويستخرج أقل مجموعة أدلة تؤدي إليه.</p></div></li>
+      <li><div><h4>شغّل المدقّق</h4><p>لا مرور إلا إذا كان الناتج <code>count === 1</code> بالضبط. أي رقم آخر يعيد اللغز للخطوة السابقة.</p></div></li>
+      <li><div><h4>صُغ الأدلة بالعربية</h4><p>حوّل الأدلة الآلية إلى جمل طبيعية. المعنى لا يتغير — الصياغة فقط. هنا تدخل اللهجة والنبرة.</p></div></li>
+      <li><div><h4>اختبرها على إنسان</h4><p>شخص واحد على الأقل يحلها كاملة بلا مساعدة. لو وصل لحل مختلف أو علق — ارجع للمولّد.</p></div></li>
+      <li><div><h4>انشرها</h4><p>أضف الملف لمجلد القضايا، وحدد مستواها، واربطها بالقصة العامة إن وُجدت.</p></div></li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="shead"><span class="num">06</span><h2>شاشات التطبيق</h2></div>
+    <div class="tw">
+      <table>
+        <thead><tr><th style="width:11rem">الشاشة</th><th>المحتوى الأساسي</th></tr></thead>
+        <tbody>
+          <tr><td><strong>قائمة القضايا</strong></td><td>القضايا مرتبة بالمستوى، مع علامة على المحلولة. تصفية بالصعوبة.</td></tr>
+          <tr><td><strong>شاشة اللعب</strong></td><td>الخريطة في الوسط، بطاقات المشتبهين وأدلتهم على الجانب، وأدوات (استبعاد، ممحاة، تراجع).</td></tr>
+          <tr><td><strong>التفاعل</strong></td><td>نقرة = ملاحظة مبدئية بالقلم الرصاص · ضغط مطوّل = تثبيت الوضع · الاستبعاد التلقائي للصف والعمود عند التثبيت.</td></tr>
+          <tr><td><strong>التحقق</strong></td><td>زر «إرسال» يتفعّل بعد وضع الجميع. يفحص الوضعية مقابل الحل ويعلن القاتل.</td></tr>
+          <tr><td><strong>بعد الحل</strong></td><td>خاتمة القصة، والوقت المستغرق، ورابط القضية التالية.</td></tr>
+          <tr><td><strong>الطباعة</strong></td><td>نسخة ورقية نظيفة من الخريطة والأدلة — الجسر المستقبلي نحو الكتاب.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <p><strong>ابنِ زر الطباعة من البداية.</strong> هو ما يحوّل التطبيق إلى مصنع للكتاب لاحقًا بدل ما يكون منتجًا منفصلًا. وهو أيضًا أرخص طريقة لاختبار تجربة الورق قبل أي طباعة حقيقية.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="shead"><span class="num">07</span><h2>خارطة الطريق</h2></div>
+    <div class="phases">
+      <div class="phase">
+        <span class="pn">المرحلة صفر</span>
+        <h4>المحرّك — بلا واجهة</h4>
+        <p>المدقّق فقط، يشتغل من سطر الأوامر على ملف JSON مكتوب باليد. لا HTML ولا تصميم.</p>
+        <div class="out"><b>المخرَج</b>لغز واحد مثبت رياضيًا أن له حلًا واحدًا</div>
+      </div>
+      <div class="phase">
+        <span class="pn">المرحلة الأولى</span>
+        <h4>المولّد والمكتبة</h4>
+        <p>توليد آلي، وقياس صعوبة، وبناء أول مجموعة قضايا موزعة على المستويات.</p>
+        <div class="out"><b>المخرَج</b>٢٠ قضية مولّدة ومدقّقة</div>
+      </div>
+      <div class="phase">
+        <span class="pn">المرحلة الثانية</span>
+        <h4>واجهة اللعب</h4>
+        <p>الخريطة التفاعلية، بطاقات الأدلة، الوضع والاستبعاد والتراجع، وزر التحقق.</p>
+        <div class="out"><b>المخرَج</b>قضية كاملة تُلعب من المتصفح</div>
+      </div>
+      <div class="phase">
+        <span class="pn">المرحلة الثالثة</span>
+        <h4>الهوية والتعريب</h4>
+        <p>الرسم والشخصيات والبيئة السعودية، وصياغة الأدلة بلهجة طبيعية، وواجهة RTL كاملة.</p>
+        <div class="out"><b>المخرَج</b>الشكل النهائي الذي يميزكم</div>
+      </div>
+      <div class="phase">
+        <span class="pn">المرحلة الرابعة</span>
+        <h4>الاختبار الحقيقي</h4>
+        <p>عشرة أشخاص من خارج الفريق يلعبون. قِس: كم أكمل، وين علقوا، أي لغز أُسيء فهمه.</p>
+        <div class="out"><b>المخرَج</b>قائمة الألغاز التي تستحق الطباعة</div>
+      </div>
+      <div class="phase">
+        <span class="pn">المرحلة الخامسة</span>
+        <h4>الكتاب</h4>
+        <p>أفضل القضايا المجرّبة، مرتبة بتدرج الصعوبة، وباركود لكل لغز يفتح صفحة التحقق نفسها.</p>
+        <div class="out"><b>المخرَج</b>كتاب مبني على بيانات لا على تخمين</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shead"><span class="num">08</span><h2>معايير قبول أي لغز</h2></div>
+    <p>لا يُنشر لغز ولا يُطبع قبل أن تتحقق هذي الشروط كلها. هذي القائمة هي خط الدفاع الأخير قبل أن يصل الخطأ للقارئ.</p>
+    <ul class="check">
+      <li>المدقّق أعطى <code>count === 1</code> بالضبط — لا صفر ولا اثنين.</li>
+      <li>كل دليل ضروري: حذف أي واحد منه يجعل الحل غير فريد.</li>
+      <li>كل دليل يخص فئة موجودة فعلًا في الشبكة — لا وقت ولا أدوات ولا أي بُعد غير مرسوم.</li>
+      <li>غرفة الضحية تضم شخصين بالضبط، فيتحدد القاتل بلا لبس.</li>
+      <li>الصياغة العربية تطابق الدليل الآلي تمامًا — لا زيادة معنى ولا نقصان.</li>
+      <li>إنسان واحد على الأقل حلّها كاملة بلا مساعدة ووصل لنفس القاتل.</li>
+      <li>مستوى الصعوبة مُقاس بالحلّال، لا مُقدَّر بالحدس.</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="shead"><span class="num">09</span><h2>تقسيم العمل</h2></div>
+    <div class="tw">
+      <table>
+        <thead><tr><th style="width:13rem">المسار</th><th>يشمل</th></tr></thead>
+        <tbody>
+          <tr><td><strong>المحرّك والتطبيق</strong></td><td>المدقّق، المولّد، نموذج البيانات، واجهة اللعب، زر الطباعة.</td></tr>
+          <tr><td><strong>التصميم البصري</strong></td><td>الخرائط والغرف والأشياء، الشخصيات، الهوية، تجربة الاستخدام.</td></tr>
+          <tr><td><strong>المحتوى</strong></td><td>القصص، الأسماء، صياغة الأدلة بالعربية، الحبكة الرابطة بين القضايا.</td></tr>
+          <tr><td><strong>الجودة</strong></td><td>إدارة الاختبار على أشخاص حقيقيين، وجمع الملاحظات، وقرار النشر.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <p><strong>أول خطوة عملية:</strong> افتح VS Code، أنشئ ملف <code>case-001.json</code> بالبنية أعلاه، واكتب <code>countSolutions</code>. لا شي غيره. لو طلع الرقم <code>1</code> — عندكم مشروع. لو طلع غير ذلك — تعرفون بالضبط وش تصلحون قبل ما تبنون أي واجهة.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>المشتبه · وثيقة مواصفات وآلية عمل · الإصدار 1.0</span>
+    <span>5 سبتمبر 2026</span>
+  </footer>
+
+</div>

@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build output (later phases)
+dist/
+build/
+.vite/
+
+# Logs and temp
+*.log
+npm-debug.log*
+.tmp/
+tmp/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Environment
+.env
+.env.*
+!.env.example
