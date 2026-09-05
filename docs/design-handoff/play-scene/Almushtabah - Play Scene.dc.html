@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Noto+Naskh+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #ded7c8; }
+  a { color: #1f4fb8; }
+  a:hover { color: #17398a; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</helmet>
+
+<section style="direction:rtl;display:flex;flex-direction:column;align-items:center;gap:16px;padding:28px 28px 70px;background:#ded7c8;font-family:'Noto Naskh Arabic',serif;color:#1d1a16;">
+  <div id="1a" style="display:flex;flex-direction:column;gap:10px;">
+
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-family:Tajawal,sans-serif;font-weight:800;font-size:12px;background:#1d1a16;color:#f4eee2;padding:3px 10px;border-radius:99px;letter-spacing:.04em;">1a</span>
+      <span style="font-family:Tajawal,sans-serif;font-weight:700;font-size:15px;color:#3d372e;">شاشة اللعب — عرض المشهد · حاسوب ١٢٨٠</span>
+    </div>
+
+    <div style="position:relative;width:1280px;background:#f4eee2;border:1px solid #b7ae9d;border-radius:10px;overflow:hidden;box-shadow:0 26px 60px rgba(0,0,0,.22);">
+
+      <div style="display:flex;align-items:center;gap:12px;padding:13px 20px 11px;background:#f4eee2;border-bottom:1px solid #d3c9b5;">
+        <a href="#1a" style="font-family:Tajawal,sans-serif;font-weight:500;font-size:13px;text-decoration:none;color:#4a453c;border:1px solid #d3c9b5;background:#ebe3d3;border-radius:8px;padding:7px 13px;">الملفات ›</a>
+        <span style="font-family:Tajawal,sans-serif;font-size:12px;color:#7d766a;letter-spacing:.04em;border:1px solid #d3c9b5;border-radius:3px;padding:3px 9px;">ملف ٠١٩ · بيت · ١٦×١٦</span>
+        <h1 style="font-family:Tajawal,sans-serif;font-weight:800;font-size:24px;line-height:1.2;margin:0;">ليلة العزيمة</h1>
+        <span style="font-family:Tajawal,sans-serif;font-weight:800;font-size:14px;letter-spacing:.06em;color:#8a5a00;border:3px double #8a5a00;border-radius:6px;padding:1px 11px;transform:rotate(-6deg);opacity:.92;">صعب</span>
+        <div style="flex:1;"></div>
+        <span style="font-family:Tajawal,sans-serif;font-size:12px;color:#7d766a;">١٦ مشتبهًا · ١٠ غرف</span>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;padding:9px 20px;background:#f0e9dc;border-bottom:2px solid #1d1a16;">
+        <div style="display:inline-flex;border:1px solid #cec3ad;border-radius:9px;overflow:hidden;">
+          <button onClick="{{ setScene }}" style="{{ segScene }}">مشهد</button>
+          <button onClick="{{ setPlan }}" style="{{ segPlan }}">مخطط</button>
+        </div>
+        <div style="width:1px;height:22px;background:#d3c9b5;"></div>
+        <button onClick="{{ cycleLight }}" style="font-family:Tajawal,sans-serif;font-weight:500;font-size:13px;display:inline-flex;align-items:center;gap:7px;background:#ebe3d3;color:#1d1a16;border:1px solid #cec3ad;border-radius:9px;padding:8px 13px;cursor:pointer;">
+          <span style="{{ lightDot }}"></span>
+          <span>{{ lightLabel }}</span>
+        </button>
+        <div style="width:1px;height:22px;background:#d3c9b5;"></div>
+        <button style="font-family:Tajawal,sans-serif;font-size:13px;background:#ebe3d3;color:#1d1a16;border:1px solid #cec3ad;border-radius:9px;padding:8px 13px;cursor:pointer;">تراجع</button>
+        <button style="font-family:Tajawal,sans-serif;font-size:13px;background:#ebe3d3;color:#1d1a16;border:1px solid #cec3ad;border-radius:9px;padding:8px 13px;opacity:.45;cursor:default;">إعادة</button>
+        <div style="width:1px;height:22px;background:#d3c9b5;"></div>
+        <button onClick="{{ toggleHint }}" style="font-family:Tajawal,sans-serif;font-weight:500;font-size:13px;display:inline-flex;align-items:center;gap:8px;background:#fff1cf;color:#6f4900;border:1px solid #d9b467;border-radius:9px;padding:8px 13px;cursor:pointer;">
+          <span>تلميح</span>
+          <span style="font-size:12px;background:rgba(138,90,0,.14);border-radius:99px;padding:1px 8px;">٢/١٢</span>
+        </button>
+        <button style="font-family:Tajawal,sans-serif;font-size:13px;background:transparent;color:#4a453c;border:1px solid #cec3ad;border-radius:9px;padding:8px 13px;cursor:pointer;">مسح العلامات</button>
+        <div style="flex:1;"></div>
+        <button style="font-family:Tajawal,sans-serif;font-weight:800;font-size:15px;display:inline-flex;align-items:center;gap:9px;background:#c8392b;color:#fff;border:1px solid #a72d21;border-radius:9px;padding:9px 20px;cursor:pointer;box-shadow:0 2px 0 #8f2519,0 7px 16px rgba(200,57,43,.28);">
+          <span>تسليم</span>
+          <span style="font-family:Tajawal,sans-serif;font-weight:700;font-size:12px;background:rgba(255,255,255,.22);border-radius:99px;padding:2px 9px;">٧/١٦</span>
+        </button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:320px 1fr;gap:16px;padding:16px 20px 0;align-items:start;">
+
+        <div style="display:flex;flex-direction:column;gap:8px;max-height:826px;overflow-y:auto;padding:2px 3px 10px;">
+          <sc-for list="{{ cards }}" as="c" hint-placeholder-count="6">
+            <div onClick="{{ c.onClick }}" style="{{ c.style }}">
+              <div style="{{ c.avatarStyle }}">
+                <sc-for list="{{ c.parts }}" as="p" hint-placeholder-count="4"><div style="{{ p }}"></div></sc-for>
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-family:Tajawal,sans-serif;font-weight:700;font-size:15px;line-height:1.5;">
+                  <span>{{ c.name }}</span>
+                  <span style="{{ c.tagStyle }}">{{ c.tag }}</span>
+                  <sc-if value="{{ c.placed }}" hint-placeholder-val="{{ true }}">
+                    <span style="font-family:Tajawal,sans-serif;font-weight:500;font-size:11px;color:#4a453c;display:inline-flex;align-items:center;gap:4px;border:1px solid #cec3ad;border-radius:3px;padding:0 5px;">
+                      <span style="width:6px;height:6px;border-radius:50%;background:#c8392b;display:inline-block;"></span>
+                      <span>مثبّتة</span>
+                    </span>
+                  </sc-if>
+                </div>
+                <div style="{{ c.textStyle }}">{{ c.text }}</div>
+              </div>
+              <sc-if value="{{ c.strikable }}" hint-placeholder-val="{{ true }}">
+                <button style="position:absolute;top:6px;left:7px;background:transparent;border:none;color:#9b9284;font-size:13px;line-height:1;padding:3px 5px;border-radius:4px;cursor:pointer;">✕</button>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;min-width:0;">
+
+          <div style="display:flex;align-items:center;gap:12px;padding:0 2px;">
+            <span style="font-family:Tajawal,sans-serif;font-weight:700;font-size:12px;color:#4a453c;display:inline-flex;align-items:center;gap:6px;border:1px solid #cec3ad;background:#ebe3d3;border-radius:99px;padding:3px 11px;">
+              <span>الشمال</span><span style="font-size:14px;line-height:1;">↑</span>
+            </span>
+            <span style="font-size:12px;color:#7d766a;">العمود ١ أقصى اليمين · الصف ١ أعلى · الشرق يمين الشاشة</span>
+          </div>
+
+          <div style="{{ boardWrap }}">
+            <div style="position:relative;width:max-content;">
+              <div style="display:flex;position:sticky;top:0;z-index:9;">
+                <div style="{{ cornerStyle }}"></div>
+                <sc-for list="{{ cols }}" as="h" hint-placeholder-count="8"><div style="{{ h.style }}">{{ h.label }}</div></sc-for>
+              </div>
+              <sc-for list="{{ rows }}" as="row" hint-placeholder-count="8">
+                <div style="display:flex;">
+                  <div style="{{ row.style }}">{{ row.label }}</div>
+                  <sc-for list="{{ row.cells }}" as="cell" hint-placeholder-count="8">
+                    <div style="{{ cell.style }}">
+                      <sc-if value="{{ cell.hatch }}"><div style="{{ cell.hatch }}"></div></sc-if>
+                      <sc-if value="{{ cell.furn }}"><div style="{{ cell.furn }}"></div></sc-if>
+                      <sc-if value="{{ cell.mark }}"><div style="{{ markStyle }}">✗</div></sc-if>
+                      <sc-if value="{{ cell.pencil }}"><div style="{{ pencilStyle }}">{{ cell.pencil }}</div></sc-if>
+                      <sc-if value="{{ cell.token }}">
+                        <div style="{{ tokenWrap }}">
+                          <div style="{{ tokenShadow }}"></div>
+                          <div style="{{ cell.token.avatarStyle }}">
+                            <sc-for list="{{ cell.token.parts }}" as="p" hint-placeholder-count="4"><div style="{{ p }}"></div></sc-for>
+                          </div>
+                          <div style="{{ tokenName }}">{{ cell.token.name }}</div>
+                        </div>
+                      </sc-if>
+                      <sc-if value="{{ cell.label }}"><div style="{{ slipStyle }}">{{ cell.label }}</div></sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-for>
+              <sc-if value="{{ lightOverlay }}"><div style="{{ lightOverlay }}"></div></sc-if>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:320px 1fr;gap:16px;padding:14px 20px 22px;align-items:start;">
+        <div></div>
+        <div style="display:flex;gap:14px;align-items:flex-start;">
+          <div style="flex:1;background:#ebe3d3;border:1px solid #d3c9b5;border-radius:6px;padding:12px 15px;">
+            <h3 style="font-family:Tajawal,sans-serif;font-weight:800;font-size:14px;margin:0 0 6px;letter-spacing:.01em;">القواعد العامة</h3>
+            <div style="display:flex;flex-direction:column;gap:3px;font-size:14px;color:#4a453c;line-height:1.7;text-wrap:pretty;">
+              <span>في كل صف شخص واحد فقط، وفي كل عمود شخص واحد فقط.</span>
+              <span>لا يدخل أحد من «الضيوف» إلى المستودع.</span>
+              <span>نايف وُجد وحده مع القاتل؛ من ينتهي في غرفته هو القاتل.</span>
+            </div>
+            <div style="margin-top:9px;padding-top:9px;border-top:1px dashed #cec3ad;font-size:13px;color:#7d766a;line-height:1.7;">
+              اختر بطاقة ثم اضغط الخلية لتثبيت الشخصية. ضغطة على خلية فارغة تضع ✗، وضغطتان تكتبان تخمين قلم.
+            </div>
+          </div>
+          <button style="font-family:Tajawal,sans-serif;font-weight:700;font-size:13px;flex:none;background:transparent;color:#1d1a16;border:1px solid #1d1a16;border-radius:9px;padding:10px 16px;cursor:pointer;">كيف ألعب؟</button>
+        </div>
+      </div>
+
+      <sc-if value="{{ hintOpen }}">
+        <div style="position:absolute;bottom:0;right:0;left:0;z-index:40;background:#fff1cf;border-top:2px solid #8a5a00;box-shadow:0 -10px 28px rgba(0,0,0,.18);max-height:40%;display:flex;flex-direction:column;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 20px 6px;">
+            <h3 style="font-family:Tajawal,sans-serif;font-weight:800;font-size:16px;margin:0;color:#6f4900;">تلميح ٣ من ١٢</h3>
+            <button onClick="{{ toggleHint }}" style="font-family:Tajawal,sans-serif;font-size:13px;background:transparent;border:1px solid #d9b467;color:#6f4900;border-radius:8px;padding:5px 12px;cursor:pointer;">إغلاق</button>
+          </div>
+          <div style="padding:0 20px 18px;font-size:15px;line-height:1.85;color:#3a2f14;max-width:70ch;">
+            كلام ندى يربطها بسارة في العمود نفسه، فهي فوقها بصف واحد. سارة مثبّتة في الصف ٢ من العمود ٨، فلا يبقى لندى إلا الصف ١ من العمود ٨. وبما أن الصف ١ سيُشغل، فكل بطاقة تتحدث عن الصف ١ تخرج من الحساب.
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+
+    <div style="width:1280px;background:#f4eee2;border:1px solid #cec3ad;border-radius:8px;padding:13px 16px;font-size:13.5px;line-height:1.85;color:#4a453c;text-wrap:pretty;">
+      <strong style="font-family:Tajawal,sans-serif;font-weight:800;color:#1d1a16;">ماذا تغيّر ولماذا:</strong>
+      <span>١) فصلت ترويسة الملف عن شريط الأدوات في سطرين، وأبقيت ترتيب الأدوات كما هو مع فواصل رأسية تجمعها في عناقيد (عرض · إضاءة · تراجع/إعادة · تلميح/مسح · تسليم) — أسرع في العين وأقل ازدحامًا.</span>
+      <span>٢) خفضت تشبّع الأرضيات وحصرت لمعانها في نطاق ضيق (السجّاد وحده أغمق)، فبقيت ✗ والقلم مقروءة فوق كل خامة؛ وأضفت هالة ورقية خلف ✗ لتباين مضمون.</span>
+      <span>٣) الجدران ٣ بكسل حبرية على كل حد بين غرفتين (٦ عند التقاء غرفتين) مقابل خط ١ بكسل رفيع داخل الغرفة، فصار حدّ الغرفة مقروءًا من مسافة.</span>
+      <span>٤) أسماء الغرف صارت شرائح ورقية بإطار حبر وظل خفيف بدل النص العائم، فما تشوّشها الخامة تحتها.</span>
+      <span>٥) الشخصية المثبّتة: حلقة ظل بيضاوية على الأرضية + تعميق خفيف في مركز الخلية + لوحة اسم حبرية، فيُعرف مربعها فورًا في شبكة ١٦×١٦.</span>
+      <span>٦) ترقيم الصفوف والأعمدة بُني في شريط رمادي ثابت، والأرقام من مضاعفات ٥ بلون الحبر وسميكة، فيسهل العدّ في الشبكات الكبيرة.</span>
+      <span>٧) أضفت شريط اتجاه صغير («الشمال ↑» + سطر يشرح ترتيب الصفوف والأعمدة) فوق الخريطة، لأن الأدلة تتكلم بالجهات.</span>
+      <span>٨) البطاقات: الضحية بورق أفتح وإطار حبر داكن وختم شمعي صغير، والمشطوبة تنزل لآخر العمود، والمثبّتة تحمل وسم «مثبّتة» بدبوس أحمر بدل الاعتماد على اللون فقط.</span>
+    </div>
+
+  </div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;cellSize&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:44,&quot;min&quot;:34,&quot;max&quot;:56,&quot;step&quot;:2,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;الخريطة&quot;},&quot;defaultLight&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;نهار&quot;,&quot;options&quot;:[&quot;نهار&quot;,&quot;غروب&quot;,&quot;ليل&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;الخريطة&quot;}}">
+class Component extends DCLogic {
+  state = { view: 'scene', light: null, sel: 'مشعل', hint: false };
+
+  N = 16;
+
+  rooms = [
+    { n: 'المجلس', r1: 1, r2: 5, c1: 1, c2: 5, f: 'carpet', lb: [3, 3] },
+    { n: 'الديوانية', r1: 1, r2: 5, c1: 6, c2: 11, f: 'carpet', lb: [3, 9] },
+    { n: 'المطبخ', r1: 1, r2: 5, c1: 12, c2: 16, f: 'tile', lb: [2, 14] },
+    { n: 'الصالة', r1: 6, r2: 9, c1: 1, c2: 11, f: 'marble', lb: [8, 5] },
+    { n: 'المستودع', r1: 6, r2: 9, c1: 12, c2: 16, f: 'cement', lb: [7, 14], res: true },
+    { n: 'غرفة الضيوف', r1: 10, r2: 13, c1: 1, c2: 5, f: 'wood', lb: [12, 3] },
+    { n: 'الحوش', r1: 10, r2: 16, c1: 6, c2: 11, f: 'stone', lb: [13, 8] },
+    { n: 'بستان النخيل', r1: 10, r2: 13, c1: 12, c2: 16, f: 'grass', lb: [11, 14] },
+    { n: 'المسبح', r1: 14, r2: 16, c1: 12, c2: 16, f: 'water', lb: [15, 14] },
+    { n: 'الملحق', r1: 14, r2: 16, c1: 1, c2: 5, f: 'sand', lb: [15, 3] }
+  ];
+
+  cast = [
+    { name: 'نايف', tag: 'الضحية', cls: 'victim', m: 1, text: 'نايف وُجد وحده مع القاتل.' },
+    { name: 'سارة', tag: 'أهل البيت', cls: 'home', m: 0, at: [2, 8], text: 'كنت في العمود اللي غرب أمل مباشرة، وكنت أنا وخالد بس.' },
+    { name: 'ندى', tag: 'أهل البيت', cls: 'home', m: 0, at: [3, 13], text: 'كنت فوق سارة بصف واحد بالضبط.' },
+    { name: 'مشعل', tag: 'الضيوف', cls: 'guest', m: 1, text: 'إجابة على سؤالكم: كنت في الصف اللي فوق أمل مباشرة.' },
+    { name: 'خالد', tag: 'الضيوف', cls: 'guest', m: 1, at: [5, 3], text: 'كنت غرب سلمى بعمودين بالضبط.' },
+    { name: 'بندر', tag: 'الضيوف', cls: 'guest', m: 1, at: [12, 14], text: 'ما كان معي أحد في الغرفة، وكنت تحت خالد بصفين.' },
+    { name: 'عبير', tag: 'الضيوف', cls: 'guest', m: 0, at: [9, 10], text: 'خلاص، ما طلعت من الصالة، وشرق بندر بعمود واحد بالضبط.' },
+    { name: 'غادة', tag: 'أهل البيت', cls: 'home', m: 0, at: [14, 2], text: 'كنت جنب البئر في الحوش.' },
+    { name: 'فهد', tag: 'أهل البيت', cls: 'home', m: 1, at: [7, 6], text: 'كنت في الصالة، وما شفت أحد يدخل المستودع.' },
+    { name: 'أمل', tag: 'الضيوف', cls: 'guest', m: 0, text: 'كنت في الديوانية، جنب الباب.' },
+    { name: 'طلال', tag: 'الضيوف', cls: 'guest', m: 1, text: 'كنت شمال فهد بثلاثة صفوف.' },
+    { name: 'نورة', tag: 'أهل البيت', cls: 'home', m: 0, text: 'كنت في المطبخ من بدايتها، ما تحركت.' },
+    { name: 'ماجد', tag: 'الضيوف', cls: 'guest', m: 1, text: 'كنت شرق غادة، بس ما أدري كم عمود.' },
+    { name: 'هند', tag: 'أهل البيت', cls: 'home', m: 0, text: 'كنت أنا ونورة في نفس الغرفة.' },
+    { name: 'سعود', tag: 'الضيوف', cls: 'guest', m: 1, text: 'كنت في بستان النخيل، وسمعت صوت جاي من المسبح.' },
+    { name: 'لمياء', tag: 'الضيوف', cls: 'guest', m: 0, text: 'كنت غرب المسبح بعمود واحد.' },
+    { name: 'سلمى', tag: 'أهل البيت', cls: 'home', m: 0, struck: true, text: 'ما عندي شي أقوله.' }
+  ];
+
+  marks = [[1, 1], [1, 5], [4, 11], [6, 9], [8, 2], [10, 7], [11, 9], [13, 4], [15, 11], [16, 16]];
+  pencils = { '4,2': 'نو', '8,9': 'طل', '13,15': 'من' };
+  linked = ['1,7', '1,8', '1,9'];
+  furn = {
+    '1,1': 'r', '4,5': 'c', '1,11': 'r', '5,7': 'c', '1,16': 'r', '4,12': 'r',
+    '6,2': 'r', '9,8': 'c', '6,14': 'r', '8,16': 'r', '10,1': 'r', '13,5': 'r',
+    '10,11': 'c', '16,6': 'r', '10,12': 'c', '13,16': 'c', '16,1': 'r'
+  };
+
+  ring = { home: '#1f4fb8', guest: '#8a5a00', victim: '#2a251f' };
+  skins = ['#dcae82', '#c48f60', '#e6c39c', '#b87f52'];
+
+  ar(n) { return String(n).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[+d]); }
+
+  hash(s) { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 9973; return h; }
+
+  size() { const v = this.props.cellSize; return typeof v === 'number' ? v : 44; }
+
+  light() {
+    if (this.state.light) return this.state.light;
+    const m = { 'نهار': 'day', 'غروب': 'dusk', 'ليل': 'night' };
+    return m[this.props.defaultLight] || 'day';
+  }
+
+  plan() { return this.state.view === 'plan'; }
+
+  roomAt(r, c) {
+    for (const q of this.rooms) if (r >= q.r1 && r <= q.r2 && c >= q.c1 && c <= q.c2) return q;
+    return null;
+  }
+
+  floor(f) {
+    if (this.plan()) return { backgroundColor: '#fbf8f1' };
+    const t = {
+      carpet: { backgroundColor: '#bf8272', backgroundImage: 'repeating-linear-gradient(45deg, rgba(255,255,255,.11) 0 5px, transparent 5px 11px), repeating-linear-gradient(-45deg, rgba(0,0,0,.07) 0 5px, transparent 5px 11px)' },
+      tile: { backgroundColor: '#e4dccc', backgroundImage: 'linear-gradient(rgba(0,0,0,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.07) 1px, transparent 1px)', backgroundSize: '22px 22px' },
+      marble: { backgroundColor: '#ece6da', backgroundImage: 'linear-gradient(115deg, rgba(0,0,0,.05) 0 2px, transparent 2px 42%), linear-gradient(68deg, rgba(0,0,0,.035) 0 1px, transparent 1px 60%)' },
+      stone: { backgroundColor: '#d8d1c2', backgroundImage: 'repeating-linear-gradient(0deg, rgba(0,0,0,.09) 0 1px, transparent 1px 15px), repeating-linear-gradient(90deg, rgba(0,0,0,.07) 0 1px, transparent 1px 21px)' },
+      wood: { backgroundColor: '#d3b48f', backgroundImage: 'repeating-linear-gradient(90deg, rgba(0,0,0,.09) 0 1px, transparent 1px 12px), linear-gradient(rgba(255,255,255,.07), rgba(0,0,0,.05))' },
+      grass: { backgroundColor: '#c1c9a4', backgroundImage: 'radial-gradient(rgba(0,0,0,.1) .8px, transparent 1px)', backgroundSize: '7px 7px' },
+      water: { backgroundColor: '#b9cbd2', backgroundImage: 'repeating-linear-gradient(0deg, rgba(255,255,255,.32) 0 1.5px, transparent 1.5px 9px)' },
+      cement: { backgroundColor: '#d6d1c7', backgroundImage: 'radial-gradient(rgba(0,0,0,.07) .7px, transparent .8px)', backgroundSize: '5px 5px' },
+      sand: { backgroundColor: '#e6d9bd', backgroundImage: 'radial-gradient(rgba(0,0,0,.08) .7px, transparent .8px)', backgroundSize: '6px 6px' }
+    };
+    return t[f] || { backgroundColor: '#e8e1d1' };
+  }
+
+  parts(name, female) {
+    const skin = this.skins[this.hash(name) % this.skins.length];
+    const A = p => Object.assign({ position: 'absolute' }, p);
+    if (female) return [
+      A({ left: '10%', top: '4%', width: '80%', height: '68%', borderRadius: '50% 50% 38% 38%', background: '#2b2620' }),
+      A({ left: '29%', top: '21%', width: '42%', height: '42%', borderRadius: '46%', background: skin }),
+      A({ left: '6%', bottom: 0, width: '88%', height: '36%', borderRadius: '42% 42% 0 0', background: '#201c17' })
+    ];
+    const head = this.hash(name) % 2 ? '#f7f4ec' : '#eae3d4';
+    return [
+      A({ left: '11%', top: '5%', width: '78%', height: '64%', borderRadius: '50% 50% 42% 42%', background: head }),
+      A({ left: '27%', top: '20%', width: '46%', height: '44%', borderRadius: '46%', background: skin }),
+      A({ left: '19%', top: '10%', width: '62%', height: '8%', borderRadius: '3px', background: '#1d1a16' }),
+      A({ left: '8%', bottom: 0, width: '84%', height: '34%', borderRadius: '44% 44% 0 0', background: '#f5f2e9' })
+    ];
+  }
+
+  avatarBox(px, cls) {
+    return {
+      position: 'relative', flex: 'none', width: px, height: px, borderRadius: '50%',
+      background: '#e1d7c3', border: '2px solid ' + this.ring[cls], overflow: 'hidden',
+      boxShadow: '0 1px 2px rgba(0,0,0,.22)', zIndex: 2
+    };
+  }
+
+  renderVals() {
+    const S = this.size(), plan = this.plan(), N = this.N, L = this.light();
+    const wall = '3px solid ' + (plan ? '#1d1a16' : '#2a251f');
+    const thin = '1px solid ' + (plan ? 'rgba(0,0,0,.22)' : 'rgba(0,0,0,.14)');
+
+    const byAt = {};
+    this.cast.forEach(p => { if (p.at) byAt[p.at[0] + ',' + p.at[1]] = p; });
+    const markSet = {}; this.marks.forEach(m => { markSet[m[0] + ',' + m[1]] = 1; });
+    const labelAt = {}; this.rooms.forEach(q => { labelAt[q.lb[0] + ',' + q.lb[1]] = q.n; });
+
+    const hdrBase = {
+      display: 'grid', placeItems: 'center', fontFamily: 'Tajawal, sans-serif',
+      fontSize: Math.max(10, Math.round(S * 0.25)), background: '#e4dcca', boxSizing: 'border-box'
+    };
+
+    const cols = [];
+    for (let c = 1; c <= N; c++) {
+      const big = c % 5 === 0;
+      cols.push({
+        label: this.ar(c),
+        style: Object.assign({}, hdrBase, {
+          width: S, height: 26, position: 'sticky', top: 0, zIndex: 9,
+          color: big ? '#1d1a16' : '#7d766a', fontWeight: big ? 700 : 400,
+          borderBottom: '1px solid #c9bfa8', borderLeft: '1px solid rgba(0,0,0,.06)'
+        })
+      });
+    }
+
+    const rows = [];
+    for (let r = 1; r <= N; r++) {
+      const bigR = r % 5 === 0;
+      const cells = [];
+      for (let c = 1; c <= N; c++) {
+        const q = this.roomAt(r, c), k = r + ',' + c;
+        const up = this.roomAt(r - 1, c), dn = this.roomAt(r + 1, c);
+        const east = c === 1 ? null : this.roomAt(r, c - 1);
+        const west = c === N ? null : this.roomAt(r, c + 1);
+        const tok = byAt[k];
+        const st = Object.assign({
+          position: 'relative', boxSizing: 'border-box', width: S, height: S, flex: 'none',
+          display: 'grid', placeItems: 'center', overflow: 'visible', cursor: 'pointer',
+          borderTop: up === q ? thin : wall,
+          borderBottom: dn === q ? thin : wall,
+          borderRight: east === q ? thin : wall,
+          borderLeft: west === q ? thin : wall
+        }, this.floor(q ? q.f : null));
+
+        if (tok && !plan) {
+          st.backgroundImage = 'radial-gradient(circle at 50% 62%, rgba(0,0,0,.17), rgba(0,0,0,0) 62%)' + (st.backgroundImage ? ', ' + st.backgroundImage : '');
+        }
+        if (!plan) st.boxShadow = 'inset 1px 1px 0 rgba(255,255,255,.32), inset -1px -1px 0 rgba(0,0,0,.07)';
+        if (this.linked.indexOf(k) >= 0) st.boxShadow = 'inset 0 0 0 3px #1f4fb8';
+
+        const fk = this.furn[k];
+        const furnStyle = fk ? (fk === 'c'
+          ? { position: 'absolute', top: '7%', left: '7%', width: '34%', height: '34%', borderRadius: '50%', border: '1.5px solid ' + (plan ? '#1d1a16' : '#3a332a'), background: plan ? 'transparent' : 'rgba(255,255,255,.32)', pointerEvents: 'none', zIndex: 1 }
+          : { position: 'absolute', top: '8%', left: '7%', width: '44%', height: '30%', borderRadius: '2px', border: '1.5px solid ' + (plan ? '#1d1a16' : '#3a332a'), background: plan ? 'transparent' : 'rgba(255,255,255,.32)', pointerEvents: 'none', zIndex: 1 }) : null;
+
+        cells.push({
+          style: st,
+          hatch: q && q.res ? {
+            position: 'absolute', inset: 0, pointerEvents: 'none',
+            backgroundImage: 'repeating-linear-gradient(45deg, transparent 0 6px, rgba(0,0,0,' + (plan ? '.19' : '.13') + ') 6px 7.5px)'
+          } : null,
+          furn: furnStyle,
+          mark: markSet[k] ? 1 : null,
+          pencil: this.pencils[k] || null,
+          label: labelAt[k] || null,
+          token: tok ? {
+            name: tok.name,
+            parts: this.parts(tok.name, tok.m === 0),
+            avatarStyle: Object.assign(this.avatarBox(Math.round(S * 0.72), tok.cls), { width: '72%', height: '72%' })
+          } : null
+        });
+      }
+      rows.push({
+        label: this.ar(r),
+        style: Object.assign({}, hdrBase, {
+          width: 26, height: S, position: 'sticky', right: 0, zIndex: 7,
+          color: bigR ? '#1d1a16' : '#7d766a', fontWeight: bigR ? 700 : 400,
+          borderLeft: '1px solid #c9bfa8', borderBottom: '1px solid rgba(0,0,0,.06)'
+        }),
+        cells
+      });
+    }
+
+    const cards = this.cast.map((p, i) => {
+      const sel = this.state.sel === p.name;
+      const victim = p.cls === 'victim';
+      const st = {
+        position: 'relative', display: 'flex', gap: 10, alignItems: 'flex-start',
+        background: victim ? '#f8f3e8' : '#ebe3d3',
+        border: '1px solid ' + (victim ? '#2a251f' : sel ? '#1f4fb8' : '#d3c9b5'),
+        borderRadius: 6, padding: '10px 12px 11px 26px', cursor: 'pointer',
+        boxShadow: sel ? '0 0 0 3px #dde5fa, 0 7px 16px rgba(0,0,0,.12)' : '0 1px 2px rgba(0,0,0,.06)',
+        transform: sel ? 'translateY(-2px)' : 'none',
+        transition: 'transform .12s, box-shadow .12s, border-color .12s'
+      };
+      if (p.struck) { st.opacity = 0.55; st.order = 99; st.background = '#e6dfcf'; }
+      return {
+        name: p.name, tag: p.tag, text: p.text, placed: !!p.at, strikable: !victim,
+        parts: this.parts(p.name, p.m === 0),
+        avatarStyle: this.avatarBox(46, p.cls),
+        style: st,
+        tagStyle: {
+          fontFamily: 'Tajawal, sans-serif', fontWeight: 500, fontSize: 11,
+          color: victim ? '#1d1a16' : p.cls === 'home' ? '#1f4fb8' : '#8a5a00',
+          border: '1px solid ' + (victim ? '#2a251f' : p.cls === 'home' ? '#bcccf0' : '#ddc593'),
+          background: victim ? 'transparent' : p.cls === 'home' ? '#eaf0fd' : '#fdf3dd',
+          borderRadius: 3, padding: '0 6px'
+        },
+        textStyle: {
+          fontSize: 14, lineHeight: 1.7, color: '#4a453c', marginTop: 2,
+          textWrap: 'pretty', textDecoration: p.struck ? 'line-through' : 'none'
+        },
+        onClick: () => this.setState({ sel: p.name })
+      };
+    });
+
+    const segOn = { fontFamily: 'Tajawal, sans-serif', fontWeight: 700, fontSize: 13, background: '#1d1a16', color: '#f4eee2', border: 'none', padding: '8px 17px', cursor: 'pointer' };
+    const segOff = { fontFamily: 'Tajawal, sans-serif', fontWeight: 500, fontSize: 13, background: '#ebe3d3', color: '#1d1a16', border: 'none', padding: '8px 17px', cursor: 'pointer' };
+    const lightDots = { day: '#e2a33a', dusk: '#c96a3c', night: '#2c3a72' };
+
+    return {
+      rows, cols, cards,
+      cornerStyle: Object.assign({}, hdrBase, { width: 26, height: 26, position: 'sticky', right: 0, top: 0, zIndex: 10, borderLeft: '1px solid #c9bfa8', borderBottom: '1px solid #c9bfa8' }),
+      boardWrap: {
+        overflow: 'auto', width: 'fit-content', maxWidth: '100%', margin: '0 auto',
+        border: '2px solid #1d1a16', borderRadius: 6, background: '#ebe3d3',
+        boxShadow: plan ? '0 4px 14px rgba(0,0,0,.1)' : '0 12px 32px rgba(0,0,0,.14)'
+      },
+      markStyle: {
+        fontFamily: 'Tajawal, sans-serif', fontWeight: 700, color: '#1d1a16',
+        fontSize: Math.round(S * 0.46), lineHeight: 1, zIndex: 3,
+        textShadow: '0 0 3px rgba(248,244,235,.95), 0 0 7px rgba(248,244,235,.8)'
+      },
+      pencilStyle: {
+        width: Math.round(S * 0.62), height: Math.round(S * 0.62), display: 'grid', placeItems: 'center',
+        border: '1.5px dashed #1f4fb8', borderRadius: '50%', color: '#1f4fb8',
+        background: 'rgba(248,244,235,.72)', fontFamily: 'Tajawal, sans-serif', fontWeight: 700,
+        fontSize: Math.round(S * 0.27), zIndex: 3
+      },
+      tokenWrap: { position: 'relative', width: Math.round(S * 0.9), height: Math.round(S * 0.9), display: 'grid', placeItems: 'center', zIndex: 5 },
+      tokenShadow: { position: 'absolute', bottom: '6%', left: '50%', transform: 'translateX(-50%)', width: '88%', height: '26%', borderRadius: '50%', background: 'radial-gradient(ellipse at center, rgba(0,0,0,.42), rgba(0,0,0,0) 70%)', zIndex: 1 },
+      tokenName: {
+        position: 'absolute', bottom: -8, left: '50%', transform: 'translateX(-50%)',
+        fontFamily: 'Tajawal, sans-serif', fontWeight: 500, fontSize: Math.max(9, Math.round(S * 0.21)),
+        background: '#1d1a16', color: '#f4eee2', padding: '0 5px', borderRadius: 2,
+        whiteSpace: 'nowrap', lineHeight: 1.5, zIndex: 8
+      },
+      slipStyle: {
+        position: 'absolute', bottom: 2, left: '50%', transform: 'translateX(-50%)',
+        fontFamily: 'Tajawal, sans-serif', fontWeight: 700, fontSize: Math.max(10, Math.round(S * 0.24)),
+        background: '#f8f4eb', color: '#1d1a16', border: '1px solid #1d1a16', borderRadius: 2,
+        padding: '0 5px', whiteSpace: 'nowrap', lineHeight: 1.55, zIndex: 6,
+        boxShadow: plan ? 'none' : '0 1px 2px rgba(0,0,0,.28)'
+      },
+      lightOverlay: L === 'day' || plan ? null : {
+        position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 4, mixBlendMode: 'multiply',
+        background: L === 'dusk'
+          ? 'linear-gradient(160deg, rgba(255,150,60,.2), rgba(120,40,90,.22))'
+          : 'linear-gradient(160deg, rgba(20,30,80,.5), rgba(5,10,40,.55))'
+      },
+      lightLabel: { day: 'نهار', dusk: 'غروب', night: 'ليل' }[L],
+      lightDot: { width: 11, height: 11, borderRadius: '50%', background: lightDots[L], border: '1px solid rgba(0,0,0,.25)', display: 'inline-block' },
+      segScene: plan ? segOff : segOn,
+      segPlan: plan ? segOn : segOff,
+      hintOpen: this.state.hint,
+      setScene: () => this.setState({ view: 'scene' }),
+      setPlan: () => this.setState({ view: 'plan' }),
+      cycleLight: () => this.setState({ light: { day: 'dusk', dusk: 'night', night: 'day' }[this.light()] }),
+      toggleHint: () => this.setState({ hint: !this.state.hint })
+    };
+  }
+}
+</script>
+</body>
+</html>

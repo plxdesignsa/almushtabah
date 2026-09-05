@@ -1,0 +1,396 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   «المشتبه» — رقعة أنماط: شاشة اللعب (عرض المشهد)
+   مكتوبة على أسماء أصناف web/app/style.css الحالية. ادمجها، لا تستبدل الملف.
+   المنطق والبنية وترتيب الأدوات لا تُمس — هذه الطبقة البصرية فقط.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ١) المتغيّرات: أُضيفت مقابلات جديدة، وأبقيت القديمة كما هي */
+:root {
+  --paper: #f4eee2;
+  --paper-2: #ebe3d3;
+  --paper-3: #e1d7c3;
+  --paper-bar: #f0e9dc;      /* جديد: شريط الأدوات */
+  --paper-slip: #f8f4eb;     /* جديد: شريحة اسم الغرفة */
+  --paper-victim: #f8f3e8;   /* جديد: ورق بطاقة الضحية */
+  --hdr-bg: #e4dcca;         /* جديد: شريط ترقيم الصفوف والأعمدة */
+  --ink: #1d1a16;
+  --ink-2: #4a453c;
+  --muted: #7d766a;
+  --line: #d3c9b5;
+  --line-2: #cec3ad;         /* جديد: حدود الأزرار */
+  --line-hdr: #c9bfa8;       /* جديد: حدود شريط الترقيم */
+  --wall: #2a251f;
+  --pen: #1f4fb8;
+  --pen-wash: #dde5fa;
+  --pen-wash-2: #eaf0fd;     /* جديد */
+  --pen-line: #bcccf0;       /* جديد */
+  --wax: #c8392b;
+  --wax-edge: #a72d21;       /* جديد */
+  --wax-shadow: #8f2519;     /* جديد */
+  --alert: #b8321f;
+  --alert-wash: #f8e1dc;
+  --good: #2b6b45;
+  --good-wash: #dff0e5;
+  --hint: #8a5a00;
+  --hint-ink: #6f4900;       /* جديد: نص فوق ورق التلميح */
+  --hint-wash: #fff1cf;
+  --hint-wash-2: #fdf3dd;    /* جديد */
+  --hint-line: #d9b467;      /* جديد */
+  --hint-line-2: #ddc593;    /* جديد */
+  --cell: 44px;
+  --hdr: 26px;
+  --f-display: "Tajawal", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Noto Naskh Arabic", "Segoe UI", Tahoma, system-ui, sans-serif;
+  --prop-ink: #3a332a;
+  /* ظلال مسمّاة */
+  --sh-card: 0 1px 2px rgba(0, 0, 0, .06);
+  --sh-card-sel: 0 0 0 3px var(--pen-wash), 0 7px 16px rgba(0, 0, 0, .12);
+  --sh-avatar: 0 1px 2px rgba(0, 0, 0, .22);
+  --sh-board: 0 12px 32px rgba(0, 0, 0, .14);
+  --sh-board-plan: 0 4px 14px rgba(0, 0, 0, .1);
+  --sh-slip: 0 1px 2px rgba(0, 0, 0, .28);
+  --sh-primary: 0 2px 0 var(--wax-shadow), 0 7px 16px rgba(200, 57, 43, .28);
+  --sh-sheet: 0 -10px 28px rgba(0, 0, 0, .18);
+  --sh-emboss: inset 1px 1px 0 rgba(255, 255, 255, .32), inset -1px -1px 0 rgba(0, 0, 0, .07);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #171410; --paper-2: #211d17; --paper-3: #2b261e;
+    --paper-bar: #1c1813; --paper-slip: #2b261e; --paper-victim: #241f19; --hdr-bg: #231f18;
+    --ink: #efe9dc; --ink-2: #cfc7b7; --muted: #948b7a;
+    --line: #3a3529; --line-2: #463f31; --line-hdr: #4a4335;
+    --wall: #e6dfd0;
+    --pen: #7fa2ff; --pen-wash: #1b2740; --pen-wash-2: #182238; --pen-line: #2f426b;
+    --wax: #e2513f; --wax-edge: #b23a2c; --wax-shadow: #7d2318;
+    --alert: #ff7a66; --alert-wash: #3a1a15;
+    --good: #6fcf97; --good-wash: #14291d;
+    --hint: #ffcf6b; --hint-ink: #ffe0a3; --hint-wash: #3a2b08;
+    --hint-wash-2: #332609; --hint-line: #6b5216; --hint-line-2: #5c4715;
+    --prop-ink: #cfc7b7;
+  }
+}
+
+/* ٢) ترويسة الملف — سطر مستقل عن شريط الأدوات، الترتيب نفسه */
+.dossier-bar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 20px 11px;
+  background: var(--paper); border-bottom: 1px solid var(--line);
+}
+.dossier-bar .spacer { flex: 1; }
+.dossier-bar .count { font-family: var(--f-display); font-size: 12px; color: var(--muted); }
+.file-no {
+  font-family: var(--f-display); font-size: 12px; color: var(--muted);
+  letter-spacing: .04em; border: 1px solid var(--line); border-radius: 3px; padding: 3px 9px;
+}
+.file-title { font-family: var(--f-display); font-weight: 800; font-size: 24px; line-height: 1.2; margin: 0; }
+
+/* ٣) شريط الأدوات */
+.topbar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 20px;
+  background: var(--paper-bar); border-bottom: 2px solid var(--ink);
+  backdrop-filter: blur(6px);
+}
+.topbar .sep { width: 1px; height: 22px; background: var(--line); flex: none; }
+.topbar .spacer { flex: 1; }
+
+.btn {
+  font-family: var(--f-display); font-weight: 500; font-size: 13px;
+  border: 1px solid var(--line-2); background: var(--paper-2); color: var(--ink);
+  border-radius: 9px; padding: 8px 13px; cursor: pointer; text-decoration: none;
+}
+.btn:hover:not(:disabled) { border-color: var(--ink); }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn.ghost { background: transparent; color: var(--ink-2); }
+.btn.primary {
+  font-weight: 800; font-size: 15px;
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--wax); color: #fff; border-color: var(--wax-edge);
+  padding: 9px 20px; box-shadow: var(--sh-primary);
+}
+.btn.primary:hover { border-color: var(--wax-edge); }
+.btn.hintbtn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--hint-wash); color: var(--hint-ink); border-color: var(--hint-line);
+}
+/* عدّادات داخل الأزرار */
+.btn .counter {
+  font-family: var(--f-display); font-weight: 700; font-size: 12px;
+  border-radius: 99px; padding: 1px 8px; background: rgba(138, 90, 0, .14);
+}
+.btn.primary .counter { background: rgba(255, 255, 255, .22); padding: 2px 9px; }
+/* دائرة حالة الإضاءة */
+.light-dot { width: 11px; height: 11px; border-radius: 50%; border: 1px solid rgba(0, 0, 0, .25); display: inline-block; }
+.light-day .light-dot { background: #e2a33a; }
+.light-dusk .light-dot { background: #c96a3c; }
+.light-night .light-dot { background: #2c3a72; }
+
+.seg { display: inline-flex; border: 1px solid var(--line-2); border-radius: 9px; overflow: hidden; }
+.seg .btn { border: none; border-radius: 0; padding: 8px 17px; background: var(--paper-2); }
+.seg .btn.on { background: var(--ink); color: var(--paper); font-weight: 700; }
+
+/* ٤) أختام الدرجة */
+.stamp {
+  display: inline-block; font-family: var(--f-display); font-weight: 800; font-size: 14px;
+  letter-spacing: .06em; color: var(--wax); border: 3px double var(--wax);
+  border-radius: 6px; padding: 1px 11px; transform: rotate(-6deg); opacity: .92;
+  mix-blend-mode: multiply;
+}
+@media (prefers-color-scheme: dark) { .stamp { mix-blend-mode: normal; } }
+.stamp.tier-easy { color: var(--good); border-color: var(--good); }
+.stamp.tier-medium { color: var(--pen); border-color: var(--pen); }
+.stamp.tier-hard { color: var(--hint); border-color: var(--hint); }
+.stamp.tier-expert { color: var(--wax); border-color: var(--wax); }
+
+/* ٥) المسرح: البطاقات يمينًا، الخريطة وسطًا */
+.stage { display: grid; gap: 16px; padding: 16px 20px 0; max-width: 1180px; margin: 0 auto; }
+@media (min-width: 900px) { .stage { grid-template-columns: 320px 1fr; align-items: start; } }
+
+/* ٦) شريط الاتجاه فوق الخريطة (عنصر جديد) */
+.orient { display: flex; align-items: center; gap: 12px; padding: 0 2px; margin-bottom: 10px; }
+.orient .north {
+  font-family: var(--f-display); font-weight: 700; font-size: 12px; color: var(--ink-2);
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid var(--line-2); background: var(--paper-2); border-radius: 99px; padding: 3px 11px;
+}
+.orient .north .arrow { font-size: 14px; line-height: 1; }
+.orient .note { font-size: 12px; color: var(--muted); }
+
+/* ٧) اللوحة والشبكة */
+.board-wrap {
+  overflow: auto; width: fit-content; max-width: 100%; margin: 0 auto;
+  border: 2px solid var(--ink); border-radius: 6px; background: var(--paper-2);
+  box-shadow: var(--sh-board);
+}
+.view-plan .board-wrap { box-shadow: var(--sh-board-plan); }
+
+.hdr {
+  position: sticky; z-index: 5; display: grid; place-items: center;
+  box-sizing: border-box; background: var(--hdr-bg);
+  font-family: var(--f-display); font-size: calc(var(--cell) * .25);
+  font-weight: 400; color: var(--muted);
+}
+.hdr.col { top: 0; z-index: 9; height: var(--hdr); border-bottom: 1px solid var(--line-hdr); border-left: 1px solid rgba(0, 0, 0, .06); }
+.hdr.row { inset-inline-start: 0; z-index: 7; width: var(--hdr); border-left: 1px solid var(--line-hdr); border-bottom: 1px solid rgba(0, 0, 0, .06); }
+.hdr.corner { top: 0; inset-inline-start: 0; z-index: 10; border-bottom: 1px solid var(--line-hdr); border-left: 1px solid var(--line-hdr); }
+/* مضاعفات ٥ أبرز: أضف .five على رأس الصف/العمود حين (n % 5 === 0) */
+.hdr.five { color: var(--ink); font-weight: 700; }
+
+.cell {
+  position: relative; box-sizing: border-box; cursor: pointer; user-select: none;
+  display: grid; place-items: center; overflow: visible;
+  border: 1px solid rgba(0, 0, 0, .14);
+  background-color: var(--paper);
+  transition: filter .12s;
+}
+.cell:hover { filter: brightness(.95); }
+/* الجدران: ٣px على كل حدّ بين غرفتين — box-sizing يمنع إزاحة الشبكة */
+.cell.wt { border-top: 3px solid var(--wall); }
+.cell.wb { border-bottom: 3px solid var(--wall); }
+.cell.wr { border-right: 3px solid var(--wall); }
+.cell.wl { border-left: 3px solid var(--wall); }
+.cell.blocked { background: repeating-linear-gradient(-45deg, var(--wall) 0 3px, transparent 3px 8px) !important; cursor: default; }
+.cell.dim { opacity: .28; }
+.cell.linked { box-shadow: inset 0 0 0 3px var(--pen); }
+.cell.bad { box-shadow: inset 0 0 0 3px var(--alert); }
+.cell.shake { animation: shake .3s ease 1; }
+/* الغرف المقيّدة */
+.cell.restricted::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: repeating-linear-gradient(45deg, transparent 0 6px, rgba(0, 0, 0, .13) 6px 7.5px);
+}
+.view-plan .cell.restricted::before {
+  background-image: repeating-linear-gradient(45deg, transparent 0 6px, rgba(0, 0, 0, .19) 6px 7.5px);
+}
+/* المشهد: نقش خفيف + تعميق تحت الشخصية */
+.view-scene .cell { box-shadow: var(--sh-emboss); }
+.view-scene .cell.linked { box-shadow: inset 0 0 0 3px var(--pen), var(--sh-emboss); }
+.view-scene .cell.occupied {
+  background-image: radial-gradient(circle at 50% 62%, rgba(0, 0, 0, .17), rgba(0, 0, 0, 0) 62%), var(--floor-img, none);
+}
+/* درجات الإضاءة — فوق الشبكة وتحت الشخصيات */
+.grade-dusk .grid::after, .grade-night .grid::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 4; mix-blend-mode: multiply;
+}
+.grade-dusk .grid::after { background: linear-gradient(160deg, rgba(255, 150, 60, .2), rgba(120, 40, 90, .22)); }
+.grade-night .grid::after { background: linear-gradient(160deg, rgba(20, 30, 80, .5), rgba(5, 10, 40, .55)); }
+.view-plan .grid::after { display: none !important; }
+
+/* ٨) لوحة الأرضيات المحسّنة — العشرة أنواع */
+.view-scene .floor-carpet { background-color: #bf8272; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.11) 0 5px, transparent 5px 11px), repeating-linear-gradient(-45deg, rgba(0,0,0,.07) 0 5px, transparent 5px 11px); }
+.view-scene .floor-tile   { background-color: #e4dccc; background-image: linear-gradient(rgba(0,0,0,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.07) 1px, transparent 1px); background-size: 22px 22px; }
+.view-scene .floor-marble { background-color: #ece6da; background-image: linear-gradient(115deg, rgba(0,0,0,.05) 0 2px, transparent 2px 42%), linear-gradient(68deg, rgba(0,0,0,.035) 0 1px, transparent 1px 60%); }
+.view-scene .floor-stone  { background-color: #d8d1c2; background-image: repeating-linear-gradient(0deg, rgba(0,0,0,.09) 0 1px, transparent 1px 15px), repeating-linear-gradient(90deg, rgba(0,0,0,.07) 0 1px, transparent 1px 21px); }
+.view-scene .floor-wood   { background-color: #d3b48f; background-image: repeating-linear-gradient(90deg, rgba(0,0,0,.09) 0 1px, transparent 1px 12px), linear-gradient(rgba(255,255,255,.07), rgba(0,0,0,.05)); }
+.view-scene .floor-grass  { background-color: #c1c9a4; background-image: radial-gradient(rgba(0,0,0,.1) .8px, transparent 1px); background-size: 7px 7px; }
+.view-scene .floor-water  { background-color: #b9cbd2; background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.32) 0 1.5px, transparent 1.5px 9px); }
+.view-scene .floor-cement { background-color: #d6d1c7; background-image: radial-gradient(rgba(0,0,0,.07) .7px, transparent .8px); background-size: 5px 5px; }
+.view-scene .floor-sand   { background-color: #e6d9bd; background-image: radial-gradient(rgba(0,0,0,.08) .7px, transparent .8px); background-size: 6px 6px; }
+.view-scene .floor-straw  { background-color: #dfd0a8; background-image: repeating-linear-gradient(28deg, rgba(0,0,0,.09) 0 1px, transparent 1px 6px), repeating-linear-gradient(-32deg, rgba(0,0,0,.06) 0 1px, transparent 1px 8px); }
+
+/* المخطط: ورق وحبر فقط، عالي التباين، يصلح للطباعة */
+.view-plan .cell { background-image: none !important; background-color: #fbf8f1; border-color: rgba(0, 0, 0, .22); box-shadow: none; }
+.view-plan .cell.linked { box-shadow: inset 0 0 0 3px var(--pen); }
+@media (prefers-color-scheme: dark) { .view-plan .cell { background-color: #23201a; } }
+
+/* ٩) الأثاث: الزاوية العلوية فقط، لا يغطي الخلية */
+.prop {
+  position: absolute; top: 8%; left: 7%; width: 44%; height: 30%;
+  border: 1.5px solid var(--prop-ink); border-radius: 2px;
+  background: rgba(255, 255, 255, .32); pointer-events: none; z-index: 1;
+}
+.prop.round { top: 7%; width: 34%; height: 34%; border-radius: 50%; }
+.view-plan .prop { background: transparent; border-color: var(--ink); }
+
+/* ١٠) شريحة اسم الغرفة */
+.room-label {
+  position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+  font-family: var(--f-display); font-weight: 700; font-size: calc(var(--cell) * .24);
+  line-height: 1.55; background: var(--paper-slip); color: var(--ink);
+  border: 1px solid var(--ink); border-radius: 2px; padding: 0 5px;
+  white-space: nowrap; cursor: pointer; z-index: 6; box-shadow: var(--sh-slip);
+}
+.view-plan .room-label { box-shadow: none; }
+
+/* ١١) الشخصية المثبّتة: تُعرف خليتها فورًا */
+.token {
+  position: relative; width: calc(var(--cell) * .9); height: calc(var(--cell) * .9);
+  display: grid; place-items: center; z-index: 5; animation: drop .18s ease-out 1;
+}
+.token::before { /* حلقة الظل على الأرضية */
+  content: ""; position: absolute; bottom: 6%; left: 50%; transform: translateX(-50%);
+  width: 88%; height: 26%; border-radius: 50%; z-index: 1;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, .42), rgba(0, 0, 0, 0) 70%);
+}
+.token .avatar { position: relative; width: 72%; height: 72%; z-index: 2; }
+.token.sel .avatar { outline: 3px solid var(--pen); outline-offset: 2px; border-radius: 50%; animation: pulse .5s ease 1; }
+.token-name {
+  position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); z-index: 8;
+  font-family: var(--f-display); font-weight: 500; font-size: max(9px, calc(var(--cell) * .21));
+  line-height: 1.5; background: var(--ink); color: var(--paper);
+  padding: 0 5px; border-radius: 2px; white-space: nowrap;
+}
+
+/* ١٢) علامات الخلية: تتميّز بالشكل لا باللون */
+.mark {
+  font-family: var(--f-display); font-weight: 700; color: var(--ink);
+  font-size: calc(var(--cell) * .46); line-height: 1; z-index: 3;
+  text-shadow: 0 0 3px rgba(248, 244, 235, .95), 0 0 7px rgba(248, 244, 235, .8);
+}
+.pencil {
+  width: calc(var(--cell) * .62); height: calc(var(--cell) * .62);
+  display: grid; place-items: center; z-index: 3;
+  border: 1.5px dashed var(--pen); border-radius: 50%;
+  color: var(--pen); background: rgba(248, 244, 235, .72);
+  font-family: var(--f-display); font-weight: 700; font-size: calc(var(--cell) * .27);
+}
+@media (prefers-color-scheme: dark) {
+  .mark { text-shadow: 0 0 3px rgba(23, 20, 16, .95), 0 0 7px rgba(23, 20, 16, .8); }
+  .pencil { background: rgba(23, 20, 16, .72); }
+}
+
+/* ١٣) الأفاتار: حلقة الصنف بثلاثة أحجام */
+.avatar {
+  position: relative; flex: none; border-radius: 50%; overflow: hidden;
+  background: var(--paper-3); border: 2px solid var(--wall); box-shadow: var(--sh-avatar);
+}
+.avatar.sm { width: 32px; height: 32px; }
+.avatar.md { width: 46px; height: 46px; }
+.avatar.lg { width: 64px; height: 64px; }
+.avatar.cls-home, .avatar.cls-staff { border-color: var(--pen); }
+.avatar.cls-guest, .avatar.cls-customer { border-color: var(--hint); }
+.avatar.cls-victim { border-color: var(--wall); }
+
+/* ١٤) البطاقات وحالاتها الست */
+.cards {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 2px 3px 10px; max-height: calc(100vh - 6rem); overflow-y: auto;
+  position: sticky; top: 3.8rem;
+}
+.card {
+  position: relative; display: flex; gap: 10px; align-items: flex-start;
+  background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px;
+  padding: 10px 12px 11px 26px; cursor: pointer; box-shadow: var(--sh-card);
+  transition: transform .12s, box-shadow .12s, border-color .12s;
+}
+.card:hover { border-color: var(--ink); }
+.card.active { border-color: var(--pen); box-shadow: var(--sh-card-sel); transform: translateY(-2px); }
+.card.linked { border-style: dashed; border-color: var(--pen); }
+.card.alert { border-color: var(--alert); background: var(--alert-wash); animation: pulse .6s ease 1; }
+.card.struck { opacity: .55; order: 99; background: #e6dfcf; }
+.card.struck .text { text-decoration: line-through; }
+.card.victim { background: var(--paper-victim); border: 1px solid var(--wall); }
+.card.doubted { border-style: dotted; border-color: var(--alert); }
+.card.doubted .text { opacity: .6; }
+@media (prefers-color-scheme: dark) { .card.struck { background: #1b1712; } }
+
+.card .name { font-family: var(--f-display); font-weight: 700; font-size: 15px; line-height: 1.5; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.card .text { font-family: var(--f-body); font-size: 14px; line-height: 1.7; color: var(--ink-2); margin-top: 2px; text-wrap: pretty; }
+.card .tag {
+  font-family: var(--f-display); font-weight: 500; font-size: 11px;
+  border-radius: 3px; padding: 0 6px;
+  color: var(--muted); border: 1px solid var(--line); background: transparent;
+}
+.card .tag.home, .card .tag.staff { color: var(--pen); background: var(--pen-wash-2); border-color: var(--pen-line); }
+.card .tag.guest, .card .tag.customer { color: var(--hint); background: var(--hint-wash-2); border-color: var(--hint-line-2); }
+.card .tag.victim { color: var(--ink); border-color: var(--wall); background: transparent; }
+.card .tag.doubt { color: var(--alert); border-color: var(--alert); background: var(--alert-wash); }
+/* وسم «مثبّتة» بدبوس أحمر — شكل لا لون فقط */
+.card .pin {
+  font-family: var(--f-display); font-weight: 500; font-size: 11px; color: var(--ink-2);
+  display: inline-flex; align-items: center; gap: 4px;
+  border: 1px solid var(--line-2); border-radius: 3px; padding: 0 5px;
+}
+.card .pin::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--wax); }
+
+.card-actions { position: absolute; top: 6px; left: 7px; display: flex; gap: 2px; align-items: center; }
+.strike { border: none; background: transparent; color: #9b9284; cursor: pointer; font-size: 13px; padding: 3px 5px; border-radius: 4px; }
+.strike:hover { color: var(--pen); }
+.strike.doubt { font-family: var(--f-display); font-size: 11px; border: 1px solid var(--line-2); }
+.strike.doubt.on { background: var(--alert-wash); color: var(--alert); border-color: var(--alert); }
+
+/* ١٥) القواعد العامة */
+.rules { max-width: 1180px; margin: 0 auto; padding: 14px 20px 22px; }
+.rules-row { display: flex; gap: 14px; align-items: flex-start; }
+.rules-box { flex: 1; background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 12px 15px; }
+.rules-box h3 { font-family: var(--f-display); font-weight: 800; font-size: 14px; margin: 0 0 6px; }
+.rules-box ul { margin: 0; padding-inline-start: 1.2rem; display: flex; flex-direction: column; gap: 3px; }
+.rules-box li { font-size: 14px; line-height: 1.7; color: var(--ink-2); text-wrap: pretty; }
+.rules-box li.alert { color: var(--alert); font-weight: 600; }
+.rules-hint { margin-top: 9px; padding-top: 9px; border-top: 1px dashed var(--line-2); font-size: 13px; line-height: 1.7; color: var(--muted); }
+.btn.howto { flex: none; font-weight: 700; background: transparent; border: 1px solid var(--ink); padding: 10px 16px; }
+
+/* ١٦) لوح التلميح */
+.sheet {
+  position: fixed; bottom: 0; inset-inline: 0; z-index: 40;
+  background: var(--hint-wash); color: var(--ink);
+  border-top: 2px solid var(--hint); box-shadow: var(--sh-sheet);
+  max-height: 40vh; display: flex; flex-direction: column;
+}
+.sheet-head { display: flex; justify-content: space-between; align-items: center; padding: 11px 20px 6px; }
+.sheet-head h3 { font-family: var(--f-display); font-weight: 800; font-size: 16px; margin: 0; color: var(--hint-ink); }
+.sheet-head .btn { background: transparent; border-color: var(--hint-line); color: var(--hint-ink); padding: 5px 12px; }
+.sheet-body { overflow-y: auto; padding: 0 20px 18px; font-size: 15px; line-height: 1.85; color: #3a2f14; max-width: 70ch; }
+@media (prefers-color-scheme: dark) { .sheet-body { color: var(--ink-2); } }
+
+/* ١٧) الحركة */
+@keyframes drop { from { transform: translateY(-8px) scale(1.15); } to { transform: none; } }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ١٨) الطباعة: المخطط فقط */
+@media print {
+  body { background: #fff; color: #000; }
+  .topbar, .dossier-bar, .sheet, .toast, .strike, .foot, .orient { display: none !important; }
+  .stage { display: block; }
+  .cards { display: block; max-height: none; position: static; overflow: visible; }
+  .card { break-inside: avoid; border: 1px solid #000; margin-bottom: .3rem; box-shadow: none; }
+  .board-wrap { box-shadow: none; overflow: visible; border-color: #000; }
+  .cell { background-image: none !important; background-color: #fff !important; box-shadow: none !important; }
+  .grid::after { display: none; }
+  .prop { background: transparent; border-color: #000; }
+  .room-label { box-shadow: none; background: #fff; }
+}

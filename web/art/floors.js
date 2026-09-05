@@ -8,17 +8,19 @@ const enc = (svg) => `url("data:image/svg+xml,${encodeURIComponent(svg).replace(
 const svg = (body, size = 40) => `<svg xmlns='http://www.w3.org/2000/svg' width='${size}' height='${size}' viewBox='0 0 ${size} ${size}'>${body}</svg>`;
 
 /** لوحة ألوان كل أرضية: القاعدة، الخط الغامق، والخط الفاتح (الضوء). */
+// الألوان الأساسية من لوحة كلود ديزاين المحسّنة: تشبّع منخفض وإضاءة محصورة (L ≈ ٠٫٨٤–٠٫٩٢)
+// ما عدا السجّاد (L ≈ ٠٫٦٨)، حتى تبقى ✗ والقلم مقروءة فوق كل خامة. النقوش مرسومة كما هي.
 export const FLOOR_PALETTE = {
-  rug: { base: '#c97a62', dark: '#9a4a36', light: '#efcdb4', ar: 'سجّاد' },
-  tile: { base: '#e8e2d3', dark: '#b9b1a0', light: '#fbf8f0', ar: 'بلاط' },
-  stone: { base: '#c9bfae', dark: '#978d7c', light: '#e6dfd1', ar: 'حجر' },
-  sand: { base: '#e2cfa3', dark: '#c4ad7c', light: '#f3e7c8', ar: 'رمل' },
-  grass: { base: '#8fb56a', dark: '#5f8a45', light: '#b9d59a', ar: 'عشب' },
-  water: { base: '#7fb3c9', dark: '#4f88a1', light: '#b8dbe8', ar: 'ماء' },
-  wood: { base: '#c99a63', dark: '#8f6437', light: '#e2bb8a', ar: 'خشب' },
-  concrete: { base: '#cfcbc2', dark: '#a39e94', light: '#e4e1da', ar: 'إسمنت' },
-  hay: { base: '#d8b86a', dark: '#a6863f', light: '#eed597', ar: 'قش' },
-  marble: { base: '#ece9e2', dark: '#c2bdb2', light: '#ffffff', ar: 'رخام' },
+  rug: { base: '#bf8272', dark: '#9a5e4e', light: '#dcaa9a', ar: 'سجّاد' },
+  tile: { base: '#e4dccc', dark: '#c4baa7', light: '#f3eee3', ar: 'بلاط' },
+  stone: { base: '#d8d1c2', dark: '#b3aa98', light: '#e9e4d8', ar: 'حجر' },
+  sand: { base: '#e6d9bd', dark: '#cbbb98', light: '#f2e9d5', ar: 'رمل' },
+  grass: { base: '#c1c9a4', dark: '#9aa47e', light: '#d6dcbf', ar: 'عشب' },
+  water: { base: '#b9cbd2', dark: '#92aab4', light: '#dbe6ea', ar: 'ماء' },
+  wood: { base: '#d3b48f', dark: '#b08f68', light: '#e6cdae', ar: 'خشب' },
+  concrete: { base: '#d6d1c7', dark: '#b4ada1', light: '#e6e2da', ar: 'إسمنت' },
+  hay: { base: '#dfd0a8', dark: '#bda981', light: '#ede2c4', ar: 'قش' },
+  marble: { base: '#ece6da', dark: '#cfc7b8', light: '#faf7f1', ar: 'رخام' },
 };
 
 const V = (variant) => variant % 3;

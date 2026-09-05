@@ -126,9 +126,10 @@ async function openCase(id) {
     view: pref.get('view', 'scene'), grade: pref.get('grade', 'day'),
     tutorial: pref.get('tutorialDone', null) ? null : 0,
   };
-  const classes = [...new Set(scene.characters.map((c) => c.class))];
-  const classIdx = (c) => classes.indexOf(c);
-  const ringColor = (c) => ['#2f6f9f', '#b4672a', '#5f4b8b'][classIdx(c)] ?? '#555';
+  // صنفا الشخصيات: الممنوع من الغرف المقيّدة (الضيوف/الزبائن/الزوّار) والمسموح (أهل البيت/العاملون/العمّال).
+  const forbiddenClass = scene.globalRules.find((g) => g.type === 'classRestriction')?.class ?? null;
+  const classKind = (c) => (c === forbiddenClass ? 'forbidden' : 'allowed');
+  const ringColor = (c) => (classKind(c) === 'forbidden' ? '#8a5a00' : '#1f4fb8');
   const avatarCache = new Map();
   const avatar = (ch, size) => {
     const key = `${ch.id}:${size}`;
@@ -137,21 +138,22 @@ async function openCase(id) {
   };
 
   const cellSize = () => {
-    const avail = Math.min(window.innerWidth, 1180) - (window.innerWidth >= 900 ? 20 * 16 + 60 : 28);
-    return Math.max(30, Math.min(60, Math.floor(avail / (scene.size + 1))));
+    const avail = Math.min(window.innerWidth, 1180) - (window.innerWidth >= 900 ? 320 + 16 + 40 + 6 : 24);
+    return Math.max(30, Math.min(60, Math.floor((avail - 26) / scene.size)));
   };
 
   function render() {
     const viol = partialViolations(scene, game.placed, game.doubted);
     app.style.setProperty('--cell', `${cellSize()}px`);
     app.replaceChildren(...[
+      renderDossierBar(),
       renderTop(),
-      lying ? h('div', { class: 'banner lying' }, h('strong', {}, '🤥 شاهد كاذب: '), 'بطاقة واحدة كاذبة، وهي بطاقة القاتل. الباقون صادقون. إذا صدّقت الجميع وصلت إلى تناقض؛ اضغط «كذّب» على بطاقة لتستثنيها من الفحص.') : null,
-      h('div', { class: 'stage' }, renderCards(viol), renderBoard(viol)),
+      lying ? h('div', { class: 'banner lying' }, h('strong', {}, 'شاهد كاذب: '), 'بطاقة واحدة كاذبة، وهي بطاقة القاتل. الباقون صادقون. إذا صدّقت الجميع وصلت إلى تناقض؛ اضغط «كذّب» على بطاقة لتستثنيها من الفحص.') : null,
+      h('div', { class: 'stage' }, renderCards(viol), h('div', { class: 'board-col' }, renderOrient(), renderBoard(viol))),
       renderRules(viol),
       renderFooter(),
       ui.hint ? h('div', { class: 'sheet' },
-        h('div', { class: 'sheet-head' }, h('strong', {}, `تلميح ${arNum(ui.hint.step)} من ${arNum(ladder.length)}`), h('button', { class: 'btn ghost', onclick: () => { ui.hint = null; ui.linked.clear(); render(); } }, 'إغلاق ✕')),
+        h('div', { class: 'sheet-head' }, h('strong', {}, `تلميح ${arNum(ui.hint.step)} من ${arNum(ladder.length)}`), h('button', { class: 'btn', onclick: () => { ui.hint = null; ui.linked.clear(); render(); } }, 'إغلاق')),
         h('div', { class: 'sheet-body' }, ui.hint.text),
       ) : null,
       ui.toast ? h('div', { class: `toast ${ui.toast.kind ?? ''}` }, ui.toast.text) : null,
@@ -160,28 +162,47 @@ async function openCase(id) {
     ui.shake = new Set();
   }
 
+  /** السطر الأول: هوية الملف (الملفات › · رقم الملف · العنوان · ختم الدرجة · العدّ). */
+  function renderDossierBar() {
+    const closed = game.finished?.correct;
+    return h('header', { class: 'dossier-bar' },
+      h('a', { class: 'btn ghost', href: '#/' }, 'الملفات ›'),
+      h('span', { class: 'file-no' }, `ملف ${caseNumber(id)} · ${THEME_AR[raw.meta?.theme] ?? ''} · ${arNum(scene.size)}×${arNum(scene.size)}`),
+      h('h1', { class: 'file-title' }, overlay.title ?? id),
+      h('span', { class: `stamp tier-${scene.difficulty}` }, closed ? 'أُغلقت القضية' : TIER_AR[scene.difficulty] ?? ''),
+      h('div', { class: 'spacer' }),
+      h('span', { class: 'count' }, `${arNum(scene.characters.length)} مشتبهًا · ${arNum(scene.rooms.length)} غرف`),
+    );
+  }
+
+  /** السطر الثاني، ثابت: الأدوات في عناقيد بفواصل — (مشهد/مخطط) · (الإضاءة) · (تراجع/إعادة) · (تلميح/مسح) · (تسليم). */
   function renderTop() {
     const placedCount = game.placed.filter((c) => c >= 0).length;
     const closed = game.finished?.correct;
-    return h('header', { class: 'topbar' },
-      h('a', { class: 'btn ghost', href: '#/' }, '‹ الملفات'),
-      h('div', { class: 'dossier-head' },
-        h('div', { class: 'file-no' }, `ملف ${caseNumber(id)} · ${THEME_AR[raw.meta?.theme] ?? ''}`),
-        h('div', { class: 'file-title' }, overlay.title ?? id),
-        h('div', { class: `stamp tier-${scene.difficulty}` }, closed ? 'أُغلقت القضية' : TIER_AR[scene.difficulty] ?? ''),
+    const sep = () => h('div', { class: 'sep' });
+    return h('div', { class: `topbar light-${ui.grade}`, role: 'toolbar' },
+      h('div', { class: 'seg', role: 'group', 'aria-label': 'العرض' },
+        h('button', { class: `btn ${ui.view === 'scene' ? 'on' : ''}`, onclick: () => setView('scene'), title: 'عرض المشهد' }, 'مشهد'),
+        h('button', { class: `btn ${ui.view === 'plan' ? 'on' : ''}`, onclick: () => setView('plan'), title: 'عرض المخطط (للاستنتاج والطباعة)' }, 'مخطط'),
       ),
-      h('div', { class: 'tools' },
-        h('div', { class: 'seg', role: 'group', 'aria-label': 'العرض' },
-          h('button', { class: `btn ${ui.view === 'scene' ? 'on' : ''}`, onclick: () => setView('scene'), title: 'عرض المشهد' }, 'مشهد'),
-          h('button', { class: `btn ${ui.view === 'plan' ? 'on' : ''}`, onclick: () => setView('plan'), title: 'عرض المخطط (للاستنتاج والطباعة)' }, 'مخطط'),
-        ),
-        ui.view === 'scene' ? h('button', { class: 'btn', onclick: cycleGrade, title: 'الإضاءة' }, GRADES.find(([k]) => k === ui.grade)?.[1] ?? 'نهار') : null,
-        h('button', { class: 'btn', onclick: () => { game.undo(); render(); }, disabled: !game.history.length, title: 'تراجع (Ctrl+Z)' }, '↶'),
-        h('button', { class: 'btn', onclick: () => { game.redo(); render(); }, disabled: !game.future.length, title: 'إعادة (Ctrl+Y)' }, '↷'),
-        h('button', { class: 'btn', onclick: showHint, title: 'تلميح' }, `💡 ${arNum(game.hintsUsed)}/${arNum(ladder.length)}`),
-        h('button', { class: 'btn', onclick: () => { if (confirm('تمسح كل علامات ✗ والقلم؟ (المثبَّت يبقى)')) { game.clearMarks(); render(); } }, title: 'مسح العلامات' }, 'مسح'),
-        h('button', { class: 'btn primary', disabled: !game.allPlaced || closed, onclick: submit }, closed ? 'حُلّت ✓' : `تسليم ${arNum(placedCount)}/${arNum(scene.size)}`),
-      ),
+      sep(),
+      h('button', { class: 'btn', onclick: cycleGrade, title: 'الإضاءة', disabled: ui.view !== 'scene' }, h('span', { class: 'light-dot' }), GRADES.find(([k]) => k === ui.grade)?.[1] ?? 'نهار'),
+      sep(),
+      h('button', { class: 'btn', onclick: () => { game.undo(); render(); }, disabled: !game.history.length, title: 'تراجع (Ctrl+Z)' }, 'تراجع'),
+      h('button', { class: 'btn', onclick: () => { game.redo(); render(); }, disabled: !game.future.length, title: 'إعادة (Ctrl+Y)' }, 'إعادة'),
+      sep(),
+      h('button', { class: 'btn hintbtn', onclick: showHint, title: 'تلميح' }, 'تلميح', h('span', { class: 'counter' }, `${arNum(game.hintsUsed)}/${arNum(ladder.length)}`)),
+      h('button', { class: 'btn ghost', onclick: () => { if (confirm('تمسح كل علامات ✗ والقلم؟ (المثبَّت يبقى)')) { game.clearMarks(); render(); } }, title: 'مسح العلامات' }, 'مسح العلامات'),
+      h('div', { class: 'spacer' }),
+      h('button', { class: 'btn primary', disabled: !game.allPlaced || closed, onclick: submit }, closed ? 'حُلّت ✓' : 'تسليم', closed ? null : h('span', { class: 'counter' }, `${arNum(placedCount)}/${arNum(scene.size)}`)),
+    );
+  }
+
+  /** شريط الاتجاه فوق الخريطة: كل الأدلة تتكلم بالجهات. */
+  function renderOrient() {
+    return h('div', { class: 'orient' },
+      h('span', { class: 'north' }, h('span', { class: 'arrow' }, '↑'), 'الشمال'),
+      h('span', { class: 'note' }, 'العمود ١ أقصى اليمين · الصف ١ أعلى · الشرق يمين الشاشة'),
     );
   }
 
@@ -196,8 +217,8 @@ async function openCase(id) {
         dataset: { char: v.id },
         onclick: () => { game.select(v.id); linkClues(); render(); },
       },
-        h('div', { class: 'avatar' }, avatar(v, 44)),
-        h('div', { class: 'card-body' }, h('div', { class: 'name' }, N.char(v.id), h('span', { class: 'tag' }, 'الضحية'), placed ? h('span', { class: 'pin', title: 'موضوع على الخريطة' }, '📍') : null), h('div', { class: 'text' }, overlay.victimCard ?? 'وُجد وحده مع القاتل.')),
+        h('div', { class: 'avatar' }, avatar(v, 46)),
+        h('div', { class: 'card-body' }, h('div', { class: 'name' }, N.char(v.id), h('span', { class: 'tag victim' }, 'الضحية'), placed ? h('span', { class: 'pin', title: 'موضوعة على الخريطة' }, 'مثبّتة') : null), h('div', { class: 'text' }, overlay.victimCard ?? 'وُجد وحده مع القاتل.')),
       ));
     }
     for (const ch of scene.characters) {
@@ -214,9 +235,9 @@ async function openCase(id) {
         dataset: { char: ch.id },
         onclick: () => { game.select(ch.id); linkClues(); render(); },
       },
-        h('div', { class: 'avatar' }, avatar(ch, 44)),
+        h('div', { class: 'avatar' }, avatar(ch, 46)),
         h('div', { class: 'card-body' },
-          h('div', { class: 'name' }, N.char(ch.id), h('span', { class: 'tag' }, N.cls(ch.class)), placed ? h('span', { class: 'pin', title: 'موضوع على الخريطة' }, '📍') : null, doubted ? h('span', { class: 'tag doubt' }, 'مكذَّب') : null),
+          h('div', { class: 'name' }, N.char(ch.id), h('span', { class: `tag ${classKind(ch.class)}` }, N.cls(ch.class)), placed ? h('span', { class: 'pin', title: 'موضوعة على الخريطة' }, 'مثبّتة') : null, doubted ? h('span', { class: 'tag doubt' }, 'مكذَّب') : null),
           h('div', { class: 'text' }, text),
         ),
         h('div', { class: 'card-actions' },
@@ -232,11 +253,11 @@ async function openCase(id) {
     const n = scene.size;
     const grid = h('div', { class: 'grid', style: `grid-template-columns: var(--hdr) repeat(${n}, var(--cell)); grid-template-rows: var(--hdr) repeat(${n}, var(--cell));` });
     grid.append(h('div', { class: 'hdr corner' }));
-    for (let c = 0; c < n; c++) grid.append(h('div', { class: 'hdr col' }, arNum(c + 1)));
+    for (let c = 0; c < n; c++) grid.append(h('div', { class: `hdr col ${(c + 1) % 5 === 0 ? 'five' : ''}` }, arNum(c + 1)));
     const labelCell = roomLabelCells();
     const objAt = new Map(scene.objects.map((o) => [o.cell, o]));
     for (let r = 0; r < n; r++) {
-      grid.append(h('div', { class: 'hdr row' }, arNum(r + 1)));
+      grid.append(h('div', { class: `hdr row ${(r + 1) % 5 === 0 ? 'five' : ''}` }, arNum(r + 1)));
       for (let c = 0; c < n; c++) {
         const cell = r * n + c;
         const room = scene.roomOfCell[cell];
@@ -296,10 +317,17 @@ async function openCase(id) {
 
   function renderRules(viol) {
     return h('section', { class: 'rules' },
-      h('h3', {}, 'القواعد العامة'),
-      h('ul', {}, scene.globalRules.map((g) => h('li', { class: viol.rules.has(g.index) ? 'alert' : '' }, describeGlobalRule(scene, g, overlay)))),
-      h('p', { class: 'muted small' }, 'كل صف وكل عمود فيه شخص واحد فقط. «بجانب» تعني يمين أو يسار أو فوق أو تحت مباشرة وفي الغرفة نفسها. الشمال أعلى الخريطة، والشرق يمينها، والعمود ١ أقصى اليمين. اضغط اسم غرفة لتركّز عليها، واضغط بطاقة لتحديد صاحبها وإظهار ما تشير إليه. الغرف المظلّلة مقيّدة.'),
-      h('button', { class: 'btn ghost', onclick: () => { ui.tutorial = 0; render(); } }, 'كيف ألعب؟'),
+      h('div', { class: 'rules-row' },
+        h('div', { class: 'rules-box' },
+          h('h3', {}, 'القواعد العامة'),
+          h('ul', {},
+            h('li', {}, 'كل صف وكل عمود فيه شخص واحد فقط.'),
+            scene.globalRules.map((g) => h('li', { class: viol.rules.has(g.index) ? 'alert' : '' }, describeGlobalRule(scene, g, overlay))),
+          ),
+          h('div', { class: 'rules-hint' }, '«بجانب» تعني يمين أو يسار أو فوق أو تحت مباشرة وفي الغرفة نفسها. الغرف المظلّلة مقيّدة. اضغط اسم غرفة لتركّز عليها، واضغط بطاقة لتحديد صاحبها وإظهار ما تشير إليه.'),
+        ),
+        h('button', { class: 'btn howto', onclick: () => { ui.tutorial = 0; render(); } }, 'كيف ألعب؟'),
+      ),
     );
   }
 
