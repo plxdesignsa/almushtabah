@@ -158,15 +158,16 @@
       "gender": "f",
       "class": "worker",
       "victim": false,
+      "voice": "calm",
       "avatar": {
-        "body": 1,
-        "skin": 2,
-        "hair": 7,
-        "hairColor": 1,
+        "body": 2,
+        "skin": 1,
+        "hair": 1,
+        "hairColor": 2,
         "facial": 0,
-        "clothes": 3,
-        "clothesColor": 11,
-        "hat": 3
+        "clothes": 8,
+        "clothesColor": 12,
+        "hat": 0
       }
     },
     {
@@ -175,49 +176,52 @@
       "gender": "f",
       "class": "worker",
       "victim": false,
+      "voice": "calm",
       "avatar": {
         "body": 1,
-        "skin": 1,
-        "hair": 18,
-        "hairColor": 2,
+        "skin": 2,
+        "hair": 44,
+        "hairColor": 4,
         "facial": 0,
-        "clothes": 6,
-        "clothesColor": 11,
-        "hat": 1
+        "clothes": 4,
+        "clothesColor": 6,
+        "hat": 0
       }
     },
     {
       "id": 2,
-      "key": "hessa",
-      "gender": "f",
+      "key": "majed",
+      "gender": "m",
       "class": "visitor",
       "victim": false,
+      "voice": "chatty",
       "avatar": {
-        "body": 1,
-        "skin": 5,
-        "hair": 20,
-        "hairColor": 4,
-        "facial": 0,
-        "clothes": 2,
-        "clothesColor": 3,
-        "hat": 1
+        "body": 3,
+        "skin": 2,
+        "hair": 15,
+        "hairColor": 2,
+        "facial": 8,
+        "clothes": 4,
+        "clothesColor": 10,
+        "hat": 2
       }
     },
     {
       "id": 3,
-      "key": "majed",
-      "gender": "m",
+      "key": "hessa",
+      "gender": "f",
       "class": "visitor",
       "victim": true,
+      "voice": "grumpy",
       "avatar": {
-        "body": 2,
+        "body": 1,
         "skin": 5,
-        "hair": 45,
-        "hairColor": 1,
-        "facial": 4,
-        "clothes": 2,
-        "clothesColor": 12,
-        "hat": 2
+        "hair": 31,
+        "hairColor": 4,
+        "facial": 0,
+        "clothes": 8,
+        "clothesColor": 1,
+        "hat": 1
       }
     },
     {
@@ -226,58 +230,60 @@
       "gender": "m",
       "class": "visitor",
       "victim": false,
+      "voice": "grumpy",
       "avatar": {
         "body": 3,
-        "skin": 1,
-        "hair": 23,
-        "hairColor": 4,
-        "facial": 4,
+        "skin": 4,
+        "hair": 11,
+        "hairColor": 3,
+        "facial": 5,
         "clothes": 6,
-        "clothesColor": 9,
+        "clothesColor": 3,
         "hat": 0
       }
     },
     {
       "id": 5,
-      "key": "talal",
-      "gender": "m",
+      "key": "amal",
+      "gender": "f",
       "class": "worker",
       "victim": false,
+      "voice": "calm",
       "avatar": {
         "body": 2,
-        "skin": 4,
-        "hair": 14,
+        "skin": 3,
+        "hair": 48,
         "hairColor": 1,
-        "facial": 1,
+        "facial": 0,
         "clothes": 1,
-        "clothesColor": 8,
-        "hat": 1
+        "clothesColor": 11,
+        "hat": 0
       }
     }
   ],
   "solution": [
     [
-      4,
+      0,
       2
     ],
     [
-      1,
-      4
-    ],
-    [
-      2,
-      0
-    ],
-    [
-      3,
-      5
-    ],
-    [
-      5,
+      4,
       3
     ],
     [
-      0,
+      2,
+      5
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      5,
+      0
+    ],
+    [
+      1,
       1
     ]
   ],
@@ -296,40 +302,45 @@
     {
       "char": "noura",
       "type": "besideObject",
-      "object": "bucket"
+      "object": "barrel"
     },
     {
       "char": "jawaher",
       "type": "besideObject",
-      "object": "sink"
+      "object": "trough"
     },
     {
-      "char": "jawaher",
-      "type": "inCol",
-      "n": 5
-    },
-    {
-      "char": "hessa",
-      "type": "inRoom",
-      "room": "palmgrove"
-    },
-    {
-      "char": "hessa",
+      "char": "majed",
       "type": "inRow",
       "n": 3
     },
     {
-      "char": "mohammed",
+      "char": "majed",
       "type": "inCol",
-      "n": 4
+      "n": 6
     },
     {
-      "char": "talal",
+      "char": "mohammed",
+      "type": "besideObject",
+      "object": "basket"
+    },
+    {
+      "char": "mohammed",
+      "type": "inRow",
+      "n": 6
+    },
+    {
+      "char": "amal",
       "type": "onObject",
+      "object": "bucket"
+    },
+    {
+      "char": "amal",
+      "type": "besideObject",
       "object": "barrel"
     },
     {
-      "char": "majed",
+      "char": "hessa",
       "type": "aloneWithKiller"
     }
   ],
@@ -337,174 +348,115 @@
     {
       "step": 1,
       "action": "isolate",
-      "char": 5,
-      "cell": 1,
-      "because": "clues[6]",
+      "char": 2,
+      "cell": 17,
+      "because": "clues[3]",
       "rule": "unary"
     },
     {
       "step": 2,
       "action": "isolate",
-      "char": 2,
-      "cell": 12,
+      "char": 4,
+      "cell": 30,
+      "because": "clues[5]",
+      "rule": "unary"
+    },
+    {
+      "step": 3,
+      "action": "isolate",
+      "char": 5,
+      "cell": 7,
+      "because": "clues[7]",
+      "rule": "unary"
+    },
+    {
+      "step": 4,
+      "action": "isolate",
+      "char": 0,
+      "cell": 2,
       "because": "placed:5",
       "rule": "rowCol"
     },
     {
-      "step": 3,
-      "action": "block",
-      "char": 0,
-      "cells": [
-        6,
-        21
-      ],
-      "because": "col:3",
-      "rule": "hiddenSingle"
-    },
-    {
-      "step": 4,
+      "step": 5,
       "action": "block",
       "char": 3,
       "cells": [
-        9,
-        10,
-        12,
-        15,
-        16,
-        18,
-        22,
-        24,
-        28,
-        30,
-        33,
-        34
+        3
       ],
-      "because": "col:6",
+      "because": "col:5",
       "rule": "hiddenSingle"
     },
     {
-      "step": 5,
-      "action": "block",
-      "char": 0,
-      "cells": [
-        8
-      ],
-      "because": "globalRules[1]",
-      "rule": "noEmptyRegion"
-    },
-    {
       "step": 6,
-      "action": "isolate",
-      "char": 0,
-      "cell": 26,
-      "because": "placed:2",
-      "rule": "rowCol"
+      "action": "block",
+      "char": 3,
+      "cells": [
+        28
+      ],
+      "because": "clues[8]",
+      "rule": "occupancy"
     },
     {
       "step": 7,
       "action": "isolate",
       "char": 1,
-      "cell": 10,
-      "because": "placed:2",
+      "cell": 27,
+      "because": "placed:0",
       "rule": "rowCol"
     },
     {
       "step": 8,
       "action": "isolate",
       "char": 3,
-      "cell": 23,
-      "because": "row:4",
-      "rule": "hiddenSingle"
-    },
-    {
-      "step": 9,
-      "action": "isolate",
-      "char": 4,
-      "cell": 33,
-      "because": "clues[7]",
-      "rule": "occupancy"
+      "cell": 22,
+      "because": "placed:0",
+      "rule": "rowCol"
     }
   ],
   "hintLadder": [
     {
       "step": 1,
-      "char": 5,
-      "cell": 1,
-      "because": "clues[6]",
+      "char": 2,
+      "cell": 17,
+      "because": "clues[3]",
       "rule": "unary",
       "blocks": [],
-      "cascade": [
-        {
-          "char": 2,
-          "cell": 12,
-          "because": "placed:5"
-        },
-        {
-          "char": 0,
-          "cell": 26,
-          "because": "placed:2"
-        },
-        {
-          "char": 1,
-          "cell": 10,
-          "because": "placed:2"
-        }
-      ]
+      "cascade": []
     },
     {
       "step": 2,
-      "char": 3,
-      "cell": 23,
-      "because": "row:4",
-      "rule": "hiddenSingle",
-      "blocks": [
-        {
-          "char": 0,
-          "cells": [
-            6,
-            21
-          ],
-          "because": "col:3",
-          "rule": "hiddenSingle"
-        },
-        {
-          "char": 3,
-          "cells": [
-            9,
-            10,
-            12,
-            15,
-            16,
-            18,
-            22,
-            24,
-            28,
-            30,
-            33,
-            34
-          ],
-          "because": "col:6",
-          "rule": "hiddenSingle"
-        },
-        {
-          "char": 0,
-          "cells": [
-            8
-          ],
-          "because": "globalRules[1]",
-          "rule": "noEmptyRegion"
-        }
-      ],
+      "char": 4,
+      "cell": 30,
+      "because": "clues[5]",
+      "rule": "unary",
+      "blocks": [],
       "cascade": []
     },
     {
       "step": 3,
-      "char": 4,
-      "cell": 33,
+      "char": 5,
+      "cell": 7,
       "because": "clues[7]",
-      "rule": "occupancy",
+      "rule": "unary",
       "blocks": [],
-      "cascade": []
+      "cascade": [
+        {
+          "char": 0,
+          "cell": 2,
+          "because": "placed:5"
+        },
+        {
+          "char": 1,
+          "cell": 27,
+          "because": "placed:0"
+        },
+        {
+          "char": 3,
+          "cell": 22,
+          "because": "placed:0"
+        }
+      ]
     }
   ],
   "meta": {
@@ -512,13 +464,13 @@
     "theme": "farm",
     "targetTier": "easy",
     "generator": "almushtabah-gen/0.1",
-    "generatedAt": "2026-09-05T13:36:09.320Z",
+    "generatedAt": "2026-09-05T13:51:46.150Z",
     "stats": {
-      "clues": 7,
+      "clues": 8,
       "maxPerChar": 2,
       "silentCharacters": 0,
       "hintSteps": 3,
-      "deductions": 9,
+      "deductions": 8,
       "rooms": 5,
       "rounds": 3
     }

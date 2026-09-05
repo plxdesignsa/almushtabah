@@ -128,15 +128,30 @@ function describeReason(scene, step, overlay) {
   return step.because;
 }
 
-/** درجة من سلّم التلميحات كفقرة عربية واحدة. */
+/** سبب مختصر للتلميحات: القواعد العامة برقمها فقط (نصّها معروض للاعب أصلًا)، والأدلة بنصّها. */
+function shortReason(scene, step, overlay) {
+  const m = /^globalRules\[(\d+)\]$/.exec(step.because ?? '');
+  if (m) return `القاعدة العامة ${arNum(Number(m[1]) + 1)}`;
+  return trimDot(describeReason(scene, step, overlay));
+}
+
+const RUNG_MAX_BLOCKS = 3;
+
+/** درجة من سلّم التلميحات كفقرة عربية واحدة، مقتصرة على آخر الحجوبات التي مهّدت للحسم. */
 export function describeRung(scene, rung, overlay) {
   const N = makeNamer(scene, overlay);
   const parts = [];
-  for (const b of rung.blocks) {
-    parts.push(`استبعد ${N.char(b.char)} من ${N.cellsBrief(b.cells)} لأن ${trimDot(describeReason(scene, b, overlay))}.`);
+  const blocks = rung.blocks.slice(-RUNG_MAX_BLOCKS);
+  const skipped = rung.blocks.length - blocks.length;
+  if (skipped > 0) {
+    const phrase = skipped === 1 ? 'استبعاد مباشر واحد' : skipped === 2 ? 'استبعادين مباشرين' : skipped <= 10 ? `${arNum(skipped)} استبعادات مباشرة` : `${arNum(skipped)} استبعادًا مباشرًا`;
+    parts.push(`بعد ${phrase} من البطاقات والقواعد العامة:`);
+  }
+  for (const b of blocks) {
+    parts.push(`استبعد ${N.char(b.char)} من ${N.cellsBrief(b.cells)} لأن ${shortReason(scene, b, overlay)}.`);
   }
   const f = female(scene, rung.char);
-  parts.push(`${N.char(rung.char)} لا يمكن أن ${f ? 'تكون' : 'يكون'} إلا في ${N.cell(rung.cell)} لأن ${trimDot(describeReason(scene, rung, overlay))}.`);
+  parts.push(`${N.char(rung.char)} لا يمكن أن ${f ? 'تكون' : 'يكون'} إلا في ${N.cell(rung.cell)} لأن ${shortReason(scene, rung, overlay)}.`);
   if (rung.cascade.length) {
     parts.push(`وهذا يحسم بدوره: ${rung.cascade.map((c) => `${N.char(c.char)} في ${N.cell(c.cell)}`).join('، ')}.`);
   }

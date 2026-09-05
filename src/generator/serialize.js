@@ -3,6 +3,7 @@
 import { describeClue, describeRung } from '../engine/describe.js';
 import { hintLadder, humanSteps } from '../engine/solver.js';
 import { OBJECTS } from './content.js';
+import { voiceClues } from './voice.js';
 
 /** يبني كائن القضية (JSON) من مكوّنات المولّد. */
 export function assembleCase({ id, size, layout, characters, placement, globalRules, clues, difficulty, hintChain, hintLadder: ladder, meta }) {
@@ -14,7 +15,7 @@ export function assembleCase({ id, size, layout, characters, placement, globalRu
     roomMap: layout.roomMap,
     rooms: layout.rooms.map((r) => ({ id: r.id, key: r.key, restricted: r.restricted })),
     objects: layout.objects.map((o) => ({ cell: [Math.floor(o.cell / size), o.cell % size], key: o.key, sprite: o.sprite, variant: o.variant })),
-    characters: characters.map((c) => ({ id: c.id, key: c.key, gender: c.gender, class: c.class, victim: c.victim, avatar: c.avatar })),
+    characters: characters.map((c) => ({ id: c.id, key: c.key, gender: c.gender, class: c.class, victim: c.victim, voice: c.voice, avatar: c.avatar })),
     solution: placement.map((cell) => [Math.floor(cell / size), cell % size]),
     globalRules,
     clues: clues.map((c) => serializeClue(c, characters)),
@@ -46,8 +47,11 @@ export function hintChainFrom(trace) {
   }));
 }
 
-/** طبقة الترجمة: أسماء + مسودة آلية للأدلة والتلميحات (يعيد المؤلف صياغتها لاحقًا). */
-export function buildOverlay(scene, theme, { title, characters, trace }) {
+/**
+ * طبقة الترجمة: أسماء + بطاقات الشهود بصوتهم (باللهجة) + الصياغة الآلية المحايدة للمراجعة
+ * + سلّم التلميحات. المعنى في البطاقة يطابق الدليل الآلي حرفيًا؛ الصوت فقط يختلف.
+ */
+export function buildOverlay(scene, theme, { title, characters, trace, rng }) {
   const overlay = {
     title,
     rooms: Object.fromEntries(scene.rooms.map((r) => [r.key, theme.rooms.find((t) => t.key === r.key)?.ar ?? r.key])),
@@ -55,7 +59,11 @@ export function buildOverlay(scene, theme, { title, characters, trace }) {
     chars: Object.fromEntries(characters.map((c) => [c.key, c.ar])),
     classes: theme.classNames,
   };
-  overlay.clues = Object.fromEntries(scene.clues.map((c) => [String(c.index), describeClue(scene, c, overlay)]));
+  const voiced = voiceClues(scene, overlay, rng);
+  overlay.clues = voiced.clues;
+  overlay.cards = voiced.cards;
+  overlay.victimCard = voiced.victimCard;
+  overlay.machineClues = Object.fromEntries(scene.clues.map((c) => [String(c.index), describeClue(scene, c, overlay)]));
   overlay.hints = Object.fromEntries(hintLadder(trace).map((r) => [String(r.step), describeRung(scene, r, overlay)]));
   return overlay;
 }

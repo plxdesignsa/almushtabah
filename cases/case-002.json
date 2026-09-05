@@ -132,16 +132,17 @@
       "key": "munira",
       "gender": "f",
       "class": "guest",
-      "victim": true,
+      "victim": false,
+      "voice": "grumpy",
       "avatar": {
         "body": 2,
-        "skin": 3,
-        "hair": 22,
-        "hairColor": 4,
+        "skin": 2,
+        "hair": 58,
+        "hairColor": 3,
         "facial": 0,
-        "clothes": 5,
-        "clothesColor": 1,
-        "hat": 1
+        "clothes": 1,
+        "clothesColor": 6,
+        "hat": 3
       }
     },
     {
@@ -150,15 +151,16 @@
       "gender": "m",
       "class": "household",
       "victim": false,
+      "voice": "calm",
       "avatar": {
-        "body": 3,
+        "body": 2,
         "skin": 1,
-        "hair": 26,
-        "hairColor": 1,
+        "hair": 33,
+        "hairColor": 4,
         "facial": 4,
-        "clothes": 7,
-        "clothesColor": 6,
-        "hat": 1
+        "clothes": 4,
+        "clothesColor": 10,
+        "hat": 2
       }
     },
     {
@@ -167,72 +169,75 @@
       "gender": "m",
       "class": "household",
       "victim": false,
+      "voice": "calm",
       "avatar": {
-        "body": 2,
-        "skin": 4,
-        "hair": 1,
-        "hairColor": 4,
-        "facial": 4,
-        "clothes": 7,
+        "body": 3,
+        "skin": 3,
+        "hair": 49,
+        "hairColor": 3,
+        "facial": 0,
+        "clothes": 5,
         "clothesColor": 9,
         "hat": 0
       }
     },
     {
       "id": 3,
-      "key": "abdullah",
-      "gender": "m",
+      "key": "sara",
+      "gender": "f",
       "class": "guest",
       "victim": false,
+      "voice": "chatty",
       "avatar": {
         "body": 3,
-        "skin": 2,
-        "hair": 15,
-        "hairColor": 2,
-        "facial": 8,
-        "clothes": 1,
-        "clothesColor": 11,
-        "hat": 0
+        "skin": 1,
+        "hair": 52,
+        "hairColor": 1,
+        "facial": 0,
+        "clothes": 5,
+        "clothesColor": 7,
+        "hat": 2
       }
     },
     {
       "id": 4,
-      "key": "turki",
-      "gender": "m",
+      "key": "hessa",
+      "gender": "f",
       "class": "household",
-      "victim": false,
+      "victim": true,
+      "voice": "chatty",
       "avatar": {
-        "body": 2,
-        "skin": 4,
-        "hair": 12,
-        "hairColor": 2,
-        "facial": 6,
-        "clothes": 5,
-        "clothesColor": 9,
-        "hat": 3
+        "body": 3,
+        "skin": 3,
+        "hair": 45,
+        "hairColor": 4,
+        "facial": 0,
+        "clothes": 3,
+        "clothesColor": 1,
+        "hat": 1
       }
     }
   ],
   "solution": [
     [
-      1,
+      4,
       3
     ],
     [
+      1,
+      1
+    ],
+    [
       3,
+      0
+    ],
+    [
+      0,
       4
     ],
     [
       2,
-      1
-    ],
-    [
-      4,
       2
-    ],
-    [
-      0,
-      0
     ]
   ],
   "globalRules": [
@@ -248,37 +253,32 @@
   ],
   "clues": [
     {
-      "char": "ibrahim",
-      "type": "besideObject",
-      "object": "table"
-    },
-    {
-      "char": "ibrahim",
-      "type": "inRow",
-      "n": 4
-    },
-    {
-      "char": "nasser",
-      "type": "inRoom",
-      "room": "garage"
-    },
-    {
-      "char": "abdullah",
-      "type": "besideObject",
+      "char": "munira",
+      "type": "onObject",
       "object": "palm"
     },
     {
-      "char": "turki",
-      "type": "inRoom",
-      "room": "bedroom"
-    },
-    {
-      "char": "turki",
+      "char": "ibrahim",
       "type": "besideObject",
       "object": "lamp"
     },
     {
-      "char": "munira",
+      "char": "nasser",
+      "type": "onObject",
+      "object": "barrel"
+    },
+    {
+      "char": "sara",
+      "type": "besideObject",
+      "object": "lamp"
+    },
+    {
+      "char": "sara",
+      "type": "inCol",
+      "n": 5
+    },
+    {
+      "char": "hessa",
       "type": "aloneWithKiller"
     }
   ],
@@ -286,88 +286,107 @@
     {
       "step": 1,
       "action": "isolate",
-      "char": 1,
-      "cell": 19,
-      "because": "clues[1]",
+      "char": 0,
+      "cell": 23,
+      "because": "clues[0]",
       "rule": "unary"
     },
     {
       "step": 2,
       "action": "isolate",
-      "char": 3,
-      "cell": 22,
-      "because": "clues[3]",
+      "char": 2,
+      "cell": 15,
+      "because": "clues[2]",
       "rule": "unary"
     },
     {
       "step": 3,
       "action": "isolate",
-      "char": 2,
-      "cell": 11,
+      "char": 3,
+      "cell": 4,
+      "because": "clues[4]",
+      "rule": "unary"
+    },
+    {
+      "step": 4,
+      "action": "isolate",
+      "char": 1,
+      "cell": 6,
       "because": "placed:3",
       "rule": "rowCol"
     },
     {
-      "step": 4,
+      "step": 5,
       "action": "block",
       "char": 4,
       "cells": [
-        6
+        6,
+        7
       ],
-      "because": "col:1",
+      "because": "row:3",
       "rule": "hiddenSingle"
-    },
-    {
-      "step": 5,
-      "action": "isolate",
-      "char": 4,
-      "cell": 0,
-      "because": "placed:2",
-      "rule": "rowCol"
     },
     {
       "step": 6,
       "action": "isolate",
-      "char": 0,
-      "cell": 8,
-      "because": "placed:4",
-      "rule": "rowCol"
+      "char": 4,
+      "cell": 12,
+      "because": "col:3",
+      "rule": "hiddenSingle"
     }
   ],
   "hintLadder": [
     {
       "step": 1,
-      "char": 1,
-      "cell": 19,
-      "because": "clues[1]",
+      "char": 0,
+      "cell": 23,
+      "because": "clues[0]",
       "rule": "unary",
       "blocks": [],
       "cascade": []
     },
     {
       "step": 2,
+      "char": 2,
+      "cell": 15,
+      "because": "clues[2]",
+      "rule": "unary",
+      "blocks": [],
+      "cascade": []
+    },
+    {
+      "step": 3,
       "char": 3,
-      "cell": 22,
-      "because": "clues[3]",
+      "cell": 4,
+      "because": "clues[4]",
       "rule": "unary",
       "blocks": [],
       "cascade": [
         {
-          "char": 2,
-          "cell": 11,
+          "char": 1,
+          "cell": 6,
           "because": "placed:3"
-        },
-        {
-          "char": 4,
-          "cell": 0,
-          "because": "placed:2"
-        },
-        {
-          "char": 0,
-          "cell": 8,
-          "because": "placed:4"
         }
       ]
+    },
+    {
+      "step": 4,
+      "char": 4,
+      "cell": 12,
+      "because": "col:3",
+      "rule": "hiddenSingle",
+      "blocks": [
+        {
+          "char": 4,
+          "cells": [
+            6,
+            7
+          ],
+          "because": "row:3",
+          "rule": "hiddenSingle"
+        }
+      ],
+      "cascade": []
     }
   ],
   "meta": {
@@ -375,15 +394,15 @@
     "theme": "house",
     "targetTier": "easy",
     "generator": "almushtabah-gen/0.1",
-    "generatedAt": "2026-09-05T13:36:09.304Z",
+    "generatedAt": "2026-09-05T13:51:46.141Z",
     "stats": {
-      "clues": 6,
+      "clues": 5,
       "maxPerChar": 2,
       "silentCharacters": 0,
-      "hintSteps": 2,
+      "hintSteps": 4,
       "deductions": 6,
       "rooms": 4,
-      "rounds": 3
+      "rounds": 2
     }
   }
 }

@@ -15,7 +15,7 @@ export const DROP_WEIGHTS = {
   medium: { inRow: 6, inCol: 6, notOnObject: 6, notInRoom: 4, onObject: 4, inRoom: 3, notBesideObject: 3, diffRoom: 3, colOffset: 3.5, rowOffset: 3.5, besideObject: 2, sameRoom: 2, besideChar: 1, aloneInRoom: 3, aloneWith: 3 },
   // الصعب والخبير: نضحّي بالتثبيت المباشر أولًا لتبقى أدلة المكان والجوار والإشغال؛
   // الإزاحات الحسابية تُحذف قبلها حتى لا تطغى على البطاقات.
-  hard: { onObject: 6, inRow: 6, inCol: 6, notOnObject: 5, inRoom: 4.5, notInRoom: 4, colOffset: 4, rowOffset: 4, diffRoom: 3, notBesideObject: 2.5, sameRoom: 1.5, besideObject: 1, besideChar: 1, aloneInRoom: 1, aloneWith: 1 },
+  hard: { onObject: 6, inRow: 6.5, inCol: 6.5, colOffset: 5.5, rowOffset: 5.5, notOnObject: 5, inRoom: 4, notInRoom: 3.5, diffRoom: 3, notBesideObject: 2.5, sameRoom: 1.5, besideObject: 1, besideChar: 1, aloneInRoom: 1, aloneWith: 1 },
 };
 DROP_WEIGHTS.expert = DROP_WEIGHTS.hard;
 
@@ -65,10 +65,12 @@ export function buildCluePool(rng, scene, placement, { victim, killer }) {
       if (roomOfCell[q] === rm && !revealsKiller(o)) add({ char: ch.id, type: 'sameRoom', other: o.id });
       const dr = row(p) - row(q);
       const dc = col(p) - col(q);
-      if (Math.abs(dr) <= 2) offsets.push({ char: ch.id, type: 'rowOffset', n: dr, other: o.id });
-      if (Math.abs(dc) <= 2) offsets.push({ char: ch.id, type: 'colOffset', n: dc, other: o.id });
+      // الإزاحة بصف/عمود واحد تُقرأ طبيعيًا («فوقه مباشرة»)؛ بصفّين مقبولة؛ أكثر من ذلك حسابي ممل.
+      if (Math.abs(dr) === 1 || (Math.abs(dr) === 2 && rng.chance(0.4))) offsets.push({ char: ch.id, type: 'rowOffset', n: dr, other: o.id });
+      if (Math.abs(dc) === 1 || (Math.abs(dc) === 2 && rng.chance(0.4))) offsets.push({ char: ch.id, type: 'colOffset', n: dc, other: o.id });
     }
-    for (const c of rng.sample(offsets, Math.min(2, offsets.length))) add(c);
+    // إزاحة واحدة لكل شاهد على الأكثر، حتى لا تطغى على البطاقات.
+    if (offsets.length) add(rng.pick(offsets));
     const different = others.filter((o) => roomOfCell[placement[o.id]] !== rm);
     for (const o of rng.sample(different, Math.min(2, different.length))) add({ char: ch.id, type: 'diffRoom', other: o.id });
 

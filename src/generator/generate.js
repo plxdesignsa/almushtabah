@@ -15,6 +15,7 @@ import { Scene } from '../engine/scene.js';
 import { measureTier, minimizeClues, withClues } from '../engine/solver.js';
 import { buildCluePool, removalOrder } from './clue-pool.js';
 import { NAMES, THEMES, THEME_KEYS } from './content.js';
+import { PERSONA_KEYS } from './voice.js';
 import { defaultRoomCount, generateLayout } from './layout.js';
 import { randomPlacement } from './placement.js';
 import { assembleCase, buildOverlay, hintChainFrom, hintLadderFrom } from './serialize.js';
@@ -65,7 +66,7 @@ export function generateCase(opts) {
     globalRules: best.globalRules, clues: best.clues, difficulty: best.tier, hintChain, hintLadder: hintLadderFrom(best.trace),
     meta: { seed, theme: themeKey, targetTier: tier, generator: 'almushtabah-gen/0.1', generatedAt: new Date().toISOString(), stats: best.stats },
   });
-  const overlay = buildOverlay(best.scene, theme, { title: theme.titles[master.int(theme.titles.length)], characters: best.characters, trace: best.trace });
+  const overlay = buildOverlay(best.scene, theme, { title: theme.titles[master.int(theme.titles.length)], characters: best.characters, trace: best.trace, rng: master.fork() });
   return { case: caseJson, overlay, report: { seed, theme: themeKey, targetTier: tier, tier: best.tier, attempts: log, stats: best.stats } };
 }
 
@@ -149,7 +150,7 @@ function makeCharacters(rng, theme, size) {
     const gender = rng.chance(0.5) && females.length ? 'f' : 'm';
     const [key, ar] = gender === 'f' ? females.pop() : males.pop();
     return {
-      id, key, ar, gender, class: cls, victim: false,
+      id, key, ar, gender, class: cls, victim: false, voice: rng.pick(PERSONA_KEYS),
       avatar: { body: rng.between(1, 3), skin: rng.between(1, 5), hair: rng.between(1, 60), hairColor: rng.between(1, 4), facial: gender === 'm' ? rng.between(0, 8) : 0, clothes: rng.between(1, 8), clothesColor: rng.between(1, 12), hat: rng.between(0, 3) },
     };
   });

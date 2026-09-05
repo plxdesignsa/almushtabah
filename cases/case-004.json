@@ -7,75 +7,93 @@
     1,
     1,
     1,
-    0,
-    0,
-    0,
     1,
     1,
-    0,
-    0,
-    0,
-    0,
-    1,
-    0,
-    0,
-    0,
-    0,
-    2,
-    3,
-    3,
-    0,
-    0,
-    2,
-    2,
-    3,
-    3,
-    3,
-    0,
     4,
-    2,
+    0,
+    0,
     3,
+    1,
+    4,
+    4,
+    0,
+    0,
     3,
     3,
     4,
     4,
-    4
+    0,
+    0,
+    0,
+    0,
+    4,
+    4,
+    0,
+    0,
+    0,
+    0,
+    2,
+    2,
+    0,
+    0,
+    0,
+    2,
+    2,
+    2
   ],
   "rooms": [
     {
       "id": 0,
-      "key": "office",
-      "restricted": true
-    },
-    {
-      "id": 1,
-      "key": "entrance",
+      "key": "spices",
       "restricted": false
     },
     {
-      "id": 2,
+      "id": 1,
       "key": "cafekitchen",
       "restricted": true
     },
     {
+      "id": 2,
+      "key": "cafe",
+      "restricted": false
+    },
+    {
       "id": 3,
-      "key": "dates",
+      "key": "abayas",
       "restricted": false
     },
     {
       "id": 4,
-      "key": "perfumes",
-      "restricted": false
+      "key": "cashroom",
+      "restricted": true
     }
   ],
   "objects": [
     {
       "cell": [
         0,
+        2
+      ],
+      "key": "sink",
+      "sprite": "obj_sink",
+      "variant": 3
+    },
+    {
+      "cell": [
+        0,
+        4
+      ],
+      "key": "stove",
+      "sprite": "obj_stove",
+      "variant": 2
+    },
+    {
+      "cell": [
+        0,
         5
       ],
-      "key": "camera",
-      "sprite": "obj_camera",
+      "key": "register",
+      "sprite": "obj_register",
       "variant": 3
     },
     {
@@ -83,201 +101,189 @@
         1,
         1
       ],
-      "key": "sign",
-      "sprite": "obj_sign",
-      "variant": 3
+      "key": "counter",
+      "sprite": "obj_counter",
+      "variant": 2
     },
     {
       "cell": [
         1,
         2
       ],
-      "key": "desk",
-      "sprite": "obj_desk",
+      "key": "chair",
+      "sprite": "obj_chair",
+      "variant": 2
+    },
+    {
+      "cell": [
+        2,
+        3
+      ],
+      "key": "rack",
+      "sprite": "obj_rack",
       "variant": 3
     },
     {
       "cell": [
-        1,
-        3
+        3,
+        0
       ],
-      "key": "camera",
-      "sprite": "obj_camera",
+      "key": "counter",
+      "sprite": "obj_counter",
       "variant": 1
     },
     {
       "cell": [
-        1,
-        5
-      ],
-      "key": "desk",
-      "sprite": "obj_desk",
-      "variant": 2
-    },
-    {
-      "cell": [
-        3,
+        4,
         3
       ],
-      "key": "safe",
-      "sprite": "obj_safe",
-      "variant": 3
-    },
-    {
-      "cell": [
-        3,
-        5
-      ],
-      "key": "sink",
-      "sprite": "obj_sink",
-      "variant": 2
-    },
-    {
-      "cell": [
-        4,
-        4
-      ],
-      "key": "display",
-      "sprite": "obj_display",
+      "key": "sack",
+      "sprite": "obj_sack",
       "variant": 3
     },
     {
       "cell": [
         5,
-        0
+        3
       ],
-      "key": "counter",
-      "sprite": "obj_counter",
-      "variant": 2
+      "key": "chair",
+      "sprite": "obj_chair",
+      "variant": 1
     }
   ],
   "characters": [
     {
       "id": 0,
-      "key": "maha",
+      "key": "ghada",
       "gender": "f",
       "class": "staff",
       "victim": false,
+      "voice": "chatty",
       "avatar": {
-        "body": 3,
-        "skin": 5,
+        "body": 1,
+        "skin": 2,
         "hair": 20,
-        "hairColor": 3,
+        "hairColor": 1,
         "facial": 0,
-        "clothes": 2,
-        "clothesColor": 11,
+        "clothes": 1,
+        "clothesColor": 7,
         "hat": 2
       }
     },
     {
       "id": 1,
-      "key": "sara",
+      "key": "salma",
       "gender": "f",
       "class": "customer",
-      "victim": false,
+      "victim": true,
+      "voice": "calm",
       "avatar": {
         "body": 2,
-        "skin": 3,
-        "hair": 53,
+        "skin": 4,
+        "hair": 19,
         "hairColor": 2,
         "facial": 0,
-        "clothes": 2,
-        "clothesColor": 7,
+        "clothes": 7,
+        "clothesColor": 4,
         "hat": 2
       }
     },
     {
       "id": 2,
-      "key": "nayef",
-      "gender": "m",
-      "class": "staff",
+      "key": "shahad",
+      "gender": "f",
+      "class": "customer",
       "victim": false,
+      "voice": "chatty",
       "avatar": {
         "body": 2,
-        "skin": 1,
-        "hair": 33,
-        "hairColor": 1,
-        "facial": 2,
-        "clothes": 4,
-        "clothesColor": 2,
+        "skin": 4,
+        "hair": 11,
+        "hairColor": 2,
+        "facial": 0,
+        "clothes": 5,
+        "clothesColor": 10,
         "hat": 3
       }
     },
     {
       "id": 3,
-      "key": "rana",
+      "key": "amal",
       "gender": "f",
-      "class": "customer",
-      "victim": true,
+      "class": "staff",
+      "victim": false,
+      "voice": "calm",
       "avatar": {
         "body": 3,
-        "skin": 5,
-        "hair": 52,
-        "hairColor": 3,
+        "skin": 3,
+        "hair": 51,
+        "hairColor": 1,
         "facial": 0,
-        "clothes": 2,
-        "clothesColor": 9,
-        "hat": 2
+        "clothes": 7,
+        "clothesColor": 1,
+        "hat": 3
       }
     },
     {
       "id": 4,
-      "key": "latifa",
-      "gender": "f",
+      "key": "ziyad",
+      "gender": "m",
       "class": "customer",
       "victim": false,
+      "voice": "formal",
       "avatar": {
-        "body": 3,
-        "skin": 2,
-        "hair": 52,
-        "hairColor": 2,
+        "body": 1,
+        "skin": 1,
+        "hair": 24,
+        "hairColor": 1,
         "facial": 0,
-        "clothes": 3,
-        "clothesColor": 7,
+        "clothes": 2,
+        "clothesColor": 12,
         "hat": 0
       }
     },
     {
       "id": 5,
-      "key": "mohammed",
+      "key": "omar",
       "gender": "m",
       "class": "staff",
       "victim": false,
+      "voice": "grumpy",
       "avatar": {
         "body": 2,
-        "skin": 1,
-        "hair": 59,
-        "hairColor": 4,
-        "facial": 1,
-        "clothes": 5,
-        "clothesColor": 12,
-        "hat": 2
+        "skin": 3,
+        "hair": 58,
+        "hairColor": 2,
+        "facial": 3,
+        "clothes": 3,
+        "clothesColor": 4,
+        "hat": 1
       }
     }
   ],
   "solution": [
     [
-      4,
-      3
-    ],
-    [
-      0,
-      2
-    ],
-    [
-      3,
-      5
-    ],
-    [
-      1,
-      0
-    ],
-    [
-      5,
+      2,
       4
     ],
     [
-      2,
+      5,
+      0
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      0,
+      3
+    ],
+    [
+      4,
+      5
+    ],
+    [
+      3,
       1
     ]
   ],
@@ -294,37 +300,42 @@
   ],
   "clues": [
     {
-      "char": "maha",
-      "type": "besideObject",
-      "object": "safe"
-    },
-    {
-      "char": "maha",
-      "type": "notBesideObject",
-      "object": "camera"
-    },
-    {
-      "char": "sara",
-      "type": "inCol",
+      "char": "ghada",
+      "type": "inRow",
       "n": 3
     },
     {
-      "char": "nayef",
+      "char": "ghada",
+      "type": "inCol",
+      "n": 5
+    },
+    {
+      "char": "shahad",
       "type": "onObject",
-      "object": "sink"
+      "object": "chair"
     },
     {
-      "char": "latifa",
+      "char": "amal",
       "type": "besideObject",
-      "object": "display"
+      "object": "stove"
     },
     {
-      "char": "mohammed",
+      "char": "ziyad",
       "type": "inRoom",
-      "room": "office"
+      "room": "cafe"
     },
     {
-      "char": "rana",
+      "char": "ziyad",
+      "type": "inRow",
+      "n": 5
+    },
+    {
+      "char": "omar",
+      "type": "besideObject",
+      "object": "counter"
+    },
+    {
+      "char": "salma",
       "type": "aloneWithKiller"
     }
   ],
@@ -332,62 +343,63 @@
     {
       "step": 1,
       "action": "isolate",
-      "char": 2,
-      "cell": 23,
-      "because": "clues[3]",
+      "char": 0,
+      "cell": 16,
+      "because": "clues[1]",
       "rule": "unary"
     },
     {
       "step": 2,
       "action": "isolate",
-      "char": 4,
-      "cell": 34,
-      "because": "clues[4]",
+      "char": 3,
+      "cell": 3,
+      "because": "clues[3]",
       "rule": "unary"
     },
     {
       "step": 3,
       "action": "isolate",
-      "char": 0,
-      "cell": 27,
-      "because": "placed:2",
+      "char": 4,
+      "cell": 29,
+      "because": "placed:0",
       "rule": "rowCol"
     },
     {
       "step": 4,
-      "action": "block",
-      "char": 3,
-      "cells": [
-        1,
-        2,
-        7,
-        25,
-        26
-      ],
-      "because": "col:1",
-      "rule": "hiddenSingle"
+      "action": "isolate",
+      "char": 2,
+      "cell": 8,
+      "because": "placed:3",
+      "rule": "rowCol"
     },
     {
       "step": 5,
-      "action": "isolate",
+      "action": "block",
       "char": 1,
-      "cell": 2,
-      "because": "placed:0",
-      "rule": "rowCol"
+      "cells": [
+        6,
+        7,
+        8,
+        18,
+        19,
+        20
+      ],
+      "because": "row:6",
+      "rule": "hiddenSingle"
     },
     {
       "step": 6,
       "action": "isolate",
       "char": 5,
-      "cell": 13,
-      "because": "placed:1",
+      "cell": 19,
+      "because": "placed:2",
       "rule": "rowCol"
     },
     {
       "step": 7,
       "action": "isolate",
-      "char": 3,
-      "cell": 6,
+      "char": 1,
+      "cell": 30,
       "because": "placed:5",
       "rule": "rowCol"
     }
@@ -395,39 +407,39 @@
   "hintLadder": [
     {
       "step": 1,
-      "char": 2,
-      "cell": 23,
-      "because": "clues[3]",
+      "char": 0,
+      "cell": 16,
+      "because": "clues[1]",
       "rule": "unary",
       "blocks": [],
       "cascade": []
     },
     {
       "step": 2,
-      "char": 4,
-      "cell": 34,
-      "because": "clues[4]",
+      "char": 3,
+      "cell": 3,
+      "because": "clues[3]",
       "rule": "unary",
       "blocks": [],
       "cascade": [
         {
-          "char": 0,
-          "cell": 27,
+          "char": 4,
+          "cell": 29,
+          "because": "placed:0"
+        },
+        {
+          "char": 2,
+          "cell": 8,
+          "because": "placed:3"
+        },
+        {
+          "char": 5,
+          "cell": 19,
           "because": "placed:2"
         },
         {
           "char": 1,
-          "cell": 2,
-          "because": "placed:0"
-        },
-        {
-          "char": 5,
-          "cell": 13,
-          "because": "placed:1"
-        },
-        {
-          "char": 3,
-          "cell": 6,
+          "cell": 30,
           "because": "placed:5"
         }
       ]
@@ -438,9 +450,9 @@
     "theme": "market",
     "targetTier": "easy",
     "generator": "almushtabah-gen/0.1",
-    "generatedAt": "2026-09-05T13:36:09.331Z",
+    "generatedAt": "2026-09-05T13:51:46.159Z",
     "stats": {
-      "clues": 6,
+      "clues": 7,
       "maxPerChar": 2,
       "silentCharacters": 0,
       "hintSteps": 2,
