@@ -13,11 +13,11 @@
     2, 2, 4, 4, 4, 4
   ],
   "rooms": [
-    { "id": 0, "key": "majlis",    "restricted": false },
-    { "id": 1, "key": "kitchen",   "restricted": false },
-    { "id": 2, "key": "store",     "restricted": true  },
-    { "id": 3, "key": "courtyard", "restricted": false },
-    { "id": 4, "key": "bedroom",   "restricted": true  }
+    { "id": 0, "key": "majlis",    "restricted": false, "floor": "rug" },
+    { "id": 1, "key": "kitchen",   "restricted": false, "floor": "tile" },
+    { "id": 2, "key": "store",     "restricted": true,  "floor": "concrete" },
+    { "id": 3, "key": "courtyard", "restricted": false, "floor": "stone" },
+    { "id": 4, "key": "bedroom",   "restricted": true,  "floor": "wood" }
   ],
 
   "objects": [

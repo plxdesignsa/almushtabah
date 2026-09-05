@@ -11,11 +11,12 @@ import { roomCount } from '../engine/clues.js';
 
 export const DROP_WEIGHTS = {
   // السهل والمتوسط: نحب الأدلة الملموسة (عند/بجانب شيء، في غرفة) ونضحّي بالحسابية.
-  easy: { inRow: 6, inCol: 6, notOnObject: 6, notInRoom: 5, diffRoom: 5, notBesideObject: 4, inRoom: 2, onObject: 1, besideObject: 1, colOffset: 5, rowOffset: 5, besideChar: 3, sameRoom: 3, aloneInRoom: 3, aloneWith: 3 },
-  medium: { inRow: 6, inCol: 6, notOnObject: 6, notInRoom: 4, onObject: 4, inRoom: 3, notBesideObject: 3, diffRoom: 3, colOffset: 3.5, rowOffset: 3.5, besideObject: 2, sameRoom: 2, besideChar: 1, aloneInRoom: 3, aloneWith: 3 },
+  // الإحداثي (inRow/inCol) دائمًا أول ما يُحذف: لا يبقى إلا حين لا بديل مشهدي له.
+  easy: { inRow: 9, inCol: 9, notOnObject: 6, notInRoom: 5, diffRoom: 5, notBesideObject: 4, inRoom: 2, onObject: 1, besideObject: 1, colOffset: 5, rowOffset: 5, besideChar: 3, sameRoom: 3, aloneInRoom: 3, aloneWith: 3 },
+  medium: { inRow: 9, inCol: 9, notOnObject: 6, notInRoom: 4, onObject: 4, inRoom: 3, notBesideObject: 3, diffRoom: 3, colOffset: 3.5, rowOffset: 3.5, besideObject: 2, sameRoom: 2, besideChar: 1, aloneInRoom: 3, aloneWith: 3 },
   // الصعب والخبير: نضحّي بالتثبيت المباشر أولًا لتبقى أدلة المكان والجوار والإشغال؛
   // الإزاحات الحسابية تُحذف قبلها حتى لا تطغى على البطاقات.
-  hard: { onObject: 6, inRow: 6.5, inCol: 6.5, colOffset: 5.5, rowOffset: 5.5, notOnObject: 5, inRoom: 4, notInRoom: 3.5, diffRoom: 3, notBesideObject: 2.5, sameRoom: 1.5, besideObject: 1, besideChar: 1, aloneInRoom: 1, aloneWith: 1 },
+  hard: { inRow: 9, inCol: 9, onObject: 6, colOffset: 5.5, rowOffset: 5.5, notOnObject: 5, inRoom: 4, notInRoom: 3.5, diffRoom: 3, notBesideObject: 2.5, sameRoom: 1.5, besideObject: 1, besideChar: 1, aloneInRoom: 1, aloneWith: 1 },
 };
 DROP_WEIGHTS.expert = DROP_WEIGHTS.hard;
 
@@ -53,8 +54,8 @@ export function buildCluePool(rng, scene, placement, { victim, killer }) {
     for (const k of rng.sample(notBeside, Math.min(2, notBeside.length))) add({ char: ch.id, type: 'notBesideObject', object: k });
     const notOn = objectKeys.filter((k) => !scene.objectCells(k).has(p));
     if (notOn.length) add({ char: ch.id, type: 'notOnObject', object: rng.pick(notOn) });
-    add({ char: ch.id, type: 'inRow', n: row(p) + 1 });
-    add({ char: ch.id, type: 'inCol', n: col(p) + 1 });
+    // لا أدلة إحداثية («كنت في الصف ٩»): تعتمد على ترقيم الشبكة لا على المشهد، وتلتبس على اللاعب.
+    // المحرّك يدعم inRow/inCol للقضايا المكتوبة يدويًا فقط.
 
     // ---- ثنائية ----
     const revealsKiller = (o) => (ch.id === killer && o.id === victim);

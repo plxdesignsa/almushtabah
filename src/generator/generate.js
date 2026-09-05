@@ -99,12 +99,11 @@ function attemptOnce(rng, { size, tier, theme, id, maxPerChar, roomCount, blocke
   const base = assembleCase({ id, size, layout, characters, placement, globalRules, clues: [] });
   const emptyScene = new Scene(base);
   const pool = buildCluePool(rng, emptyScene, placement, { victim, killer });
-  const fullScene = new Scene({ ...base, clues: pool.map((c) => ({ ...c })) });
+  const fullScene = completePool(rng, base, pool, placement, TIER_RULES[tier]);
+  if (!fullScene) return null; // نادر: تعذّر إكمال المجمّع بقواعد الدرجة
 
   const truth = evaluatePlacement(fullScene, placement);
   if (!truth.ok) throw new Error('خلل داخلي: دليل كاذب في المجمّع ' + JSON.stringify(truth.failures));
-  const full = propagate(fullScene, { rules: TIER_RULES[tier] });
-  if (!(full.ok && full.solved)) return null; // نادر: المجمّع نفسه لا يكفي بقواعد الدرجة
 
   const order = removalOrder(rng, fullScene.clues, tier);
   const { kept } = minimizeClues(fullScene, order, { rules: TIER_RULES[tier] });
@@ -128,6 +127,47 @@ function attemptOnce(rng, { size, tier, theme, id, maxPerChar, roomCount, blocke
     clues: scene.clues.map((c) => ({ char: c.char, type: c.type, room: c.room !== undefined ? scene.rooms[c.room].key : undefined, object: c.object, other: c.other, n: c.n, count: c.count })),
     tier: measured, clueCount, maxPerChar: maxPer, silent, stats, score,
   };
+}
+
+/**
+ * إكمال المجمّع: المجمّع بلا أدلة إحداثية قد لا يميّز خليتين متجاورتين في غرفة واحدة.
+ * لكل شخصية بقيت غير محسومة نضيف، بالترتيب: (١) «عند شيء» إن كانت فوق شيء، (٢) إزاحات
+ * صف/عمود قصيرة عن شخصيات أخرى، (٣) وأخيرًا الصف أو العمود الرقمي. التقليم اللاحق يبقي
+ * الأقل فقط، والأوزان تجعل الإحداثي أول ما يُحذف، فلا يبقى إلا حين لا بديل مشهدي له.
+ * @returns {Scene|null}
+ */
+function completePool(rng, base, pool, placement, rules) {
+  let clues = pool.map((c) => ({ ...c }));
+  for (let round = 0; round < 4; round++) {
+    const scene = new Scene({ ...base, clues });
+    const r = propagate(scene, { rules });
+    if (!r.ok) return null;
+    if (r.solved) return scene;
+    const unpinned = r.domains.map((d, id) => (d.size > 1 ? id : -1)).filter((id) => id >= 0);
+    for (const id of unpinned) {
+      if (id === scene.victim?.id) continue; // الضحية بلا بطاقات: تُحسم من الآخرين
+      const p = placement[id];
+      const has = (type, extra = {}) => clues.some((c) => c.char === id && c.type === type && Object.entries(extra).every(([k, v]) => c[k] === v));
+      const onKey = scene.objects.find((o) => o.cell === p)?.key;
+      if (round === 0 && onKey && !has('onObject', { object: onKey })) { clues.push({ char: id, type: 'onObject', object: onKey }); continue; }
+      if (round <= 1) {
+        const others = scene.characters.filter((o) => o.id !== id);
+        const cands = [];
+        for (const o of others) {
+          const dr = scene.rowOf(p) - scene.rowOf(placement[o.id]);
+          const dc = scene.colOf(p) - scene.colOf(placement[o.id]);
+          if (Math.abs(dr) >= 1 && Math.abs(dr) <= 2 && !has('rowOffset', { other: o.id })) cands.push({ char: id, type: 'rowOffset', n: dr, other: o.id });
+          if (Math.abs(dc) >= 1 && Math.abs(dc) <= 2 && !has('colOffset', { other: o.id })) cands.push({ char: id, type: 'colOffset', n: dc, other: o.id });
+        }
+        if (cands.length) { clues.push(...rng.sample(cands, Math.min(2, cands.length))); continue; }
+      }
+      if (!has('inRow')) clues.push({ char: id, type: 'inRow', n: scene.rowOf(p) + 1 });
+      if (!has('inCol')) clues.push({ char: id, type: 'inCol', n: scene.colOf(p) + 1 });
+    }
+  }
+  const scene = new Scene({ ...base, clues });
+  const r = propagate(scene, { rules });
+  return r.ok && r.solved ? scene : null;
 }
 
 /** جودة المرشّح: مطابقة الدرجة أولًا، ثم بطاقات متوازنة (≤2 لكل شخصية، لا شخصية صامتة)، ثم قلة الأدلة. */

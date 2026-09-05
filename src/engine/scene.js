@@ -47,7 +47,7 @@ export class Scene {
     this.rooms = raw.rooms.map((r, i) => {
       assert(r.id === i, `rooms[${i}].id يجب أن يساوي ${i}`);
       assert(typeof r.key === 'string' && r.key, `rooms[${i}].key مطلوب`);
-      return { id: i, key: r.key, restricted: Boolean(r.restricted) };
+      return { id: i, key: r.key, restricted: Boolean(r.restricted), floor: r.floor ?? null };
     });
     this.roomByKey = new Map(this.rooms.map((r) => [r.key, r]));
     assert(this.roomByKey.size === this.rooms.length, 'مفاتيح الغرف مكررة');

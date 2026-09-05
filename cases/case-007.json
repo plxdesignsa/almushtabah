@@ -73,37 +73,44 @@
     {
       "id": 0,
       "key": "cafekitchen",
-      "restricted": true
+      "restricted": true,
+      "floor": "tile"
     },
     {
       "id": 1,
       "key": "gold",
-      "restricted": false
+      "restricted": false,
+      "floor": "marble"
     },
     {
       "id": 2,
       "key": "cashroom",
-      "restricted": true
+      "restricted": true,
+      "floor": "concrete"
     },
     {
       "id": 3,
       "key": "dates",
-      "restricted": false
+      "restricted": false,
+      "floor": "stone"
     },
     {
       "id": 4,
       "key": "spices",
-      "restricted": false
+      "restricted": false,
+      "floor": "stone"
     },
     {
       "id": 5,
       "key": "workshop",
-      "restricted": true
+      "restricted": true,
+      "floor": "wood"
     },
     {
       "id": 6,
       "key": "prayer",
-      "restricted": false
+      "restricted": false,
+      "floor": "rug"
     }
   ],
   "objects": [
@@ -415,14 +422,14 @@
       "n": 1
     },
     {
-      "char": "hessa",
-      "type": "aloneWith",
-      "other": "nayef"
-    },
-    {
       "char": "omar",
       "type": "besideObject",
       "object": "counter"
+    },
+    {
+      "char": "nayef",
+      "type": "sameRoom",
+      "other": "hessa"
     },
     {
       "char": "nayef",
@@ -528,17 +535,6 @@
     {
       "step": 4,
       "action": "block",
-      "char": 0,
-      "cells": [
-        30,
-        62
-      ],
-      "because": "clues[1]",
-      "rule": "relation"
-    },
-    {
-      "step": 5,
-      "action": "block",
       "char": 2,
       "cells": [
         0,
@@ -577,7 +573,18 @@
         58,
         62
       ],
-      "because": "clues[1]",
+      "because": "clues[2]",
+      "rule": "relation"
+    },
+    {
+      "step": 5,
+      "action": "block",
+      "char": 0,
+      "cells": [
+        30,
+        62
+      ],
+      "because": "clues[2]",
       "rule": "relation"
     },
     {
@@ -649,7 +656,7 @@
       "cells": [
         6
       ],
-      "because": "clues[1]",
+      "because": "clues[2]",
       "rule": "relation"
     },
     {
@@ -808,15 +815,6 @@
           "rule": "relation"
         },
         {
-          "char": 0,
-          "cells": [
-            30,
-            62
-          ],
-          "because": "clues[1]",
-          "rule": "relation"
-        },
-        {
           "char": 2,
           "cells": [
             0,
@@ -855,7 +853,16 @@
             58,
             62
           ],
-          "because": "clues[1]",
+          "because": "clues[2]",
+          "rule": "relation"
+        },
+        {
+          "char": 0,
+          "cells": [
+            30,
+            62
+          ],
+          "because": "clues[2]",
           "rule": "relation"
         },
         {
@@ -919,7 +926,7 @@
           "cells": [
             6
           ],
-          "because": "clues[1]",
+          "because": "clues[2]",
           "rule": "relation"
         },
         {
@@ -998,7 +1005,7 @@
     "theme": "market",
     "targetTier": "medium",
     "generator": "almushtabah-gen/0.1",
-    "generatedAt": "2026-09-05T13:51:46.216Z",
+    "generatedAt": "2026-09-05T14:06:35.115Z",
     "stats": {
       "clues": 8,
       "maxPerChar": 2,

@@ -34,22 +34,26 @@
     {
       "id": 0,
       "key": "guestroom",
-      "restricted": false
+      "restricted": false,
+      "floor": "rug"
     },
     {
       "id": 1,
       "key": "garden",
-      "restricted": false
+      "restricted": false,
+      "floor": "grass"
     },
     {
       "id": 2,
       "key": "bedroom",
-      "restricted": true
+      "restricted": true,
+      "floor": "wood"
     },
     {
       "id": 3,
       "key": "garage",
-      "restricted": true
+      "restricted": true,
+      "floor": "concrete"
     }
   ],
   "objects": [
@@ -273,13 +277,13 @@
       "object": "lamp"
     },
     {
+      "char": "hessa",
+      "type": "aloneWithKiller"
+    },
+    {
       "char": "sara",
       "type": "inCol",
       "n": 5
-    },
-    {
-      "char": "hessa",
-      "type": "aloneWithKiller"
     }
   ],
   "hintChain": [
@@ -304,7 +308,7 @@
       "action": "isolate",
       "char": 3,
       "cell": 4,
-      "because": "clues[4]",
+      "because": "clues[5]",
       "rule": "unary"
     },
     {
@@ -358,7 +362,7 @@
       "step": 3,
       "char": 3,
       "cell": 4,
-      "because": "clues[4]",
+      "because": "clues[5]",
       "rule": "unary",
       "blocks": [],
       "cascade": [
@@ -394,7 +398,7 @@
     "theme": "house",
     "targetTier": "easy",
     "generator": "almushtabah-gen/0.1",
-    "generatedAt": "2026-09-05T13:51:46.141Z",
+    "generatedAt": "2026-09-05T14:06:35.025Z",
     "stats": {
       "clues": 5,
       "maxPerChar": 2,

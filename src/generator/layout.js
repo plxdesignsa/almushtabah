@@ -85,7 +85,7 @@ function pickRooms(rng, theme, roomCount, restrictedCount) {
   const chosen = [...restrictedPool.slice(0, restrictedCount), ...freePool.slice(0, roomCount - restrictedCount)];
   if (chosen.length < roomCount) throw new Error(`البيئة «${theme.key}» لا تملك غرفًا كافية لـ${roomCount} غرفة`);
   rng.shuffle(chosen);
-  return chosen.map((r, id) => ({ id, key: r.key, restricted: r.restricted, objectKeys: r.objects }));
+  return chosen.map((r, id) => ({ id, key: r.key, restricted: r.restricted, floor: r.floor, objectKeys: r.objects }));
 }
 
 function pickBlocked(rng, roomMap, sizes, blockedCount) {

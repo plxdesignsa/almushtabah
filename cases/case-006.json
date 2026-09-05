@@ -58,32 +58,38 @@
     {
       "id": 0,
       "key": "majlis",
-      "restricted": false
+      "restricted": false,
+      "floor": "rug"
     },
     {
       "id": 1,
       "key": "farmhouse",
-      "restricted": false
+      "restricted": false,
+      "floor": "rug"
     },
     {
       "id": 2,
       "key": "pumproom",
-      "restricted": true
+      "restricted": true,
+      "floor": "concrete"
     },
     {
       "id": 3,
       "key": "tent",
-      "restricted": false
+      "restricted": false,
+      "floor": "rug"
     },
     {
       "id": 4,
       "key": "storeroom",
-      "restricted": true
+      "restricted": true,
+      "floor": "concrete"
     },
     {
       "id": 5,
       "key": "sheeppen",
-      "restricted": true
+      "restricted": true,
+      "floor": "sand"
     }
   ],
   "objects": [
@@ -359,9 +365,8 @@
   "clues": [
     {
       "char": "jawaher",
-      "type": "colOffset",
-      "other": "rakan",
-      "n": -1
+      "type": "diffRoom",
+      "other": "abeer"
     },
     {
       "char": "rana",
@@ -380,10 +385,15 @@
       "other": "bandar"
     },
     {
-      "char": "dana",
+      "char": "rakan",
       "type": "colOffset",
-      "other": "jawaher",
-      "n": 2
+      "other": "dana",
+      "n": -1
+    },
+    {
+      "char": "dana",
+      "type": "inRoom",
+      "room": "majlis"
     },
     {
       "char": "alanoud",
@@ -391,50 +401,19 @@
       "object": "sack"
     },
     {
-      "char": "bandar",
-      "type": "inRow",
-      "n": 3
-    },
-    {
       "char": "abeer",
       "type": "aloneWithKiller"
+    },
+    {
+      "char": "bandar",
+      "type": "rowOffset",
+      "other": "jawaher",
+      "n": -2
     }
   ],
   "hintChain": [
     {
       "step": 1,
-      "action": "block",
-      "char": 1,
-      "cells": [
-        6,
-        13,
-        20,
-        27,
-        34,
-        41,
-        48
-      ],
-      "because": "clues[0]",
-      "rule": "relation"
-    },
-    {
-      "step": 2,
-      "action": "block",
-      "char": 3,
-      "cells": [
-        0,
-        7,
-        14,
-        21,
-        28,
-        35,
-        42
-      ],
-      "because": "clues[0]",
-      "rule": "relation"
-    },
-    {
-      "step": 3,
       "action": "isolate",
       "char": 2,
       "cell": 47,
@@ -442,7 +421,7 @@
       "rule": "relation"
     },
     {
-      "step": 4,
+      "step": 2,
       "action": "block",
       "char": 0,
       "cells": [
@@ -474,61 +453,94 @@
       "rule": "relation"
     },
     {
+      "step": 3,
+      "action": "block",
+      "char": 3,
+      "cells": [
+        14
+      ],
+      "because": "clues[3]",
+      "rule": "relation"
+    },
+    {
+      "step": 4,
+      "action": "block",
+      "char": 6,
+      "cells": [
+        14
+      ],
+      "because": "clues[3]",
+      "rule": "relation"
+    },
+    {
       "step": 5,
       "action": "block",
       "char": 3,
       "cells": [
-        1,
         2,
         3,
+        4,
+        5,
         6,
-        8,
-        9,
+        10,
+        11,
+        12,
         13,
-        15,
-        16,
         17,
         18,
         19,
         20,
-        22,
+        24,
+        25,
         26,
-        29,
-        30,
+        27,
+        31,
+        32,
         33,
-        36,
-        37,
+        34,
         38,
+        39,
         40,
-        43,
-        44,
+        41,
         45,
-        47
+        46,
+        47,
+        48
       ],
-      "because": "clues[3]",
+      "because": "clues[4]",
       "rule": "relation"
     },
     {
       "step": 6,
       "action": "block",
-      "char": 6,
+      "char": 4,
       "cells": [
-        14,
-        15
+        0
       ],
-      "because": "clues[3]",
+      "because": "clues[4]",
       "rule": "relation"
     },
     {
       "step": 7,
       "action": "block",
-      "char": 4,
+      "char": 6,
       "cells": [
-        0,
-        1,
-        8
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48
       ],
-      "because": "clues[4]",
+      "because": "clues[8]",
       "rule": "relation"
     },
     {
@@ -536,50 +548,28 @@
       "action": "block",
       "char": 1,
       "cells": [
+        0,
         1,
+        2,
+        3,
+        4,
         5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
         12,
-        19,
-        26,
-        33,
-        40,
-        47
+        13
       ],
-      "because": "clues[4]",
+      "because": "clues[8]",
       "rule": "relation"
     },
     {
       "step": 9,
       "action": "block",
       "char": 1,
-      "cells": [
-        32,
-        39,
-        46
-      ],
-      "because": "clues[7]",
-      "rule": "occupancy"
-    },
-    {
-      "step": 10,
-      "action": "block",
-      "char": 3,
-      "cells": [
-        27,
-        32,
-        34,
-        39,
-        41,
-        46,
-        48
-      ],
-      "because": "clues[7]",
-      "rule": "occupancy"
-    },
-    {
-      "step": 11,
-      "action": "block",
-      "char": 4,
       "cells": [
         19,
         26,
@@ -598,34 +588,102 @@
       "rule": "occupancy"
     },
     {
-      "step": 12,
+      "step": 10,
       "action": "block",
       "char": 6,
       "cells": [
-        19
+        19,
+        26,
+        27,
+        32,
+        33,
+        34
       ],
       "because": "clues[7]",
       "rule": "occupancy"
     },
     {
-      "step": 13,
+      "step": 11,
       "action": "block",
       "char": 1,
       "cells": [
-        0,
-        2,
-        3,
+        35,
+        36,
+        37,
+        38
+      ],
+      "because": "clues[0]",
+      "rule": "relation"
+    },
+    {
+      "step": 12,
+      "action": "block",
+      "char": 3,
+      "cells": [
+        29
+      ],
+      "because": "clues[3]",
+      "rule": "relation"
+    },
+    {
+      "step": 13,
+      "action": "block",
+      "char": 6,
+      "cells": [
         4,
-        7,
-        8,
-        9,
-        10,
+        6,
         11,
+        13,
+        16,
+        20,
+        23
+      ],
+      "because": "clues[3]",
+      "rule": "relation"
+    },
+    {
+      "step": 14,
+      "action": "block",
+      "char": 6,
+      "cells": [
+        21,
+        22,
+        24,
+        25,
+        28,
+        29,
+        30,
+        31
+      ],
+      "because": "clues[8]",
+      "rule": "relation"
+    },
+    {
+      "step": 15,
+      "action": "block",
+      "char": 3,
+      "cells": [
+        22,
+        28,
+        30,
+        35,
+        36,
+        37
+      ],
+      "because": "clues[3]",
+      "rule": "relation"
+    },
+    {
+      "step": 16,
+      "action": "block",
+      "char": 1,
+      "cells": [
         14,
         15,
         16,
         17,
         18,
+        20,
         21,
         23,
         24,
@@ -636,96 +694,17 @@
       "rule": "noEmptyRegion"
     },
     {
-      "step": 14,
-      "action": "block",
-      "char": 1,
-      "cells": [
-        22,
-        28,
-        35
-      ],
-      "because": "clues[0]",
-      "rule": "relation"
-    },
-    {
-      "step": 15,
-      "action": "block",
-      "char": 4,
-      "cells": [
-        2,
-        6,
-        9,
-        13,
-        20
-      ],
-      "because": "clues[4]",
-      "rule": "relation"
-    },
-    {
-      "step": 16,
-      "action": "block",
-      "char": 1,
-      "cells": [
-        38
-      ],
-      "because": "clues[4]",
-      "rule": "relation"
-    },
-    {
       "step": 17,
       "action": "block",
-      "char": 5,
+      "char": 1,
       "cells": [
-        15
+        22
       ],
-      "because": "col:1",
+      "because": "row:5",
       "rule": "hiddenSingle"
     },
     {
       "step": 18,
-      "action": "block",
-      "char": 3,
-      "cells": [
-        4,
-        11,
-        25
-      ],
-      "because": "clues[0]",
-      "rule": "relation"
-    },
-    {
-      "step": 19,
-      "action": "block",
-      "char": 6,
-      "cells": [
-        20
-      ],
-      "because": "clues[3]",
-      "rule": "relation"
-    },
-    {
-      "step": 20,
-      "action": "block",
-      "char": 4,
-      "cells": [
-        11
-      ],
-      "because": "row:1",
-      "rule": "hiddenSingle"
-    },
-    {
-      "step": 21,
-      "action": "block",
-      "char": 1,
-      "cells": [
-        30,
-        37
-      ],
-      "because": "col:2",
-      "rule": "hiddenSingle"
-    },
-    {
-      "step": 22,
       "action": "isolate",
       "char": 0,
       "cell": 41,
@@ -733,25 +712,40 @@
       "rule": "hiddenSingle"
     },
     {
-      "step": 23,
-      "action": "isolate",
-      "char": 3,
-      "cell": 23,
-      "because": "clues[0]",
-      "rule": "relation"
-    },
-    {
-      "step": 24,
+      "step": 19,
       "action": "block",
       "char": 6,
       "cells": [
-        16
+        0,
+        1,
+        2,
+        3,
+        7,
+        8,
+        9,
+        10
       ],
+      "because": "clues[8]",
+      "rule": "relation"
+    },
+    {
+      "step": 20,
+      "action": "isolate",
+      "char": 6,
+      "cell": 18,
+      "because": "col:5",
+      "rule": "hiddenSingle"
+    },
+    {
+      "step": 21,
+      "action": "isolate",
+      "char": 3,
+      "cell": 23,
       "because": "clues[3]",
       "rule": "relation"
     },
     {
-      "step": 25,
+      "step": 22,
       "action": "isolate",
       "char": 4,
       "cell": 3,
@@ -759,28 +753,20 @@
       "rule": "relation"
     },
     {
-      "step": 26,
-      "action": "isolate",
-      "char": 1,
-      "cell": 29,
-      "because": "placed:0",
-      "rule": "rowCol"
-    },
-    {
-      "step": 27,
+      "step": 23,
       "action": "isolate",
       "char": 5,
       "cell": 7,
-      "because": "placed:3",
+      "because": "placed:6",
       "rule": "rowCol"
     },
     {
-      "step": 28,
+      "step": 24,
       "action": "isolate",
-      "char": 6,
-      "cell": 18,
-      "because": "placed:4",
-      "rule": "rowCol"
+      "char": 1,
+      "cell": 29,
+      "because": "col:2",
+      "rule": "hiddenSingle"
     }
   ],
   "hintLadder": [
@@ -790,36 +776,7 @@
       "cell": 47,
       "because": "clues[2]",
       "rule": "relation",
-      "blocks": [
-        {
-          "char": 1,
-          "cells": [
-            6,
-            13,
-            20,
-            27,
-            34,
-            41,
-            48
-          ],
-          "because": "clues[0]",
-          "rule": "relation"
-        },
-        {
-          "char": 3,
-          "cells": [
-            0,
-            7,
-            14,
-            21,
-            28,
-            35,
-            42
-          ],
-          "because": "clues[0]",
-          "rule": "relation"
-        }
-      ],
+      "blocks": [],
       "cascade": []
     },
     {
@@ -862,32 +819,7 @@
         {
           "char": 3,
           "cells": [
-            1,
-            2,
-            3,
-            6,
-            8,
-            9,
-            13,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20,
-            22,
-            26,
-            29,
-            30,
-            33,
-            36,
-            37,
-            38,
-            40,
-            43,
-            44,
-            45,
-            47
+            14
           ],
           "because": "clues[3]",
           "rule": "relation"
@@ -895,63 +827,99 @@
         {
           "char": 6,
           "cells": [
-            14,
-            15
+            14
           ],
           "because": "clues[3]",
           "rule": "relation"
         },
         {
+          "char": 3,
+          "cells": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            10,
+            11,
+            12,
+            13,
+            17,
+            18,
+            19,
+            20,
+            24,
+            25,
+            26,
+            27,
+            31,
+            32,
+            33,
+            34,
+            38,
+            39,
+            40,
+            41,
+            45,
+            46,
+            47,
+            48
+          ],
+          "because": "clues[4]",
+          "rule": "relation"
+        },
+        {
           "char": 4,
+          "cells": [
+            0
+          ],
+          "because": "clues[4]",
+          "rule": "relation"
+        },
+        {
+          "char": 6,
+          "cells": [
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48
+          ],
+          "because": "clues[8]",
+          "rule": "relation"
+        },
+        {
+          "char": 1,
           "cells": [
             0,
             1,
-            8
-          ],
-          "because": "clues[4]",
-          "rule": "relation"
-        },
-        {
-          "char": 1,
-          "cells": [
-            1,
+            2,
+            3,
+            4,
             5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
             12,
-            19,
-            26,
-            33,
-            40,
-            47
+            13
           ],
-          "because": "clues[4]",
+          "because": "clues[8]",
           "rule": "relation"
         },
         {
           "char": 1,
-          "cells": [
-            32,
-            39,
-            46
-          ],
-          "because": "clues[7]",
-          "rule": "occupancy"
-        },
-        {
-          "char": 3,
-          "cells": [
-            27,
-            32,
-            34,
-            39,
-            41,
-            46,
-            48
-          ],
-          "because": "clues[7]",
-          "rule": "occupancy"
-        },
-        {
-          "char": 4,
           "cells": [
             19,
             26,
@@ -972,7 +940,12 @@
         {
           "char": 6,
           "cells": [
-            19
+            19,
+            26,
+            27,
+            32,
+            33,
+            34
           ],
           "because": "clues[7]",
           "rule": "occupancy"
@@ -980,20 +953,73 @@
         {
           "char": 1,
           "cells": [
-            0,
-            2,
-            3,
+            35,
+            36,
+            37,
+            38
+          ],
+          "because": "clues[0]",
+          "rule": "relation"
+        },
+        {
+          "char": 3,
+          "cells": [
+            29
+          ],
+          "because": "clues[3]",
+          "rule": "relation"
+        },
+        {
+          "char": 6,
+          "cells": [
             4,
-            7,
-            8,
-            9,
-            10,
+            6,
             11,
+            13,
+            16,
+            20,
+            23
+          ],
+          "because": "clues[3]",
+          "rule": "relation"
+        },
+        {
+          "char": 6,
+          "cells": [
+            21,
+            22,
+            24,
+            25,
+            28,
+            29,
+            30,
+            31
+          ],
+          "because": "clues[8]",
+          "rule": "relation"
+        },
+        {
+          "char": 3,
+          "cells": [
+            22,
+            28,
+            30,
+            35,
+            36,
+            37
+          ],
+          "because": "clues[3]",
+          "rule": "relation"
+        },
+        {
+          "char": 1,
+          "cells": [
             14,
             15,
             16,
             17,
             18,
+            20,
             21,
             23,
             24,
@@ -1006,74 +1032,9 @@
         {
           "char": 1,
           "cells": [
-            22,
-            28,
-            35
+            22
           ],
-          "because": "clues[0]",
-          "rule": "relation"
-        },
-        {
-          "char": 4,
-          "cells": [
-            2,
-            6,
-            9,
-            13,
-            20
-          ],
-          "because": "clues[4]",
-          "rule": "relation"
-        },
-        {
-          "char": 1,
-          "cells": [
-            38
-          ],
-          "because": "clues[4]",
-          "rule": "relation"
-        },
-        {
-          "char": 5,
-          "cells": [
-            15
-          ],
-          "because": "col:1",
-          "rule": "hiddenSingle"
-        },
-        {
-          "char": 3,
-          "cells": [
-            4,
-            11,
-            25
-          ],
-          "because": "clues[0]",
-          "rule": "relation"
-        },
-        {
-          "char": 6,
-          "cells": [
-            20
-          ],
-          "because": "clues[3]",
-          "rule": "relation"
-        },
-        {
-          "char": 4,
-          "cells": [
-            11
-          ],
-          "because": "row:1",
-          "rule": "hiddenSingle"
-        },
-        {
-          "char": 1,
-          "cells": [
-            30,
-            37
-          ],
-          "because": "col:2",
+          "because": "row:5",
           "rule": "hiddenSingle"
         }
       ],
@@ -1081,46 +1042,61 @@
     },
     {
       "step": 3,
+      "char": 6,
+      "cell": 18,
+      "because": "col:5",
+      "rule": "hiddenSingle",
+      "blocks": [
+        {
+          "char": 6,
+          "cells": [
+            0,
+            1,
+            2,
+            3,
+            7,
+            8,
+            9,
+            10
+          ],
+          "because": "clues[8]",
+          "rule": "relation"
+        }
+      ],
+      "cascade": []
+    },
+    {
+      "step": 4,
       "char": 3,
       "cell": 23,
-      "because": "clues[0]",
+      "because": "clues[3]",
       "rule": "relation",
       "blocks": [],
       "cascade": []
     },
     {
-      "step": 4,
+      "step": 5,
       "char": 4,
       "cell": 3,
       "because": "clues[4]",
       "rule": "relation",
-      "blocks": [
-        {
-          "char": 6,
-          "cells": [
-            16
-          ],
-          "because": "clues[3]",
-          "rule": "relation"
-        }
-      ],
+      "blocks": [],
       "cascade": [
-        {
-          "char": 1,
-          "cell": 29,
-          "because": "placed:0"
-        },
         {
           "char": 5,
           "cell": 7,
-          "because": "placed:3"
-        },
-        {
-          "char": 6,
-          "cell": 18,
-          "because": "placed:4"
+          "because": "placed:6"
         }
       ]
+    },
+    {
+      "step": 6,
+      "char": 1,
+      "cell": 29,
+      "because": "col:2",
+      "rule": "hiddenSingle",
+      "blocks": [],
+      "cascade": []
     }
   ],
   "meta": {
@@ -1128,15 +1104,15 @@
     "theme": "farm",
     "targetTier": "medium",
     "generator": "almushtabah-gen/0.1",
-    "generatedAt": "2026-09-05T13:51:46.177Z",
+    "generatedAt": "2026-09-05T14:06:35.066Z",
     "stats": {
-      "clues": 7,
+      "clues": 8,
       "maxPerChar": 2,
       "silentCharacters": 0,
-      "hintSteps": 4,
-      "deductions": 28,
+      "hintSteps": 6,
+      "deductions": 24,
       "rooms": 6,
-      "rounds": 6
+      "rounds": 7
     }
   }
 }

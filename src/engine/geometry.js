@@ -35,7 +35,20 @@ export function sharesLine(a, b, size) {
   return rowOf(a, size) === rowOf(b, size) || colOf(a, size) === colOf(b, size);
 }
 
-/** تنسيق بشري للخلية: ص٣ ع٥ (بترقيم يبدأ من ١). */
+const AR_DIGITS = '٠١٢٣٤٥٦٧٨٩';
+const ar = (n) => String(n).replace(/\d/g, (d) => AR_DIGITS[d]);
+
+/**
+ * تنسيق بشري للخلية: ص٣ ع٥ (بترقيم يبدأ من ١).
+ * اتفاق الخريطة العربية: الصفوف من الأعلى، والأعمدة من اليمين (العمود ١ أقصى اليمين).
+ * فهرس العمود الداخلي (0 = الأول) يُعرض كما هو؛ الواجهة ترسم العمود 0 على اليمين.
+ */
 export function formatCell(cell, size) {
-  return `ص${rowOf(cell, size) + 1} ع${colOf(cell, size) + 1}`;
+  return `ص${ar(rowOf(cell, size) + 1)} ع${ar(colOf(cell, size) + 1)}`;
 }
+
+/**
+ * اتجاه الأعمدة على الخريطة: الشمال أعلى، والشرق يمين الشاشة. وبما أن العمود ١ يُرسم يمينًا،
+ * فالإزاحة إلى فهرس أصغر تعني «شرقًا» والأكبر «غربًا».
+ */
+export const colDirectionWord = (n) => (n < 0 ? 'شرق' : 'غرب');

@@ -4,7 +4,7 @@
 // يكتبه المؤلف في طبقة الترجمة (الخطوة 5 من خط الإنتاج). لكنها تضمن أن المعنى
 // المطبوع يطابق الدليل الآلي حرفيًا. تُصرَّف الأفعال حسب حقل gender في الشخصية.
 
-import { formatCell } from './geometry.js';
+import { colDirectionWord, formatCell } from './geometry.js';
 
 const AR_DIGITS = '٠١٢٣٤٥٦٧٨٩';
 export const arNum = (n) => String(n).replace(/\d/g, (d) => AR_DIGITS[d]);
@@ -33,6 +33,8 @@ export function makeNamer(scene, overlay = {}) {
     room: (id) => overlay.rooms?.[scene.room(id).key] ?? scene.room(id).key,
     object: (key) => overlay.objects?.[key] ?? key,
     cell: (cell) => formatCell(cell, scene.size),
+    /** الخلية مع اسم غرفتها: «ص١ ع٢ في المجلس» — أوضح للاعب من الإحداثيات وحدها. */
+    place: (cell) => `${formatCell(cell, scene.size)} في ${overlay.rooms?.[scene.room(scene.roomOfCell[cell]).key] ?? scene.room(scene.roomOfCell[cell]).key}`,
     cells: (cells) => cells.map((c) => formatCell(c, scene.size)).join('، '),
     /** قائمة مختصرة: تُعدَّد الخلايا القليلة، وتُلخَّص الكثيرة بصفوفها أو أعمدتها أو عددها. */
     cellsBrief: (cells) => {
@@ -71,9 +73,9 @@ export function describeClue(scene, clue, overlay) {
       return `${who}: ${v.kan} ${countWord(k, 'صفًّا واحدًا', 'صفّين', 'صفوف')} ${dir} ${N.char(clue.other)} بالضبط.`;
     }
     case 'colOffset': {
-      // الخريطة شمالها فوق وشرقها يمين بغض النظر عن اتجاه اللغة؛ لذا الأعمدة بالشرق والغرب كالصفوف بالشمال والجنوب.
+      // الخريطة شمالها فوق وشرقها يمين؛ الأعمدة بالشرق والغرب كالصفوف بالشمال والجنوب (انظر geometry.colDirectionWord).
       const k = Math.abs(clue.n);
-      const dir = clue.n < 0 ? 'غرب' : 'شرق';
+      const dir = colDirectionWord(clue.n);
       return `${who}: ${v.kan} ${countWord(k, 'عمودًا واحدًا', 'عمودين', 'أعمدة')} ${dir} ${N.char(clue.other)} بالضبط.`;
     }
     case 'aloneInRoom': return `${who}: ${v.kan} ${v.wahd} في الغرفة.`;
@@ -151,9 +153,9 @@ export function describeRung(scene, rung, overlay) {
     parts.push(`استبعد ${N.char(b.char)} من ${N.cellsBrief(b.cells)} لأن ${shortReason(scene, b, overlay)}.`);
   }
   const f = female(scene, rung.char);
-  parts.push(`${N.char(rung.char)} لا يمكن أن ${f ? 'تكون' : 'يكون'} إلا في ${N.cell(rung.cell)} لأن ${shortReason(scene, rung, overlay)}.`);
+  parts.push(`${N.char(rung.char)} لا يمكن أن ${f ? 'تكون' : 'يكون'} إلا في ${N.place(rung.cell)}، لأن ${shortReason(scene, rung, overlay)}.`);
   if (rung.cascade.length) {
-    parts.push(`وهذا يحسم بدوره: ${rung.cascade.map((c) => `${N.char(c.char)} في ${N.cell(c.cell)}`).join('، ')}.`);
+    parts.push(`وهذا يحسم بدوره: ${rung.cascade.map((c) => `${N.char(c.char)} في ${N.place(c.cell)}`).join('، ')}.`);
   }
   return `${arNum(rung.step)}. ${parts.join(' ')}`;
 }

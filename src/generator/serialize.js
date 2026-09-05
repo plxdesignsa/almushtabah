@@ -13,7 +13,7 @@ export function assembleCase({ id, size, layout, characters, placement, globalRu
     difficulty: difficulty ?? null,
     blockedCells: layout.blockedCells.map((c) => [Math.floor(c / size), c % size]),
     roomMap: layout.roomMap,
-    rooms: layout.rooms.map((r) => ({ id: r.id, key: r.key, restricted: r.restricted })),
+    rooms: layout.rooms.map((r) => ({ id: r.id, key: r.key, restricted: r.restricted, floor: r.floor ?? (r.restricted ? 'concrete' : 'tile') })),
     objects: layout.objects.map((o) => ({ cell: [Math.floor(o.cell / size), o.cell % size], key: o.key, sprite: o.sprite, variant: o.variant })),
     characters: characters.map((c) => ({ id: c.id, key: c.key, gender: c.gender, class: c.class, victim: c.victim, voice: c.voice, avatar: c.avatar })),
     solution: placement.map((cell) => [Math.floor(cell / size), cell % size]),

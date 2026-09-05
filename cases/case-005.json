@@ -58,32 +58,38 @@
     {
       "id": 0,
       "key": "guestroom",
-      "restricted": false
+      "restricted": false,
+      "floor": "rug"
     },
     {
       "id": 1,
       "key": "garage",
-      "restricted": true
+      "restricted": true,
+      "floor": "concrete"
     },
     {
       "id": 2,
       "key": "bedroom",
-      "restricted": true
+      "restricted": true,
+      "floor": "wood"
     },
     {
       "id": 3,
       "key": "maidroom",
-      "restricted": true
+      "restricted": true,
+      "floor": "wood"
     },
     {
       "id": 4,
       "key": "stairs",
-      "restricted": false
+      "restricted": false,
+      "floor": "tile"
     },
     {
       "id": 5,
       "key": "courtyard",
-      "restricted": false
+      "restricted": false,
+      "floor": "stone"
     }
   ],
   "objects": [
@@ -378,23 +384,23 @@
       "object": "bed"
     },
     {
+      "char": "rana",
+      "type": "inRoom",
+      "room": "guestroom"
+    },
+    {
+      "char": "nayef",
+      "type": "aloneWithKiller"
+    },
+    {
       "char": "omar",
       "type": "inCol",
       "n": 5
     },
     {
       "char": "rana",
-      "type": "inRoom",
-      "room": "guestroom"
-    },
-    {
-      "char": "rana",
       "type": "inRow",
       "n": 4
-    },
-    {
-      "char": "nayef",
-      "type": "aloneWithKiller"
     }
   ],
   "hintChain": [
@@ -411,7 +417,7 @@
       "action": "isolate",
       "char": 5,
       "cell": 4,
-      "because": "clues[4]",
+      "because": "clues[6]",
       "rule": "unary"
     },
     {
@@ -419,7 +425,7 @@
       "action": "isolate",
       "char": 6,
       "cell": 21,
-      "because": "clues[6]",
+      "because": "clues[7]",
       "rule": "unary"
     },
     {
@@ -490,7 +496,7 @@
       "step": 2,
       "char": 5,
       "cell": 4,
-      "because": "clues[4]",
+      "because": "clues[6]",
       "rule": "unary",
       "blocks": [],
       "cascade": []
@@ -499,7 +505,7 @@
       "step": 3,
       "char": 6,
       "cell": 21,
-      "because": "clues[6]",
+      "because": "clues[7]",
       "rule": "unary",
       "blocks": [],
       "cascade": [
@@ -559,7 +565,7 @@
     "theme": "house",
     "targetTier": "easy",
     "generator": "almushtabah-gen/0.1",
-    "generatedAt": "2026-09-05T13:51:46.165Z",
+    "generatedAt": "2026-09-05T14:06:35.054Z",
     "stats": {
       "clues": 7,
       "maxPerChar": 2,

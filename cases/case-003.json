@@ -45,27 +45,32 @@
     {
       "id": 0,
       "key": "kitchen",
-      "restricted": false
+      "restricted": false,
+      "floor": "tile"
     },
     {
       "id": 1,
       "key": "sheeppen",
-      "restricted": true
+      "restricted": true,
+      "floor": "sand"
     },
     {
       "id": 2,
       "key": "pumproom",
-      "restricted": true
+      "restricted": true,
+      "floor": "concrete"
     },
     {
       "id": 3,
       "key": "palmgrove",
-      "restricted": false
+      "restricted": false,
+      "floor": "sand"
     },
     {
       "id": 4,
       "key": "gate",
-      "restricted": false
+      "restricted": false,
+      "floor": "stone"
     }
   ],
   "objects": [
@@ -310,6 +315,25 @@
       "object": "trough"
     },
     {
+      "char": "mohammed",
+      "type": "besideObject",
+      "object": "basket"
+    },
+    {
+      "char": "amal",
+      "type": "inRoom",
+      "room": "pumproom"
+    },
+    {
+      "char": "amal",
+      "type": "onObject",
+      "object": "bucket"
+    },
+    {
+      "char": "hessa",
+      "type": "aloneWithKiller"
+    },
+    {
       "char": "majed",
       "type": "inRow",
       "n": 3
@@ -321,52 +345,33 @@
     },
     {
       "char": "mohammed",
-      "type": "besideObject",
-      "object": "basket"
-    },
-    {
-      "char": "mohammed",
       "type": "inRow",
       "n": 6
-    },
-    {
-      "char": "amal",
-      "type": "onObject",
-      "object": "bucket"
-    },
-    {
-      "char": "amal",
-      "type": "besideObject",
-      "object": "barrel"
-    },
-    {
-      "char": "hessa",
-      "type": "aloneWithKiller"
     }
   ],
   "hintChain": [
     {
       "step": 1,
       "action": "isolate",
-      "char": 2,
-      "cell": 17,
-      "because": "clues[3]",
+      "char": 5,
+      "cell": 7,
+      "because": "clues[4]",
       "rule": "unary"
     },
     {
       "step": 2,
       "action": "isolate",
-      "char": 4,
-      "cell": 30,
-      "because": "clues[5]",
+      "char": 2,
+      "cell": 17,
+      "because": "clues[7]",
       "rule": "unary"
     },
     {
       "step": 3,
       "action": "isolate",
-      "char": 5,
-      "cell": 7,
-      "because": "clues[7]",
+      "char": 4,
+      "cell": 30,
+      "because": "clues[8]",
       "rule": "unary"
     },
     {
@@ -394,7 +399,7 @@
       "cells": [
         28
       ],
-      "because": "clues[8]",
+      "because": "clues[5]",
       "rule": "occupancy"
     },
     {
@@ -417,27 +422,27 @@
   "hintLadder": [
     {
       "step": 1,
-      "char": 2,
-      "cell": 17,
-      "because": "clues[3]",
+      "char": 5,
+      "cell": 7,
+      "because": "clues[4]",
       "rule": "unary",
       "blocks": [],
       "cascade": []
     },
     {
       "step": 2,
-      "char": 4,
-      "cell": 30,
-      "because": "clues[5]",
+      "char": 2,
+      "cell": 17,
+      "because": "clues[7]",
       "rule": "unary",
       "blocks": [],
       "cascade": []
     },
     {
       "step": 3,
-      "char": 5,
-      "cell": 7,
-      "because": "clues[7]",
+      "char": 4,
+      "cell": 30,
+      "because": "clues[8]",
       "rule": "unary",
       "blocks": [],
       "cascade": [
@@ -464,7 +469,7 @@
     "theme": "farm",
     "targetTier": "easy",
     "generator": "almushtabah-gen/0.1",
-    "generatedAt": "2026-09-05T13:51:46.150Z",
+    "generatedAt": "2026-09-05T14:06:35.035Z",
     "stats": {
       "clues": 8,
       "maxPerChar": 2,
